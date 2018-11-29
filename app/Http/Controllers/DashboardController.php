@@ -140,6 +140,8 @@ class DashboardController extends Controller
 		$prod -> id_user_r      = $idUser;
 		$prod -> save();
 		$porcion = $porcion.' - '.Catum::find($um)->idesc;
+		/* Obtengo el id del producto guardado */
+		$idProd = Producto::all()->last() -> id;
 
 		/* Obtengo el total de productos que tiene registrado el usuario */
 		$totProd = User::find($idUser) -> productos -> count();
@@ -150,7 +152,52 @@ class DashboardController extends Controller
 			'msg'     => 'Producto '.$desc.' agregado con exito.',
 			'totProd' => $totProd,
 			'desc'    => $desc,
-			'porcion' => $porcion
+			'porcion' => $porcion,
+			'url'     => '<a href="javascript:comenzarSimulador('.$idProd.')"><button type="button" class="btn bg-black waves-effect waves-light">Comenzar simulador</button></a>'
 		]);
+	}
+
+	public function iniciarSimulador(Request $request)
+	{
+		/* Mensajes personalizados cuando hay errores en la validación */
+		$messages = [
+			'exists'   => 'El :attribute no existe.',
+			'required' => 'El campo :attribute es obligatorio.',
+		];
+
+		/* Reglas de validacion */
+		$rules = [
+			'iP' => ['required','exists:productos,id'],
+		];
+
+		/* Se validan los datos con las reglas y mensajes especificados */
+		$validate = \Validator::make($request->all(), $rules, $messages);
+
+		/* Si la validación falla, regreso solamente el primer error. */
+		if ($validate -> fails())
+		{
+			return response()->json([
+				'status' => 'error',
+				'msg'    => $validate->errors()->first()]);
+		}
+
+		/* Verifica que el usuario esté logeado y coincida con el id que envió*/
+		$idProd    = $request -> iP;
+		$error = ['status' => 'error','msg' => 'Datos no coinciden.'];
+		if ( Auth::check() )
+		{
+			if ( Producto::find($idProd) -> id_user_r == Auth::user() -> id )
+			{
+				return response()->json([
+					'status' => 'success',
+					'msg'    => 'Correcto']);
+			} else {
+				/* El producto no es de el*/
+				return response()->json([$error]);
+			}
+		} else { 
+			/* Usuario no está logeado o los datos no coinciden*/
+			return response()->json([$error]);
+		}
 	}
 }

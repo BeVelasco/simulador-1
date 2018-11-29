@@ -22,5 +22,8 @@ use Auth;
 
 class SimuladorController extends Controller
 {
-	
+	public function inicio(Request $request)
+	{
+		return view('simulador.simulador.inicio');
+	}
 }

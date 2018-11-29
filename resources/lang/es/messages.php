@@ -23,5 +23,7 @@ return [
 	'perfil'          => 'Perfil',
 	'salir'           => 'Salir',
 	'inicio'          => 'Inicio',
-	'iic'             => 'Integra Ideas Consultores'
+	'iic'             => 'Integra Ideas Consultores',
+	'acciones'        => 'Acciones',
+	'iniSimulador'    => 'Comenzar simulador',
 ];

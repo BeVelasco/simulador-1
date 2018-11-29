@@ -1,7 +1,7 @@
 /*!
 
 =========================================================
-* Scripts para Simulador - v0.1
+* Scripts para Dashboard de Simulador - v0.1
 =========================================================
 
 * Autor: Emmanuel Hernández Díaz
@@ -108,8 +108,7 @@ function addProducto() {
 									$("#porcion").val('');
 									document.getElementById("noProd").innerHTML = data.totProd;
 									/* Llamo a la funci´´on que agrega el producto nuevo a la tabla*/
-									agregarProductoTable(data.totProd, data.desc, data.porcion);
-
+									agregarProductoTable(data.totProd, data.desc, data.porcion, data.idProd, data.idUser, data.url);
 								}
 							});
 						/* Si hubo algún error se muestra al usuario para su correción */
@@ -170,6 +169,7 @@ function mostrarAlerta($tipo, $titulo, $mensaje, $msj) {
 
 /* =============================================================
  * Funcion para mostar popover referentes a la guía
+ * 
  * $elemento String [Nombre del elemento HTML que contendrá el popover]
  * $paso     Integer [Número de paso, el mensaje se obtiene de la BD]
  *
@@ -221,6 +221,8 @@ function mostrarPopoverGuia($elemento, $paso)
 /* =============================================================
  * Funcion para ocultar el popover, así se forza al usuario a
  * realizar una determinada acción de la guía.
+ *
+ *$paso String [Nombre del elemento que contiene el popover]
  * 
  * @author Emmanuel Hernandez Diaz
  * 
@@ -234,12 +236,17 @@ function quitarPopover($paso)
 /* =============================================================
  * Función para agregar el producto nuevo en el data table
  * -Se agrega al inicio.
+ * $num     Integer [Numero total del productos del usuario]
+ * $desc    String  [Descripción del producto creado]
+ * $porcion String  [Para cuantos - UM Ej. 100 - Personas]
+ * $idProd  Integer [id del producto creado]
+ * $idUSer  Integer [id del usuario]
  * 
  * @author Emmanuel Hernandez Diaz
  * 
  * 2018 - Integra Ideas Consultores
  * ============================================================= */
-function agregarProductoTable($num, $desc, $porcion)
+function agregarProductoTable($num, $desc, $porcion, $idProd, $idUser, $url)
 {
 	/* Obtengo la tabla */
 	var table = document.getElementById("tablaProd");
@@ -253,4 +260,36 @@ function agregarProductoTable($num, $desc, $porcion)
 	row.insertCell(2).innerHTML = $porcion;
 	row.insertCell(3).innerHTML = '<span class="label bg-green">Activo</span>';
 	row.insertCell(4).innerHTML = "justo ahora";
+	row.insertCell(5).innerHTML = $url;
+}
+
+function comenzarSimulador($iP)
+{
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	$.ajax({
+		url : 'inciarSimulador',
+		type: 'POST',
+		data: {
+			iP: $iP,
+		},
+		dataType: 'JSON',
+		/* Si no hay errores regresa SUCCESS, inclusive si existen errores de validación y/o de BD */
+		success: function (data) {
+			if (data.status == 'success')
+			{ 
+				/* Redirijo al usuario a la página principal del simulador */
+				window.location.href = "/simulador/inicio";
+			} else {
+				console.log(data);
+			}
+		},
+		error: function (data){
+			console.log(data);
+			return;
+		}
+	});
 }

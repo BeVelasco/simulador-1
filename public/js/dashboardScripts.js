@@ -289,7 +289,6 @@ function comenzarSimulador($iP)
 		},
 		error: function (data){
 			console.log(data);
-			return;
 		}
 	});
 }

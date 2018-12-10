@@ -67,14 +67,14 @@ More detail and specific examples can be found in the included HTML file.
 
 	function init(plot) {
 
-		var canvas = null,
-			target = null,
-			options = null,
-			maxRadius = null,
+		var canvas     = null,
+			target     = null,
+			options    = null,
+			maxRadius  = null,
 			centerLeft = null,
-			centerTop = null,
-			processed = false,
-			ctx = null;
+			centerTop  = null,
+			processed  = false,
+			ctx        = null;
 
 		// interactive variables
 

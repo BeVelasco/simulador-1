@@ -37,6 +37,6 @@ class Producto extends Model
      */
 	public function catum()
     {
-        return $this -> hasOne('App\Catum', 'id');
+        return $this -> hasOne('App\Catum', 'id', 'idcatnum1');
     }
 }

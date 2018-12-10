@@ -19,19 +19,19 @@ class DashboardController extends Controller
 	public function index()
 	{
 		/* Obtengo el id del usuario */
-		$idUser = Auth::user() -> id;
+		$idUser    = Auth::user() -> id;
 		/* Obtiene los productos registrados por el usuario */
-		$productos   = User::find($idUser) -> productos() ->paginate(10);
-		$totProd = User::find($idUser) -> productos() -> count();
+		$productos = User::find($idUser) -> productos() -> paginate(10);
+		$totProd   = User::find($idUser) -> productos() -> count();
 		/* Obtengo las UM ordenadas */
-		$um     = Catum::all()->sortBy('idesc');
+		$um        = Catum::all() -> sortBy('idesc');
 
 		/* Return the view withe some needed variables */
 		return view('home',[
 			'unidadMedidas' => $um,
 			'noProductos'   => $totProd,
 			'productos'     => $productos,
-			'noCatum'       => $um->count(),
+			'noCatum'       => $um -> count(),
 		]);
 	}
 
@@ -182,12 +182,16 @@ class DashboardController extends Controller
 		}
 
 		/* Verifica que el usuario esté logeado y coincida con el id que envió*/
-		$idProd    = $request -> iP;
-		$error = ['status' => 'error','msg' => 'Datos no coinciden.'];
+		$idProd   = $request -> iP;
+		$error    = ['status' => 'error','msg' => 'Datos no coinciden.'];
+		$producto = Producto::find($idProd);
+
 		if ( Auth::check() )
 		{
-			if ( Producto::find($idProd) -> id_user_r == Auth::user() -> id )
+			if (  $producto -> id_user_r == Auth::user() -> id )
 			{
+				/* Agrego a la sesión los datos del producto seleccionado */
+				session(['prodSeleccionado' => $producto]);
 				return response()->json([
 					'status' => 'success',
 					'msg'    => 'Correcto']);
@@ -201,3 +205,6 @@ class DashboardController extends Controller
 		}
 	}
 }
+/*return response()->json([
+					'status' => 'error',
+					'msg'    => $producto]);*/

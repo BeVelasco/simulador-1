@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('welcome');
 });
 
 Auth::routes();
@@ -28,11 +28,22 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::get('/simulador/inicio', 'SimuladorController@inicio') -> name('inicioSimulador');
 	Route::post('/simulador/getData', 'SimuladorController@getData') -> name('getDataSimulador');
 	Route::post('/simulador/calcularPrecioVenta', 'SimuladorController@calcularPrecioVenta') -> name('calcularPrecioVenta');
-	
+	Route::post('/simulador/siguiente','SimuladorController@siguiente') -> name('simSiguiente');
+
+	/* Rutas de pronostico de ventas */
+	Route::post('/simulador/regionObjetivo', 'PronosticoVentasController@regionObjetivo') -> name('regionObjetivo');
+	Route::post('/simulador/getSegmentacion', 'PronosticoVentasController@getSegmentacion') -> name('getSegmentacion');
+	Route::post('/simulador/getNivelSocioEco', 'PronosticoVentasController@getNivelSocioEco') -> name('getNivelSocioEco');
+	Route::post('/simulador/getMercDisp', 'PronosticoVentasController@getMercDisp') -> name('getMercadoDisponible');
+	Route::post('/simulador/getVista', 'PronosticoVentasController@getVista') -> name('getVista');
+	Route::post('/simulador/getProyeccion', 'PronosticoVentasController@getProyeccion') -> name('getProyeccion');
+	Route::post('/simulador/getMeses', 'PronosticoVentasController@getMeses') -> name('getMeses');
+
 	/* Rutas de la guía */
 	Route::post('guia', 'GuiaController@mostrarMensaje') -> name('guia');
 });
 Route::group(['middleware' => ['web']], function ()
 {
-	
+	Route::resource('/prueba','PruebaController');
+	Route::post('/grabar', 'PruebaController@store') -> name('grabarprueba');
 });

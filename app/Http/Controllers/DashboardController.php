@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Catum;
-use App\Producto;
-use App\User;
-use Auth;
+use App\Catum, App\Producto, App\User;
+
+use Auth, Session;
 
 class DashboardController extends Controller
 {
@@ -191,7 +190,7 @@ class DashboardController extends Controller
 			if (  $producto -> id_user_r == Auth::user() -> id )
 			{
 				/* Agrego a la sesión los datos del producto seleccionado */
-				session(['prodSeleccionado' => $producto]);
+				Session::put('prodSeleccionado', $producto);
 				return response()->json([
 					'status' => 'success',
 					'msg'    => 'Correcto']);

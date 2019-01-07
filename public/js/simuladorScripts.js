@@ -3,12 +3,13 @@
  * @author Emmanuel Hernández Díaz
  * ======================================================================
  */
-$(document).ready(function(){
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
+
+$(document).ready(function(){
 	$.ajax({
 		url     : '/simulador/getData',
 		type    : 'POST',
@@ -20,17 +21,14 @@ $(document).ready(function(){
 			{
 				/* Muestra jExcel con los datos recibidos */
 				pintaJexcel(data);
-
 				/* Formatea las celdas */
 				formateaCeldas();
-
 				/* Si ya se hizo el cálculo muestra los divs ocultos y el grafico */
 				if (data.datosCalculados == true)
 				{
 					muestraOcultos();
 					muestraGrafico(data.graphicData);
 				}
-
 			/* Si hubo algún error se muestra al usuario para su correción */
 			} else {
 				swal({
@@ -58,12 +56,6 @@ function calcularPrecioVenta()
 {
 	$(document).ready(function(){
 		if($("#formPrecioVenta")[0].checkValidity()) {
-			/* Agrego la cabecera para pasar el csrf */
-			$.ajaxSetup({
-				headers: {
-					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-				}
-			});
 			$.ajax({
 				url : '/simulador/calcularPrecioVenta',
 				type: 'POST',
@@ -192,6 +184,8 @@ function formateaCeldas(){
  */
 function actualizaDatos(data)
 {
+	console.log('precioVenta: ');
+	console.log(data.precioVenta);
 	document.getElementById('sumCI').innerHTML         = data.sumCI;
 	document.getElementById('recetaPara').innerHTML    = data.porcionpersona;
 	document.getElementById('costounitario').innerHTML = data.costoUnitario;
@@ -213,7 +207,6 @@ function muestraOcultos()
 
 /**=========================================================================
  * Función que pinta el jExcel con los datos recibidos desde el controlador
- * @author Emmanuel Hernández Díaz
  * =========================================================================
  */
 function pintaJexcel(data)
@@ -227,7 +220,39 @@ function pintaJexcel(data)
 		allowDeleteRow   : data.allowDeleteRow,
 		allowDeleteColumn: data.allowDeleteColumn,
 		/* Tipos de columnas enviados desde el controlador */
-		columns    : JSON.parse(data.columns),
+		columns          : JSON.parse(data.columns),
 
+	});
+}
+
+/**=========================================================================
+ * Función actualiza el siguiente paso en el simulador del usuario
+ * =========================================================================
+ */
+function siguiente(id)
+{
+	$(document).ready(function(){
+		var url = $('meta[name="urlNext"]').attr('content');
+		$.ajax({
+			url : url,
+			type: 'POST',
+			data: {
+				id: id,
+			},
+			dataType: 'JSON',
+			/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
+			success: function (data) { 
+				 $('.content').empty();
+				 $('.content').append(data);
+			},
+			/* Si existió algún otro tipo de error se muestra en la consola */
+			error: function(data) {
+				swal({
+					type : 'error',
+					title: 'Oops...',
+					text : 'Error, copie y muestre este código al administrador: ' + data.responseJSON.message,
+				});
+			}
+		});
 	});
 }

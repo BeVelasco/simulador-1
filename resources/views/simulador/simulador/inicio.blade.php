@@ -125,7 +125,7 @@
 			</div>
 			<div class="row">
 				<div class="sm-12 align-right" @if ( Session::get('datosCalculados') == false ) hidden @endif id="divBtnSiguiente">
-					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:siguiente()">
+					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:siguiente(2)">
 						<i class="material-icons">verified_user</i>
 						<span>{{ __('messages.siguiente') }}</span>
 					</button>

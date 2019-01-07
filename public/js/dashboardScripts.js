@@ -11,18 +11,16 @@
 =========================================================
 
 */
-
+$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
 /*Funcion para agregar unidad de medida*/
 function addUnidadMedida() {
 	/* Espero a que el documento esté completamente cargado */
 	$(document).ready(function(){
 		if($("#formUnidadMedida")[0].checkValidity()) {
-			/* Agrego la cabecera para pasar el csrf */
-			$.ajaxSetup({
-				headers: {
-					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-				}
-			});
 			/* Paso mediante ajax la descripcion insertada por el usuario */
 			$.ajax({
 				url: 'addUnidadMedida',
@@ -77,12 +75,6 @@ function addProducto() {
 		/* Espero a que el docuemnto esté completamente cargado */
 		$(document).ready(function(){
 			if($("#form-producto")[0].checkValidity()) {
-				/* Agrego el campo csrf a la cabecera de Ajax */
-				$.ajaxSetup({
-					headers: {
-						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-					}
-				});
 				/* Mando los datos introducidos por el usuario */
 				$.ajax({
 					url: 'addProducto',
@@ -180,12 +172,6 @@ function mostrarAlerta($tipo, $titulo, $mensaje, $msj) {
  
 function mostrarPopoverGuia($elemento, $paso) 
 {
-	/* Agrego el campo csrf a la cabecera de Ajax */
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
 	$.ajax({
 		url : 'guia',
 		type: 'POST',
@@ -265,11 +251,6 @@ function agregarProductoTable($num, $desc, $porcion, $idProd, $idUser, $url)
 
 function comenzarSimulador($iP)
 {
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
 	$.ajax({
 		url : 'inciarSimulador',
 		type: 'POST',

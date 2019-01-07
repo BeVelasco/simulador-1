@@ -4,8 +4,9 @@
 	<meta charset=UTF-8'>
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<!-- CSRF Token -->
-	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<meta name="app-name" content="{{ config('app.name') }}">
+	<meta name = "csrf-token" content = "{{ csrf_token() }}">
+	<meta name = "urlNext"    content = "{{ route('simSiguiente') }}">
+	<meta name = "app-name"   content = "{{ config('app.name') }}">
 
 	<title>{{ config('app.name', 'Simulador') }}</title>
 

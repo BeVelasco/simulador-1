@@ -15,13 +15,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Producto;
-use App\Catum;
-use App\USer;
-use Auth;
-use Session;
-use Lang;
-use Route;
+
+use App\Producto, App\Catum, App\User, App\Etapa;
+use Auth, View, Session, Lang, Route;
+
 
 class SimuladorController extends Controller
 {
@@ -70,7 +67,19 @@ class SimuladorController extends Controller
 			{
 				return redirect('/home');
 			} else {
-				return view('simulador.simulador.inicio');
+				/* Obtengo el avance que lleva el usuario para saber que vista mostrar 
+				 * default - Inicio
+				 * 1 - Pronostico de ventas
+				*/
+				$avance = obtenAvance(Auth::user() ->id, Session::get('prodSeleccionado')->id);
+				switch ($avance) {
+					case 1:
+						return view('simulador.simulador.pronosticoVentas');
+						break;
+					default:
+						return view('simulador.simulador.inicio');
+						break;
+				}
 			}
 		} else {
 			return view('auth.login');
@@ -81,8 +90,6 @@ class SimuladorController extends Controller
 	 * ==============================================================
 	 * Función para regresar el primer formato de jExcel, columnas, 
 	 * cabeceras y formato de filas.
-	 * 
-	 * @author Emmanuel Hernández Díaz
 	 * ==============================================================
 	*/
 	public function getData(Request $request)
@@ -216,6 +223,7 @@ class SimuladorController extends Controller
 		Session::put('datosCalculados', true);
 
 		$graphicData = $this -> getGraphicData($PBBD);
+
 		/* Regreso la respuesta con los datos para el jExcel */
 		return response() -> json([
 			'status'               => 'success',
@@ -252,5 +260,41 @@ class SimuladorController extends Controller
 			{"label":"'.Lang::get('messages.costoPV').'","data":'.$costoPrimoVenta.',"color":"#FFC107"  }
 		]';
 		return $graphicData;
+	}
+
+	public function siguiente(Request $request)
+	{
+		/* EL id indica que vista se va a dibujar*/
+		$id_siguiente = $request -> id;
+
+		if ( $id_siguiente == 2 ){
+			/* La segunda vista es el Pronostico de ventas*/
+			$view = View::make('simulador.simulador.pronosticoVentas');
+			if($request -> ajax()){
+				$sections        = $view->renderSections();
+				$id_producto     = Session::get('prodSeleccionado') -> id;
+				$id_user         = Auth::user() -> id;
+				$data            = Session::get('PBBDData');
+				$dataPrecioVenta = [
+					"totalCostosPrimos" => Session::get('sumCI'),
+					"costoUnitario"     => Session::get('costoUnitario'),
+					"precioVenta"       => Session::get('precioVenta'),
+				];
+				$dataPrecioVenta = json_encode($dataPrecioVenta);
+				$PBBD            = Session::get('PBBD');
+				$datosGuardados = guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta);
+
+				/* Verifico que no haya errores al guardar los datos del costeo */
+				if ( $datosGuardados == "true"){
+					/* Si no hay errores agrego la etapa como completa */
+					$etapa = terminarEtapa($id_user, $id_producto, 1);
+				} else {
+					return response() -> json(['status' => 'error', 'message' => $datosGuardados], 500);
+				}
+				return response() -> json($sections['content']); 
+			} else {
+				return $view;
+			} 
+		}
 	}
 }

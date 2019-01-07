@@ -30,10 +30,10 @@ class User extends Authenticatable
 	];
 
 	/**
-     * Obtiene los productos asociados al usuario.
-     */
+	 * Obtiene los productos asociados al usuario.
+	 */
 	public function productos()
-    {
-        return $this -> hasMany(Producto::class, 'id_user_r');
-    }
+	{
+		return $this -> hasMany(Producto::class, 'id_user_r');
+	}
 }

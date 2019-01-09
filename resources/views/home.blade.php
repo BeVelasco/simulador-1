@@ -1,4 +1,4 @@
-@extends('simulador.base')
+@extends('base')
 
 @section('content')
 <div class="container-fluid">

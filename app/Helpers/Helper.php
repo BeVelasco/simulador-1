@@ -81,7 +81,7 @@ function guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta){
 	} else { return "Datos erróneos"; }
 }
 
-/* Función que obtiene el precio de venta de un producto mediante su Id */
+/* Finción que obtiene el precio de venta de un producto mediante su Id */
 function obtenPrecioVenta($idProducto){
 	$dataPrecioVenta = Costeo::whereId_producto(4)->pluck('dataPrecioVenta');
 	return $dataPrecioVenta;
@@ -297,11 +297,7 @@ function guardaEstimDemanda($request){
             'variables.capAbaMerc'     => Lang::get('messages.CapAbaMerc'),
             'variables.uniConsPot'     => Lang::get('messages.uniConsPot'),
         ];
-        $messages = [
-            'required' => 'El valor :attribute es requerido',
-            'numeric'  => 'El valor de :attribute debe ser numérico',
-            'btween'   => 'El valor de :attribute debe estar entre 0.01 y 100',
-        ];
         
+        return $request -> variables["intUsarProd"];
     } else { return 'Datos erróneos'; }
 }

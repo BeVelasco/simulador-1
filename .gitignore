@@ -1,8 +1,8 @@
 /node_modules
 /public/hot
 /public/storage
+.env
 /storage/*.key
-/vendor
 /.idea
 /.vscode
 /nbproject

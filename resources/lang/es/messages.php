@@ -36,6 +36,7 @@
 	'precioVenta'      => 'Precio de venta',
 	'detPrecVentProd'  => 'Determinación del precio de venta del producto',
 	'siguiente'        => 'Siguiente',
+    'regresar'         => 'Regresar',
 	'regObj'           => 'Región ovjetivo',
 	'pronVen'          => 'Pronóstico de ventas',
 	'pobObj'           => 'Población objetivo',
@@ -125,4 +126,8 @@
 	'noNumerico'       => 'No es numérico',
 	'elValor'          => 'El valor',
 	'vistaNoExiste'    => 'La vista no existe',
+    
+    //Producto
+    'producto_editarboton'=>'Editar producto'
+    
 ];

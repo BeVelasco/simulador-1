@@ -32,8 +32,7 @@ function addUnidadMedida() {
 				/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
 				success: function (data) { 
 					/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
-					if (data['status'] == 'success')
-					{
+					if (data.status == 'success'){
 						swal({
 							type : 'success',
 							title: data.option + ' agregada con éxito',
@@ -59,14 +58,9 @@ function addUnidadMedida() {
 					}
 					
 				},
-				error: function(data) {
-					/* Si existió algún otro tipo de error se muestra en la consola */
-					console.log(data)
-				}
+				error: function(data) {	console.log(data); }
 			}); 
-		} else {
-			$("#formUnidadMedida")[0].reportValidity();
-		}
+		} else { $("#formUnidadMedida")[0].reportValidity(); }
 	}
 )};
 
@@ -88,8 +82,7 @@ function addProducto() {
 					/* Si no hay errores regresa SUCCESS, inclusi si existen errores de validación y/o de BD */
 					success: function (data) { 
 						/* Informa al usuario que el nuevo producto ha sido creado */
-						if (data['status'] == 'success')
-						{
+						if (data.status == 'success'){
 							swal({
 								type : 'success',
 								title: data.msg,
@@ -112,34 +105,25 @@ function addProducto() {
 							});
 						}
 					},
-					error: function(data) {
-						/* Si existió algún otro tipo de error se muestra en la consola */
-						console.log(data);
-					}
+					error: function(data) { console.log(data); }
 				}); 
 				}
-			else {
-				$("#form-producto")[0].reportValidity();
-			}
+			else { $("#form-producto")[0].reportValidity(); }
 		}
-	)};
+	)}
 
 /* =============================================================
  * Funcion para mostar alertas referentes a la guia (tutorial)
  * $tipo    String [success, error, warning, info]
  * $titulo  String [Titulo del mensate]
  * $mensaje String [Mensaje de la alerta]
- * 
- * @author Emmanuel Hernandez Diaz
- * 
- * 2018 - Integra Ideas Consultores
+ *
  * ============================================================= */
  
 function mostrarAlerta($tipo, $titulo, $mensaje, $msj) {
 	$(document).ready(function(){
 		/* Si falta algúna variable no hace nada */
-		if( ($tipo === undefined) || ($mensaje === undefined) || ($titulo === undefined) )
-		{
+		if( ($tipo === undefined) || ($mensaje === undefined) || ($titulo === undefined) ){
 			return;
 		} else {
 			/* Si las variables están completas muestra una alerta con los 
@@ -165,13 +149,9 @@ function mostrarAlerta($tipo, $titulo, $mensaje, $msj) {
  * $elemento String [Nombre del elemento HTML que contendrá el popover]
  * $paso     Integer [Número de paso, el mensaje se obtiene de la BD]
  *
- * @author Emmanuel Hernandez Diaz
- * 
- * 2018 - Integra Ideas Consultores
  * ============================================================= */
  
-function mostrarPopoverGuia($elemento, $paso) 
-{
+function mostrarPopoverGuia($elemento, $paso) {
 	$.ajax({
 		url : 'guia',
 		type: 'POST',
@@ -181,8 +161,7 @@ function mostrarPopoverGuia($elemento, $paso)
 		dataType: 'JSON',
 		/* Si no hay errores regresa SUCCESS, inclusive si existen errores de validación y/o de BD */
 		success: function (data) {
-			if (data.status == 'success')
-			{ 
+			if (data.status == 'success'){ 
 				/* Agrego el popover al elemento recibido junto con la descripcion del paso */
 				$($elemento).popover({
 					placement: 'auto',
@@ -209,15 +188,8 @@ function mostrarPopoverGuia($elemento, $paso)
  * realizar una determinada acción de la guía.
  *
  *$paso String [Nombre del elemento que contiene el popover]
- * 
- * @author Emmanuel Hernandez Diaz
- * 
- * 2018 - Integra Ideas Consultores
  * ============================================================= */
-function quitarPopover($paso)
-{
-	$($paso).popover('hide');
-}
+function quitarPopover($paso){ $($paso).popover('hide'); }
 
 /* =============================================================
  * Función para agregar el producto nuevo en el data table
@@ -228,18 +200,13 @@ function quitarPopover($paso)
  * $idProd  Integer [id del producto creado]
  * $idUSer  Integer [id del usuario]
  * 
- * @author Emmanuel Hernandez Diaz
- * 
- * 2018 - Integra Ideas Consultores
  * ============================================================= */
 function agregarProductoTable($num, $desc, $porcion, $idProd, $idUser, $url)
 {
 	/* Obtengo la tabla */
 	var table = document.getElementById("tablaProd");
-
 	/* Inserto una nueva fila */
 	var row = table.insertRow(0);
-
 	/* Agrego los datos recibidos */
 	row.insertCell(0).innerHTML = $num;
 	row.insertCell(1).innerHTML = $desc;
@@ -249,8 +216,8 @@ function agregarProductoTable($num, $desc, $porcion, $idProd, $idUser, $url)
 	row.insertCell(5).innerHTML = $url;
 }
 
-function comenzarSimulador($iP)
-{
+/* Funciónq ue inicia el simulador, obteniendo el avacne en el que se ecnuentra el usuario */
+function comenzarSimulador($iP){ 
 	$.ajax({
 		url : 'inciarSimulador',
 		type: 'POST',
@@ -258,18 +225,12 @@ function comenzarSimulador($iP)
 			iP: $iP,
 		},
 		dataType: 'JSON',
-		/* Si no hay errores regresa SUCCESS, inclusive si existen errores de validación y/o de BD */
 		success: function (data) {
-			if (data.status == 'success')
-			{ 
+			if (data.status == 'success'){ 
 				/* Redirijo al usuario a la página principal del simulador */
 				window.location.href = "/simulador/inicio";
-			} else {
-				console.log(data);
-			}
+			} else { console.log(data); }
 		},
-		error: function (data){
-			console.log(data);
-		}
+		error: function (data){ console.log(data); }
 	});
 }

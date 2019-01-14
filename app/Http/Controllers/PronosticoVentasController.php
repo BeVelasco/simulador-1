@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use Auth, View, Lang, Session;
+use Auth, View, Lang, Session, URL;
 class PronosticoVentasController extends Controller
 {
 	/* Mensajes personalizados cuando hay errores en la validación */
@@ -14,19 +14,8 @@ class PronosticoVentasController extends Controller
 				'between'  => 'El valor de :attribute debe estar entre 1 y 99',
 			];
 
-	private $meses = [
-		1  => 'Enero',
-		2  => 'Febrero',
-		3  => 'Marzo',
-		4  => 'Abril',
-		5  => 'Mayo',
-		6  => 'Junio',
-		7  => 'Julio',
-		8  => 'Agosto',
-		9  => 'Septiembre',
-		10 => 'Octubre',
-		11 => 'Noviembre',
-		12 => 'Diciembre',
+	private $meses = [1  => 'Enero',2  => 'Febrero',3  => 'Marzo',4  => 'Abril',5  => 'Mayo',6  => 'Junio',
+		7  => 'Julio',8  => 'Agosto',9  => 'Septiembre',10 => 'Octubre',11 => 'Noviembre',12 => 'Diciembre',
 	];
 
 	/**
@@ -127,17 +116,14 @@ class PronosticoVentasController extends Controller
 	 * @param  Request $request [JSON received data]
 	 * @return [Response]       [JSON]
 	 */
-	public function getVista(Request $request)
-	{
+	public function getVista(Request $request) {
 		/* Verifica que el usuario esté logeado */
-		if ( Auth::check() )
-		{
+		if ( Auth::check() ){
 			/* El nombre de la vista es usado en el <li> y el <panel> */
 			$vistaEnviada = $request -> vista;
 			$var = null;
 			/* Elijo que vista voy a renderizar*/
-			switch ( $vistaEnviada )
-			{
+			switch ( $vistaEnviada ){
 				case 'ProyVen':
 					$respuesta = guardaEstimDemanda($request);
 					/* Si la respuesta no es true, manda el mensaje del error */
@@ -160,6 +146,25 @@ class PronosticoVentasController extends Controller
 					/* Si todo es correcto rensderiza la siguiente vista */
 					$vista = obtenVista('simulador.segmentaciones.nse');
 				break;
+				case 'Inventario':
+					/* Guarda en la sesión la proyeccion de ventas */
+					$respuesta = guardaProyeccionVentas($request);
+					/* Si hubo algun error muetro un mensaje */
+					if ($respuesta != 'true') return response() -> json(["message" => $respuesta],400);
+					/* Guarda o Actualiza la segmentación del producto en la BD */
+					$respuesta = guardaPronosticoVenta();
+					/* Si hubo algun error muetro un mensaje */
+					if ($respuesta != 'true') return response() -> json(["message" => $respuesta],400);
+					$guardaEtapa = terminarEtapa(Auth::user()->id,Session::get('prodSeleccionado')->id, 2);
+					if ($guardaEtapa == "true"){
+						return response() -> json([
+							//'vista' => $vista,
+							'var'   => 'etapa3',
+							'ruta'  => URL::route('inventario'),
+						]);
+					} else { return response() -> json(["message" => $guardarEtapa], 401);}
+					
+				break;
 				default: 
 					return response() -> json(['message' => Lang::get('messages.vistaNoExiste')]);
 				break;
@@ -174,9 +179,7 @@ class PronosticoVentasController extends Controller
 				'panel' => $panel,
 				'var'   => $var,
 			], 200);
-		} else {
-			return response() -> json(['message' => 'No autorizado'], 403);
-		} 
+		} else { return response() -> json(['message' => 'No autorizado'], 403); } 
 	}
 
 	/**
@@ -188,8 +191,7 @@ class PronosticoVentasController extends Controller
 	public function getMeses(Request $request)
 	{
 		/* El usuario debe estar logeado para iniciar esta acción */
-		if ( Auth::check() )
-		{
+		if ( Auth::check() ){
 			/* Reglas para validar los datos recibidos */
 			$rules = [
 				'mesInicio' => ['required','numeric','between:1,12'],
@@ -208,11 +210,7 @@ class PronosticoVentasController extends Controller
 			$validate = \Validator::make($request -> all(), $rules, $mensajes);
 			$validate -> setAttributeNames($atributos);
 			/* Regreso error si la validación falló */
-			if ($validate -> fails())
-			{
-				return response()->json([
-					'message' => $validate -> errors() -> first()], 400);
-			}
+			if ($validate -> fails()){ return response()->json(['message' => $validate -> errors() -> first()], 400); }
 			$mesInicio = $request -> mesInicio;
 			for ( $i=1;$i<13;$i++ )
 			{
@@ -223,12 +221,10 @@ class PronosticoVentasController extends Controller
 		} else return response() -> json(['message' => 'No autorizado'], 403);
 	}
 
-	public function getProyeccion(Request $request)
-	{
+	public function getProyeccion(Request $request){
 		$idProducto = Session::get('prodSeleccionado');
 		/* El usuario debe estar logeado para iniciar esta acción */
-		if ( Auth::check() )
-		{
+		if ( Auth::check() ){
 			/* Reglas para validar los datos recibidos */
 			$rules = [
 				'variables' => ['required'],
@@ -244,11 +240,7 @@ class PronosticoVentasController extends Controller
 			$validate = \Validator::make($request -> all(), $rules, $this -> messages);
 			$validate -> setAttributeNames($atributos);
 			/* Muestro error si la validación falló */
-			if ($validate -> fails())
-			{
-				return response()->json([
-					'message' => $validate -> errors() -> first()], 400);
-			}
+			if ($validate -> fails()){ return response()->json(['message' => $validate -> errors() -> first()], 400); }
 			$variables = $request['variables'];
 			$creVen    = $request -> creVen;
 			$crePob    = $request -> crePob;
@@ -257,13 +249,12 @@ class PronosticoVentasController extends Controller
 			$proy[0]   = [
 				'1' => $variables['mercadoPotencial'] * 1,
 				'2' => $variables['mercadoDisponible'] * 1,
-				'3' => $variables['capCompUsar'] * 1,
-				'4' => $variables['capAbaMerc'] * 1,
+				'3' => $variables['mercadoEfectivo'] * 1,
+				'4' => $variables['mercadoObjetivo'] * 1,
 				'5' => $variables['consumoAnual'] * 1,
 			];
 			$precioVenta = obtenPrecioVenta($idProducto['id']);
-			for ( $i=1;$i<4;$i++ )
-			{
+			for ( $i=1;$i<4;$i++ ){
 				$proy[$i] = [
 					'1' => ( ( $proy[$i-1][1] * $crePob )/100) +  $proy[$i-1][1],
 					'2' => ( ( $proy[$i-1][2] * $crePob )/100) +  $proy[$i-1][2],
@@ -278,8 +269,6 @@ class PronosticoVentasController extends Controller
 				'meses'       => $this -> meses,
 				'precioVenta' => $precioVenta,
 			],200);
-		} else {
-			return response() -> json(['message' => 'No autorizado'], 403);
-		} 
+		} else { return response() -> json(['message' => 'No autorizado'], 403); } 
 	}
 }

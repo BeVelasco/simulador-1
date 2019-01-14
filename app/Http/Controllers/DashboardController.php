@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Catum, App\Producto, App\User;
+use App\Catum, App\Producto, App\User, App\Etapa, App\Pronostico;
 
 use Auth, Session;
 
@@ -155,53 +155,38 @@ class DashboardController extends Controller
 			'url'     => '<a href="javascript:comenzarSimulador('.$idProd.')"><button type="button" class="btn bg-black waves-effect waves-light">Comenzar simulador</button></a>'
 		]);
 	}
-
-	public function iniciarSimulador(Request $request)
-	{
+	/**
+	 * Función para comenzar el simulador dependiendo de la etapa en la que
+	 * el usario se quedó la última vez que utilizó el simulador
+	 */
+	public function iniciarSimulador(Request $request){
 		/* Mensajes personalizados cuando hay errores en la validación */
 		$messages = [
 			'exists'   => 'El :attribute no existe.',
 			'required' => 'El campo :attribute es obligatorio.',
 		];
-
 		/* Reglas de validacion */
-		$rules = [
-			'iP' => ['required','exists:productos,id'],
-		];
-
+		$rules = ['iP' => ['required','exists:productos,id'],];
 		/* Se validan los datos con las reglas y mensajes especificados */
 		$validate = \Validator::make($request->all(), $rules, $messages);
-
 		/* Si la validación falla, regreso solamente el primer error. */
-		if ($validate -> fails())
-		{
+		if ($validate -> fails()){
 			return response()->json([
 				'status' => 'error',
 				'msg'    => $validate->errors()->first()]);
 		}
-
 		/* Verifica que el usuario esté logeado y coincida con el id que envió*/
 		$idProd   = $request -> iP;
 		$error    = ['status' => 'error','msg' => 'Datos no coinciden.'];
 		$producto = Producto::find($idProd);
-
-		if ( Auth::check() )
-		{
-			if (  $producto -> id_user_r == Auth::user() -> id )
-			{
-				/* Agrego a la sesión los datos del producto seleccionado */
-				Session::put('prodSeleccionado', $producto);
-				return response()->json([
-					'status' => 'success',
-					'msg'    => 'Correcto']);
-			} else {
-				/* El producto no es de el*/
-				return response()->json([$error]);
-			}
-		} else { 
-			/* Usuario no está logeado o los datos no coinciden*/
-			return response()->json([$error]);
-		}
+		if (  $producto -> id_user_r == Auth::user() -> id ){
+			/* Agrego a la sesión los datos del producto seleccionado */
+			Session::put('prodSeleccionado', $producto);
+			return response()->json([
+				'status' => 'success',
+				'msg'    => 'Correcto'
+			]);
+		} else { return response()->json([$error]); }
 	}
 }
 /*return response()->json([

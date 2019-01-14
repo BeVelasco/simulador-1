@@ -35,7 +35,6 @@
 													step        = "1"
 													class       = "form-control classTxtNse"
 													placeholder = "Ej. 30%"
-													value       = 0
 													oninput     = "sumaNse(this, {{ $loop->iteration }})"
 													onkeypress  = "return checaEnter(event, 'EstimDem')"
 												></small>

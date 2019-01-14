@@ -1,8 +1,11 @@
 /**======================================================================
- * Función que carga jExcel con algunos datos por default y los formatea
+ * Script para la parte de segmenteacion del simulador
+ * 
  * @author Emmanuel Hernández Díaz
  * ======================================================================
  */
+	/* Variables de las sumas 0=Porcentaje, 1=Unidades, 2=Total, 3=Costo Unitario */
+	var sumasProyeccion = { 0: 0, 1: 0, 2: 0, 3: 0 };
 	var globales={
 		'poblacionNeta'    : 0,
 		'mercadoPotencial' : 0,
@@ -10,6 +13,7 @@
 		'capCompUsar'      : 0,
 		'capAbaMerc'       : 0,
 		'sinCalculo'       : $('meta[name="sinCalculo"]').attr('content'),
+		'porcentaje100'    : $('meta[name="porcentaje100"]').attr('content'),
 		'tasaCrecPob'      : 0,
 		'tasaCrecVen'      : 0,
 		'consumoAnual'     : 0,
@@ -25,45 +29,41 @@ $(document).ready(function(){
 	 * Acciones por defualt, solo en prubeas, eliminiar despues de terminar
 	 * =====================================================================
 	 */
-	var personas      = 6168000;
-	var porcObje      = 30;
-	var pobNeta       = (personas*porcObje)/100;
-	$('#txtEstado').focus();
-	$('#txtEstado').val('Puebla');
-	$('#txtPersonas').focus();
-	$('#txtPersonas').val(personas);
-	$('#txtCiudadObjetivo').val('Puebla');
-	$('#txtCiudadObjetivo').focus();
-	$('#txtPorcentaje').focus();
-	$('#txtPorcentaje').val(porcObje);
-	$('#txtPerCiuObj').focus();
-	$('#txtPerCiuObj').val(pobNeta);
+	var personas = 6168000;
+	var porcObje = 30;
+	var pobNeta  = (personas*porcObje)/100;
+
+	$('#txtPersonas').focus().val(personas);
+	$('#txtCiudadObjetivo').focus().val('Puebla');
+	$('#txtPorcentaje').focus().val(porcObje);
+	$('#txtPerCiuObj').focus().val(pobNeta);
 	$('#txtPerCiuObj').prop('disabled', true);
-	$('#txtEstado').focus();
+	$('#txtEstado').val('Puebla').focus();
 	/* =====================================================================
 	 * Finalizan acciones de prueba
 	 * =====================================================================
 	*/
 });
-
 /* Función para pasar a la siguiente vista presionando Enter*/
 function checaEnter(e,vista){
     var keynum;
     if ( window.event ) keynum = e.keyCode;
-    if ( e.which ) keynum = e.which;
-	if (vista == 1) { calcularRegionObjetivo(); } else { if (keynum === 13) { showVista(vista); } }
-}
+	if ( e.which ) keynum = e.which;
+	/* Validacion enter para la vista de Proyecciones */
+	if ((vista == "proyecciones") && (keynum === 13) && ($("#btnProVen").is(":enabled") == true)){
+	    hacerProyeccion();
+		return;
+	}
+	if ((vista == 1) && (keynum === 13) ) { calcularRegionObjetivo(); } else { if (keynum === 13) { showVista(vista); } } }
 
 /* Función que calcula el total de personas en la region objetivo, pregunta
  * que segmentación usará el usuario y la pinta en pantalla */
-function calcularRegionObjetivo()
-{
+function calcularRegionObjetivo(){
 	/* Bloqueo el acceso a los siguientes tabs cuando se calcula de nuevo y borro su contenido de todos los tabs */
 	$('.li-pronostico').each(function () { $(this).removeAttr("data-toggle"); });
 	$('.contenidosPronostico').each(function(){ $(this).empty(); });
 	/* Verifico que la forma sea válida */
-	if($("#formPV1")[0].checkValidity()) 
-	{
+	if($("#formPV1")[0].checkValidity()) {
 		var personas = $('#txtPersonas').val(), porcentaje = $('#txtPorcentaje').val();
 		if (personas > 0 && porcentaje > 0)
 		{
@@ -96,11 +96,7 @@ function calcularRegionObjetivo()
 							showCancelButton: false,
 							inputValidator  : (value) => {
 								return new Promise((resolve) => {
-									if (value === '') {
-										resolve(data.tieneSelVal);
-									} else {
-										resolve();
-									}
+									if (value === '') { resolve(data.tieneSelVal); } else { resolve(); }
 								});
 							}
 						});
@@ -112,15 +108,17 @@ function calcularRegionObjetivo()
 								dataType: 'JSON',
 								data:{ segmentacion: segmentacion },
 								success : function (data1){
-									$('#contenidoSegmentacion').empty();
-									$('#contenidoSegmentacion').append(data1.segmentacion);
+									$('#contenidoSegmentacion').html(data1.segmentacion); /////////////////////////////////
 									document.getElementById("liSegementacion").setAttribute("data-toggle", "tab");
 									document.getElementById("liSegementacion").click();
+									window.scrollTo(0, 0);
+									if (segmentacion == "pea") { setfocus($("#txtPorcPobEcoAct")); }
+									if (segmentacion == "spg") { setfocus($("#txtHombresEcoAct")); }
+									if (segmentacion == "spe") { setfocus($("#txtSpeHombres1")); }
+									window.scrollTo(0, 0);
 									globales.segmentacion = segmentacion;
 								},
-								error: function(data1){
-									muestraAlertaError(data1.responseJSON.message);
-								}
+								error: function(data1){ muestraAlertaError(data1.responseJSONresponseJSON.message); }
 							});
 						}
 					})()
@@ -144,11 +142,9 @@ function calcularRegionObjetivo()
 function sumaSeg(a, id)
 {
 	/* Impide que el valor sea menor a 0 y mayor a 100 */
-	if ( (a.value > 100) || (a.value<0) ) a.value = '';
-	/* Obtengo el porcentaje introducido por el usuario */
-	var porc = a.value;
+	if ((a.value > 100) || (a.value < 0)) a.value = a.value.slice(0, -1);
 	/* Obtengo el total de personas dependiendo del porcentaje */
-	var val  = Math.round((porc * $('#txtPerCiuObj').val())/100);
+	var val = Math.round((a.value * $('#txtPerCiuObj').val())/100);
 	/* Cambio el valor del input dependiendo su Id */
 	switch (id){
 		/* 1 y 2 PEC */
@@ -204,8 +200,7 @@ function sumaSeg(a, id)
 }
 
 /* Función que hace la suma de los niveles socioeconomicos*/
-function sumaNse(a, id)
-{
+function sumaNse(a, id) {
 	/* El valor debe estar entre 0 y 100, si no, se borra */ 
 	if ((a.value > 100) || (a.value < 0)) a.value = '';
 	var totalNse = Math.round((globales.poblacionNeta * a.value) / 100), sum = 0;
@@ -219,84 +214,6 @@ function sumaNse(a, id)
 	globales.mercadoPotencial = sum;
 	/* Pinto el total en el HTML */
 	$('#totalPoblacionNse').html(redondear(sum) + ' personas');
-}
-
-function calculaMercDisp(a)
-{
-	if ( (a.value > 100) || (a.value<0) ) 
-	{
-		a.value = null;
-		ocultaMuestraPaneles('oculta',1);
-		return;
-	}
-	globales.mercadoDisponible = (a.value * globales.mercadoPotencial) / 100;
-	$('#labelMercDisp').html(redondear(globales.mercadoDisponible) + ' ');
-	if (globales.mercadoDisponible > 0) { ocultaMuestraPaneles('muestra',1); } else { ocultaMuestraPaneles('oculta',1); }
-	calculaCapComProd(document.getElementById('txtCapComProd'));
-}
-
-function calculaCapComProd(a)
-{
-	var valor = a.value;
-	if ( (valor > 100) || (valor < 0) ) 
-	{
-		a.value = null;
-		ocultaMuestraPaneles('oculta',2);
-		return;
-	}
-	globales.capCompUsar = ( a.value * globales.mercadoDisponible ) / 100;
-	$('#labelCapComProd').html( redondear(globales.capCompUsar) + ' ');
-	if ( globales.capCompUsar > 0 ) { ocultaMuestraPaneles('muestra',2); } else { ocultaMuestraPaneles('oculta',2); }
-	calculaCapAbaMerc(document.getElementById('txtCapAbaMerc'));
-}
-
-function calculaCapAbaMerc(a)
-{
-	if ((a.value > 100) || (a.value < 0)) {a.value = null; return;}
-	globales.capAbaMerc = (a.value * globales.capCompUsar) / 100;
-	$('#labelCapAbaMerc').html(redondear(globales.capAbaMerc) + ' ');
-	if (globales.capAbaMerc > 0 ) { ocultaMuestraPaneles('muestra', 3); } else { ocultaMuestraPaneles('oculta', 3); }
-}
-
-function calcularConsumoAnual(a)
-{
-	if ( a.value < 0 ) { a.value = null; return; }
-	globales.consumoAnual = (a.value * globales.capAbaMerc);
-	$('#labeluniConsPot').html( redondear(globales.consumoAnual) + ' ');
-}
-/**
- * Función que muestra u oculta los paneles de la vista de Mercados
- * Var accion String ['muestra', 'oculta']
- * Var nivel  Integer
-*/
-function ocultaMuestraPaneles(accion, nivel){
-	switch (accion){
-		case 'oculta':
-			switch ( nivel ){
-				case 1:
-					$('#divCapComProd').css('visibility', 'hidden');
-					$('#divCapAbaMerc').css('visibility', 'hidden');
-					$('#txtCapComProd').val('0');
-					$('#labelCapComProd').html('0 ');
-				break;
-				case 2:
-					$('#divCapAbaMerc').css('visibility', 'hidden');
-					$('#divUniRazCon').css('visibility', 'hidden');
-				break;
-				case 3:
-					$('#divUniRazCon').css('visibility', 'hidden');
-				break;
-			}
-			$('#labelCapAbaMerc').html('0 ');
-			$('#txtCapAbaMerc').val('0');
-		break;
-
-		case 'muestra':
-			if (nivel == 1) {$('#divCapComProd').css('visibility', 'visible');}
-			if (nivel == 2) {$('#divCapAbaMerc').css('visibility', 'visible');}
-			if (nivel == 3) {$('#divUniRazCon').css('visibility', 'visible');}
-		break;
-	}
 }
 
 function showVista(vista) {
@@ -319,7 +236,7 @@ function showVista(vista) {
 			});
 			variables = {
 				nse : nse,
-			}
+			};
 		break;
 		case 'NivelSocioEco':
 			if (globales.poblacionNeta <= 0){ muestraAlertaError(globales.sinCalculo); return; }
@@ -352,9 +269,16 @@ function showVista(vista) {
 				break;
 			}
 		break;
+		case 'Inventario' :
+			if (sumasProyeccion[0] != 100) { muestraAlertaError(globales.porcentaje100); return; }
+			variables = {
+				tasaCreVen: Number($("#txtTasaCreVen").val()),
+				tasaCrePob: Number($("#txtTasaCrePob").val()),
+				uniVenAnu : sumasProyeccion[1],
+			};
+		break;
 		default: return;
 	}
-
 	$.ajax({
 		url     : '/simulador/getVista',
 		type    : 'POST',
@@ -365,11 +289,17 @@ function showVista(vista) {
 			seg      : globales.segmentacion,
 		},
 		success : function (data) {
+			if (data.var == "etapa3"){
+				document.location.replace(data.ruta);
+				return;
+			}
 			document.getElementById(data.li).setAttribute("data-toggle", "tab");
 			document.getElementById(data.li).click();
-			$(data.panel).empty();
-			$(data.panel).append(data.vista);
+			$(data.panel).html(data.vista);
 			if (vista == 'ProyVen') llenaVistaProyVent(data.var);
+			if (vista == 'NivelSocioEco') setfocus($("#txtNse1"));
+			if (vista == "EstimDem") setfocus($("#txtIntProd"));
+			if (vista == "ProyVen") setfocus($("#txtTasaCreVen"));
 		},
 		error: function (data){ muestraAlertaError(data.responseJSON.message); }
 	});
@@ -392,10 +322,11 @@ function llenaVistaProyVent(year){
 
 function calcularProyVen(a){
 	if ( a.val <= 0 ) a.value = 0;
-	globales.tasaCrecPob = $('#txttasaCrePob').value;
-	globales.tasaCrecVen = $('#txttasaCreVen').value;
+	globales.tasaCrecPob = $('#txtTasaCrePob').value;
+	globales.tasaCrecVen = $('#txtTasaCreVen').value;
 }
 
+/* Valida los inputs de la vista Proyeccion Venta */
 function validarInput(input){
 	if( $('#'+input.id)[0].checkValidity() ) {
 		globales[input.id] = 1;
@@ -405,7 +336,7 @@ function validarInput(input){
 		$('#btnProVen').attr('disabled','disabled');
 		return;
 	}
-	valido = globales.txttasaCreVen + globales.txttasaCrePob;
+	valido = globales.txtTasaCreVen + globales.txtTasaCrePob;
 	if (valido == 2) $('#btnProVen').removeAttr('disabled');	
 }
 
@@ -416,8 +347,8 @@ function hacerProyeccion()
 		type    : 'POST',
 		dataType: 'JSON',
 		data    : {
-			creVen   : $('#txttasaCreVen').val(),
-			crePob   : $('#txttasaCrePob').val(),
+			creVen   : $('#txtTasaCreVen').val(),
+			crePob   : $('#txtTasaCrePob').val(),
 			variables: globales,
 		},
 		success : function (data) {
@@ -425,11 +356,11 @@ function hacerProyeccion()
 			$('#spanMercPot1').html(redondear(data.var[0][1]));
 			for ( i=1;i<5;i++ )
 			{
-				$('#spanMercPot'+i).html( redondear(data.var[i-1][1]) );
-				$('#spanMercDisp'+i).html( redondear(data.var[i-1][2]) );
-				$('#spanMercEfec'+i).html( redondear(data.var[i-1][3]) );
-				$('#spanMercObje'+i).html( redondear(data.var[i-1][4]) );
-				$('#spanConsAnu'+i).html( redondear(data.var[i-1][5]) );
+				$('#spanMercPot'+i).html(redondear(data.var[i-1][1]));
+				$('#spanMercDisp'+i).html(redondear(data.var[i-1][2]));
+				$('#spanMercEfec'+i).html(redondear(data.var[i-1][3]));
+				$('#spanMercObje'+i).html(redondear(data.var[i-1][4]));
+				$('#spanConsAnu'+i).html(redondear(data.var[i-1][5]));
 			}
 			var anio = parseInt(data.year);
 			$('#spanYear1').html(anio);
@@ -477,14 +408,12 @@ async function calcVentasAn1 () {
 	});
 }
 
-function sumaVentasMensuales()
-{
+function sumaVentasMensuales(){
 	/* Variable para la suma de los inputs y forzar 2 decimales*/
 	var estilo = {minimumFractionDigits: 2,maximumFractionDigits: 2};
-	/* Variables de las sumas 0=Porcentaje, 1=Unidades, 2=Totla, 3=Costo Unitario */
-	var sumas = {0:0,1:0,2:0,3:0};
+	sumasProyeccion = {0: 0,1: 0,2: 0,3: 0};
 	/* Si no tiene valor no hace nada, si tiene algo lo suma */	
-	$(".classInputPorcentaje").each(function() { if ($(this).val() != '') sumas[0] += parseFloat($(this).val()); });
+	$(".classInputPorcentaje").each(function() { if ($(this).val() != '') sumasProyeccion[0] += parseFloat($(this).val()); });
 
 	$(".spanUnidad").each(function(index) {
 		i2 = index+1;
@@ -500,21 +429,102 @@ function sumaVentasMensuales()
 		globales.costoUnitario[i2] = globales.precioVenta.costoUnitario.replace('$ ', '') * parseFloat($("#spanUnidad" + (i2)).text());
 		$('#spanCostoUnitario' + i2).html('$ ' + globales.costoUnitario[index + 1].toLocaleString('en', estilo));
 		/* Obtengo las sumas para mostrarlas al final de la tabla */
-		if (globales.unidades[i2] != '') sumas[1]      += parseFloat(globales.unidades[i2]);
-		if (globales.total[i2] != '') sumas[2]         += parseFloat(globales.total[i2]);
-		if (globales.costoUnitario[i2] != '') sumas[3] += parseFloat(globales.costoUnitario[i2]);
+		if (globales.unidades[i2] != '') sumasProyeccion[1]      += parseFloat(globales.unidades[i2]);
+		if (globales.total[i2] != '') sumasProyeccion[2]         += parseFloat(globales.total[i2]);
+		if (globales.costoUnitario[i2] != '') sumasProyeccion[3] += parseFloat(globales.costoUnitario[i2]);
 	});
 	/* Si la suma sobrepasa el 100% -> rojo, si no -> negro*/
-	if ( (sumas[0] > 100) || (sumas[0]<100) ){color = "red";} else { color = "#4CAF50";}
+	if ( (sumasProyeccion[0] > 100) || (sumasProyeccion[0]<100) ){color = "red";} else { color = "#4CAF50";}
 	/* Se applica el estilo */
 	$(".claseSuma").each(function(ind){
 		$(this).css("color", color);
-		$(this).empty();$(this);
-		$(this).append(sumas[ind].toLocaleString('en', estilo));
+		$(this).html(sumasProyeccion[ind].toLocaleString('en', estilo));
 	});
 }
 /* Funcion que redondea un número */
 function redondear(num){
 	num = Intl.NumberFormat().format(Math.round(num));
 	return num;
+}
+
+/* Función que pone el foco en el input enviado */
+function setfocus(item) { setTimeout(function () { item.focus(); }, 250); }
+
+/* Función que calcula todos los mercados y oculta/muestra los paneles siguientes */
+function calcularMercados(){
+	var mercados = {
+		"mercadoDisponible": $("#txtIntProd").val(),
+		"mercadoEfectivo"  : $("#txtCapComProd").val(),
+		"mercadoObjetivo"  : $("#txtCapAbaMerc").val(),
+		"consumoAnual"     : $("#txtuniConsPot").val(),
+	};
+	/* Verifico que el valor introducido esté entre 0 y 100 */
+	if ((mercados.mercadoDisponible > 100) || (mercados.mercadoDisponible < 0)){
+		/* Elimino el último valor escrito por el usuario */
+		$("#txtIntProd").val($("#txtIntProd").val().slice(0, -1));
+	} else {
+		/* Calculo, guardo y pinto el Mercado Disponible */
+		mercados.mercadoDisponible = ($("#txtIntProd").val() * globales.mercadoPotencial)/100;
+		globales.mercadoDisponible = mercados.mercadoDisponible;
+		$("#labelMercDisp").html(redondear(mercados.mercadoDisponible )+' ');
+		/* Muestro u oculto los siguientes panels dependiendo del resultado */
+		if (mercados.mercadoDisponible <= 0) {
+			/* Oculto los paneles siguientes */
+			$('#divCapComProd').css('visibility', 'hidden');
+			$('#divCapAbaMerc').css('visibility', 'hidden');
+			$('#divUniRazCon').css('visibility', 'hidden');
+			return;
+		} else {
+			/* Muestro el segundo panel */
+			$('#divCapComProd').css('visibility', 'visible');
+		}
+		/* Verifico que el valor introducido esté entre 0 y 100 */
+		if ((mercados.mercadoEfectivo > 100) || (mercados.mercadoEfectivo < 0)) {
+			/* Elimino el último valor escrito por el usuario */
+			$("#txtCapComProd").val($("#txtCapComProd").val().slice(0,-1));
+		} else {
+		/* Calculo, guardo y pinto el Mercado Efectivo */
+			mercados.mercadoEfectivo = ($("#txtCapComProd").val() * globales.mercadoDisponible) / 100;
+			globales.mercadoEfectivo = mercados.mercadoEfectivo;
+			$("#labelCapComProd").html(redondear(mercados.mercadoEfectivo) + ' ');
+		}
+		/* Muestro u oculto los siguientes paneles dependiendo del resultado */
+		if (mercados.mercadoEfectivo <= 0) {
+			/* Oculto los paneles siguientes */
+			$('#divCapAbaMerc').css('visibility', 'hidden');
+			$('#divUniRazCon').css('visibility', 'hidden');
+			return;
+		} else {
+			/* Muestro el tercer panel */
+			$('#divCapAbaMerc').css('visibility', 'visible');
+		}
+		/* Verifico que el valor introducido esté entre 0 y 100 */
+		if ((mercados.mercadoObjetivo > 100) || (mercados.mercadoObjetivo < 0)) {
+			/* Elimino el último valor escrito por el usuario */
+			$("#txtCapAbaMerc").val($("#txtCapAbaMerc").val().slice(0, -1));
+		} else {
+			/* Calculo, guardo y pinto el Mercado Efectivo */
+			mercados.mercadoObjetivo = ($("#txtCapAbaMerc").val() * globales.mercadoEfectivo) / 100;
+			globales.mercadoObjetivo = mercados.mercadoObjetivo;
+			$("#labelCapAbaMerc").html(redondear(mercados.mercadoObjetivo) + ' ');
+		}
+		/* Muestro u oculto los siguientes paneles dependiendo del resultado */
+		if (mercados.mercadoObjetivo <= 0) {
+		    /* Oculto los paneles siguientes */
+			$('#divUniRazCon').css('visibility', 'hidden');
+		    return;
+		} else {
+			/* Muestro el cuarto panel */
+			$('#divUniRazCon').css('visibility', 'visible');
+		}
+
+		if (mercados.consumoAnual < 0) {
+			$("#txtuniConsPot").val($("#txtuniConsPot").val().slice(0, -1));
+		} else {
+			/* Calculo, guardo y pinto el Consumo Anual */
+			mercados.consumoAnual = mercados.mercadoObjetivo * mercados.consumoAnual;
+			globales.consumoAnual = mercados.consumoAnual;
+			$("#labeluniConsPot").html(redondear(mercados.consumoAnual) + ' ');
+		}
+	}
 }

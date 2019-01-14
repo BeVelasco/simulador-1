@@ -1,4 +1,4 @@
-@extends('simulador.base')
+@extends('base')
 
 @section('assets')
 	<link href="{{ asset('css/jExcel/jquery.jcalendar.css') }}" rel="stylesheet">

@@ -81,7 +81,7 @@ function guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta){
 	} else { return "Datos erróneos"; }
 }
 
-/* Función que obtiene el precio de venta de un producto mediante su Id */
+/* Finción que obtiene el precio de venta de un producto mediante su Id */
 function obtenPrecioVenta($idProducto){
 	$dataPrecioVenta = Costeo::whereId_producto(4)->pluck('dataPrecioVenta');
 	return $dataPrecioVenta;
@@ -339,6 +339,8 @@ function guardaEstimDemanda($request){
         if (!is_null(Session::get('estimacionDemanda'))) Session::forget('estimacionDemanda');
         Session::put('estimacionDemanda', $estimacionDemanda);
         return "true";
+        
+        return $request -> variables["intUsarProd"];
     } else { return 'Datos erróneos'; }
 }
 

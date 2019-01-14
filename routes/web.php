@@ -20,6 +20,7 @@ Auth::routes();
 Route::group(['middleware' => ['auth']], function() {
 	/* Rutas del dashboard */
 	Route::get('/home', 'DashboardController@index') -> name('home');
+    Route::get('/dashboard', 'DashboardController@dashboard') -> name('dashboard');
 	Route::post('addUnidadMedida', 'DashboardController@addUnidadMedida') -> name('addUnidadMedida');
 	Route::post('addProducto', 'DashboardController@addProducto') -> name('addProducto');
 	Route::post('inciarSimulador', 'DashboardController@iniciarSimulador') -> name('iniciarSimulador');
@@ -38,6 +39,7 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::post('/simulador/getVista', 'PronosticoVentasController@getVista') -> name('getVista');
 	Route::post('/simulador/getProyeccion', 'PronosticoVentasController@getProyeccion') -> name('getProyeccion');
 	Route::post('/simulador/getMeses', 'PronosticoVentasController@getMeses') -> name('getMeses');
+
 
 	/* Rutas de Inventario */
 	Route::get('/simulador/inventario','InventarioController@index') -> name('inventario');
@@ -64,6 +66,23 @@ Route::group(['middleware' => ['auth']], function() {
 
 	/* Rutas de la guía */
 	Route::post('guia', 'GuiaController@mostrarMensaje') -> name('guia');
+    
+    /* Rutas del mensajero*/
+    Route::get('/mensajero', function () {
+		return view('/simulador/mensajero/mensajero');
+	});
+    Route::post('/mensajero/get_datos', 'MensajeroController@get_datos') -> name('get_datos');
+    Route::post('/mensajero/addMensaje', 'MensajeroController@addMensaje') -> name('addMensaje');
+    
+    /* Rutas del Producto*/
+    Route::get('/productomenu', 'ProductoController@index') -> name('productomenu');
+    Route::post('/producto/editarProducto', 'ProductoController@editarProducto') -> name('editarProducto');
+    Route::get('/producto/editarInicio', function () {
+		return view('/simulador/producto/producto');
+	});
+    
+    Route::post('/producto/get_producto', 'ProductoController@get_producto') -> name('get_producto');
+    
 });
 Route::group(['middleware' => ['web']], function ()
 {

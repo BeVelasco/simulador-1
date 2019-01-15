@@ -31,11 +31,13 @@
 										</td>
 										
 										<td>
-										<a href="javascript:editarProducto('{{ $producto->id }}');">
-												<button type="button" class="btn bg-black waves-effect waves-light">
-													{{ __('messages.producto_editarboton') }}
-												</button>
-											</a>
+                                            <div class="dropdown">
+                                                <a href="#" data-toggle="dropdown" class="btn bg-black waves-effect waves-light dropdown-toggle">Ir a ...<b class="caret"></b></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/producto/editarProducto','/producto/editarInicio');">{{ __('messages.producto_editarboton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/producto/editarProducto','/tkt/editarInicio');">{{ __('messages.producto_tktboton') }}</a></li>
+                                                </ul>
+                                            </div>
 										</td>
 									</tr>
 								@endforeach

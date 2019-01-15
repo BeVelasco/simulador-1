@@ -8161,3 +8161,12 @@ html.ie11 .bs-searchbox .form-control {
 .userbox .dropdown-menu {
     border-radius: 4px;
 }
+
+/*** toolbar form****/
+
+ul.toolbar-form li
+{
+   list-style-type: none;
+   display: inline;
+   padding-right: 5px;
+}

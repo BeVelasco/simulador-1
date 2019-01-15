@@ -21,10 +21,10 @@ $.ajaxSetup({
 	});
 
 
-function editarProducto($id)
+function linkmenu($id,$url,$href)
 {
 	$.ajax({
-		url : '/producto/editarProducto',
+		url : $url,
 		type: 'POST',
 		data: {
 			id: $id,
@@ -35,7 +35,7 @@ function editarProducto($id)
 			if (data.status == 'success')
 			{ 
 				/* Redirijo al usuario a la página principal del simulador */
-				window.location.href = "/producto/editarInicio";
+				window.location.href = $href;
 			} else {
 				console.log(data);
 			}

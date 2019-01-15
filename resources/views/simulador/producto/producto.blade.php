@@ -20,14 +20,26 @@
 		</div>
 		<div class="body">
             <div class="row">
-				<div class="sm-12 align-right" id="divBtnSiguiente">
-					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:regresar();">
-						<i class="material-icons">arrow_back</i>
-						<span>{{ __('messages.regresar') }}</span>
-					</button>
-					<br />
+				<div class="sm-8 align-right" id="divBtnSiguiente">
+                    <ul class="toolbar-form">
+                        <li>
+            				<button type="button" class="btn bg-blue waves-effect" onclick="javascript:Guardar();">
+        						<i class="material-icons">save</i>
+        						<span>{{ __('messages.guardar') }}</span>
+        					</button>
+            			</li>
+           				<li>
+        					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:regresar();">
+        						<i class="material-icons">arrow_back</i>
+        						<span>{{ __('messages.regresar') }}</span>
+        					</button>
+        				</li>
+        			</ul>
 				</div>
 			</div>
+            <div class="row">
+                &nbsp;
+            </div>
             <div class="row">
                 <div class="sm-12">            
 			         <div id="mytable"></div>

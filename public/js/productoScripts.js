@@ -45,8 +45,46 @@ $(document).ready(function(){
 	});
 });
 
-
-
+/**======================================================================
+ * Función que formatea el como se muestran las etiquetas del gráfico
+ * @author Emmanuel Hernández Díaz
+ * ======================================================================
+ */
+function Guardar(){
+    datos=LeerExcel()
+	$.ajax({
+		url     : '/producto/set_producto',
+        data    :{datos:datos},
+		type    : 'POST',
+		dataType: 'JSON',
+		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
+		success : function (data) { 
+		  
+			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
+			if (data['status'] == 'success')
+			{
+				swal({
+					type : 'success',
+					title: 'Mensaje',
+					text : data.msg,
+				});
+                
+			/* Si hubo algún error se muestra al usuario para su correción */
+			} else {
+				swal({
+					type : 'error',
+					title: 'Oops...',
+					text : data.msg,
+				});
+			}	
+		},
+		error: function(data) {
+			/* Si existió algún otro tipo de error se muestra en la consola */
+			console.log(data)
+		}
+	});
+    
+}
 
 /**======================================================================
  * Función que formatea el como se muestran las etiquetas del gráfico
@@ -150,6 +188,26 @@ function pintaJexcel(data)
 		],
 
 	});
+}
+
+/**=========================================================================
+ * Leer excel
+ * =========================================================================
+ */
+ 
+ function LeerExcel(){
+
+    var data=$('#mytable').jexcel('getData');
+    for(i=0;i<data.length;i++){
+        for(j=0;j<data[i].length;j++){
+            if(data[i][j].indexOf("=")==0)
+                data[i][j]=$('#mytable input[value="'+data[i][j]+'"]').parent("td").text();
+            else
+                data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
+        }    
+    }
+        
+    return data;
 }
 
 /**=========================================================================

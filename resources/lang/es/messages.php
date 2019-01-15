@@ -126,8 +126,11 @@
 	'noNumerico'       => 'No es numérico',
 	'elValor'          => 'El valor',
 	'vistaNoExiste'    => 'La vista no existe',
+    'guardar'          => 'Guardar',  
     
     //Producto
-    'producto_editarboton'=>'Editar producto'
+    'producto_editarboton'=>'Editar producto',
+    'producto_tktboton'=>'Takt time'
+    
     
 ];

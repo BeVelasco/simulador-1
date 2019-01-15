@@ -4,7 +4,7 @@
             <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
             <a href="javascript:void(0);" class=""></a>
 			<a class="bars toggle"><span></span></a>
-            <a class="navbar-brand" href="/dashboard">SIMULADOR v1.0</a>
+            <a class="navbar-brand" href="javascript:void(0);">SIMULADOR v1.0</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
 			<div class="header-right">
@@ -13,7 +13,7 @@
 					<!--<li><a href="javascript:void(0);" class="js-search" data-close="true"><i class="material-icons">search</i></a></li>-->
 					<!-- #END# Call Search -->
 					<!-- Notifications -->
-					<li class="dropdown">
+					<!--<li class="dropdown">
 						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button">
 							<i class="material-icons">notifications</i>
 							<span class="label-count">7</span>
@@ -119,7 +119,7 @@
 								<a href="javascript:void(0);">View All Notifications</a>
 							</li>
 						</ul>
-					</li>
+					</li>-->
 					<!-- #END# Notifications -->
 					<!-- Tasks -->
 					<li class="dropdown">
@@ -151,10 +151,10 @@
 						<ul class="list-unstyled">
 							<li class="divider"></li>
 							<li>
-								<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> My Profile</a>
+								<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> Mi perfil</a>
 							</li>
 							<li>
-								<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Lock Screen</a>
+								<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Bloquear pantalla</a>
 							</li>
 							<li>
 								<a

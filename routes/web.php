@@ -18,6 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function() {
+    /*Panel de control*/
+    /* Rutas del mensajero*/
+    Route::get('/inicio', function () {
+		return view('/simulador/dashboard/inicio');
+	});
+    
 	/* Rutas del dashboard */
 	Route::get('/home', 'DashboardController@index') -> name('home');
     Route::get('/dashboard', 'DashboardController@dashboard') -> name('dashboard');
@@ -26,7 +32,14 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::post('inciarSimulador', 'DashboardController@iniciarSimulador') -> name('iniciarSimulador');
 
 	/* Rutas del simulador */
+    //Tablero
 	Route::get('/simulador/inicio', 'SimuladorController@inicio') -> name('inicioSimulador');
+    //Tutoriales
+    Route::get('/simulador/tutoriales', function () {
+		return view('/simulador/tutoriales/inicio');
+	});
+    
+    
 	Route::post('/simulador/getData', 'SimuladorController@getData') -> name('getDataSimulador');
 	Route::post('/simulador/calcularPrecioVenta', 'SimuladorController@calcularPrecioVenta') -> name('calcularPrecioVenta');
 	Route::post('/simulador/siguiente','SimuladorController@siguiente') -> name('simSiguiente');
@@ -53,11 +66,17 @@ Route::group(['middleware' => ['auth']], function() {
     /* Rutas del Producto*/
     Route::get('/productomenu', 'ProductoController@index') -> name('productomenu');
     Route::post('/producto/editarProducto', 'ProductoController@editarProducto') -> name('editarProducto');
-    Route::get('/producto/editarInicio', function () {
-		return view('/simulador/producto/producto');
-	});
-    
+    Route::get('/producto/editarInicio','ProductoController@editarInicio') -> name('editarInicio');
     Route::post('/producto/get_producto', 'ProductoController@get_producto') -> name('get_producto');
+    Route::post('/producto/set_producto', 'ProductoController@set_producto') -> name('set_producto');
+    
+    /* Rutas del TKT*/
+    Route::get('/tkt/editarInicio', 'TktController@editarInicio') -> name('editarInicio');
+    Route::post('/tkt/get_formulacion', 'TktController@get_formulacion') -> name('get_formulacion');
+    
+    /* Rutas de Nomina*/
+    Route::get('/nomina/editarInicio', 'NominaController@editarInicio') -> name('editarInicio');
+    Route::post('/nomina/get_nomina', 'NominaController@get_nomina') -> name('get_nomina');
     
 });
 Route::group(['middleware' => ['web']], function ()

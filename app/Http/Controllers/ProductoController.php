@@ -16,7 +16,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Producto, App\Catum, App\User, App\Etapa;
+use App\Producto, App\Catum, App\User, App\Etapa, App\Productosinsumo;
 use Auth, View, Session, Lang, Route;
 
 
@@ -67,6 +67,8 @@ class ProductoController extends Controller
             { "type": "numeric"},
             { "type": "numeric" }
 		]';
+    
+                        
     public function index()
 	{
 		/* Obtengo el id del usuario */
@@ -91,9 +93,10 @@ class ProductoController extends Controller
             'noProductos'   => count($res),
 		]);
 	}
-	/** 
+    
+    /** 
 	 * ==================================================================== 
-	 * Función para mostrar la vista de editar producto
+	 * Función para seleccionar el producto y ponerlo en la sesión
      * $request->id=>producto
 	 * 
 	 * @author Jaime Vázquez
@@ -146,8 +149,33 @@ class ProductoController extends Controller
 			return response()->json([$error]);
 		}
 	}
-
-	/** 
+    
+    /** 
+	 * ==================================================================== 
+	 * Función para verificar que se tenga seleccionado el producto al inicio de la edición
+	 * 
+	 * @author Jaime Vázquez
+	 * ====================================================================
+	*/
+	public function editarInicio(Request $request)
+	{
+		/* El usuario debe estar loggeado */
+		if ( Auth::check() )
+		{
+			
+			/* El usuario debe tener un producto seleccionado */
+			if ( Session::get('prodSeleccionado') == null )
+			{
+				return redirect('/productomenu');
+			} else {
+			     return view('/simulador/producto/producto');
+			}
+		} else {
+			return view('auth.login');
+		}
+	}
+    
+    /** 
 	 * ==============================================================
 	 * Función para regresar el primer formato de jExcel, columnas, 
 	 * cabeceras y formato de filas.
@@ -211,165 +239,49 @@ class ProductoController extends Controller
 
 		]);
 	}
-
-	/** 
+    
+    /** 
 	 * ==============================================================
-	 * Función para calcular el precio de venta de cada ingrediente
-	 * que el usuario capturó en jExcel.
-	 * 
-	 * @author Jaime Vázquez
+	 * Guardar datos
 	 * ==============================================================
 	*/
-	public function calcularPrecioVenta(Request $request)
+	public function set_producto(Request $request)
 	{
-		/* Mensajes personalizados cuando hay errores en la validación */
-		$messages = [
-			'required' => 'El campo es obligatorio',
-			'numeric'  => 'El valor debe ser numérico',
-			'between'  => 'El valor de PBBD debe estar entre 1 y 99',
-		];
+        /* Obtengo el id del usuario */
+		$idUser    = Auth::user() -> id;
 
-		/* Reglas de validacion */
-		$rules = [
-			'jExcel' => ['required'],
-			'PBBD'   => ['required','numeric','between:1,99']
-		];
+        /* Inserto la variable en la sesion, puede ser true o false*/
+		$id_producto=Session::get('prodSeleccionado')->id;
+        
+        /* Se agregan los valores enviados por el usuario y se guarda en la BD */
+        $d=$request->datos; 
+        for($i=0;$i<count($d);$i++){
+            if($d[$i][0]!="TOTALES"){
+                $pi = Productosinsumo::find($d[$i][0]);
+                $pi["id"]=$d[$i][0];    
+                $pi["id_productos"]=$id_producto;
+                $pi["insumo"]=$d[$i][1];
+                $pi["unidad"]=$d[$i][2];
+                $pi["piezas"]=$d[$i][3];
+                $pi["um"]=$d[$i][4];
+                $pi["costo"]=$d[$i][5];
+                $pi["piezasxunidad"]=$d[$i][6];
+                $pi["unidadesconesapieza"]=$d[$i][7];
+                $pi["prodx1"]=$d[$i][8];
+                $pi["prodx2"]=$d[$i][9];
+                $pi["prodx3"]=$d[$i][10];
+                $pi["totalproduccion"]=$d[$i][11];
+                $pi["piezaser"]=$d[$i][12];
+                //$pi["ventaser"]=$d[$i][13];
+                $pi["costoser"]=$d[$i][13];
+                $pi["totalser"]=$d[$i][14];
+                $pi["total"]=$d[$i][15];
+                $pi["tiempoensurtir"]=($d[$i][16]==null?0:$d[$i][16]);
+                
+                $pi -> save();
+            }
+        }
 
-		/* Se validan los datos con las reglas y mensajes especificados */
-		$validate = \Validator::make($request -> all(), $rules, $messages);
-
-		/* Si la validación falla, regreso solamente el primer error. */
-		if ($validate -> fails())
-		{
-			return response()->json([
-				'status' => 'error',
-				'msg'    => $validate -> errors() -> first()]);
-		}
-
-		/* Guardo los datos enviados por el usuario en las variables */
-		$jExcel = $request -> jExcel;
-		$PBBD   = $request -> PBBD;
-
-		/* Obtengo el largo del arreglo */
-		$largo = count($jExcel);
-
-		/* Suma de todos los Costos de Ingredientes */
-		$sumCI = 0;
-
-		/* Calculo el costo del ingrediente (Cantidad/Unidad * Precio Unitario) */
-		for ($i=0;$i<$largo;$i++)
-		{
-			$costoIng      = $jExcel[$i][1] * substr($jExcel[$i][4],2);
-
-			/* Guardo la suma de todos los costos por ingredientes */
-			$sumCI += $costoIng;
-
-			/* Guardo en la posición 5 el nuevo valor */
-			$jExcel[$i][5] = '$ '. number_format($costoIng, 2, '.', ',');
-		}
-		
-		/* Agrego una variable a la sesión para saber que ya se hizo el calculo */
-		Session::put('PBBDData', $jExcel);
-
-		/* Variable para conservar el valor de Beneficio Bruto Deseado y mostrarlo en la vista */ 
-		Session::put('PBBD', $PBBD);
-
-		/* Calculo el costo unitario, antes de convertir a cadena sumCI */
-		$porcionPersona  = Session::get('prodSeleccionado') -> porcionpersona;
-		$unidadMedida    = Session::get('prodSeleccionado') -> catum -> idesc;
-		$costoUnitario   = $sumCI / $porcionPersona;
-		$costoPrimoVenta = 100 - $PBBD;
-
-		/* Calculo el precio de venta */
-		$precioVenta     = number_format((100*$costoUnitario) / $costoPrimoVenta, 2, '.', ',');
-		Session::put('precioVenta', $precioVenta);
-
-		/* Variable para guardar la suma de todos los costos de ingredientes formato $ 0,000.00*/
-		$sumCI ='$ '.number_format($sumCI, 2, '.', ',');
-
-		/* Guardo la suma de todos los costos de ingredientes ne la sesion */
-		Session::put('sumCI', $sumCI);
-
-		/* Variable para guardar el costo uniario => Costo por ingrediente/porciones */
-		$costoUnitario = '$ '.number_format($costoUnitario, 2, '.', ',');
-		Session::put('costoUnitario', $costoUnitario);
-
-		/* Guardo si los datos han sido calculados o no */
-		Session::put('datosCalculados', true);
-
-		$graphicData = $this -> getGraphicData($PBBD);
-
-		/* Regreso la respuesta con los datos para el jExcel */
-		return response() -> json([
-			'status'               => 'success',
-			'msg'                  => Lang::get('messages.calculoExitoso'),
-			'columns'              => $this -> columns,
-			'colWidths'            => $this -> colWidths,
-			'colHeaders'           => $this -> colHeaders,
-			'data'                 => $jExcel,
-			'sumCI'                => $sumCI,
-			'porcionpersona'       => $porcionPersona.' '.$unidadMedida,
-			'costoUnitario'        => $costoUnitario,
-			'datosCalculados'      => true,
-			'allowManualInsertRow' => false,
-			'allowInsertColumn'    => false,
-			'allowDeleteColumn'    => false,
-			'allowDeleteRow'       => false,
-			'graphicData'          => $graphicData,
-			'precioVenta'          => $precioVenta
-		]);
-	}
-	/** 
-	 * ==============================================================
-	 * Función para obtener los datos que se van a mostrar en la
-	 * gráfica.
-	 * 
-	 * @author Jaime Vázquez
-	 * ==============================================================
-	*/
-	public function getGraphicData($PBDD)
-	{
-		$costoPrimoVenta = 100 - $PBDD;
-		$graphicData     = '[
-			{"label":"'.Lang::get('messages.PBBB').'","data":'.$PBDD.',"color":"#E91E63"  },
-			{"label":"'.Lang::get('messages.costoPV').'","data":'.$costoPrimoVenta.',"color":"#FFC107"  }
-		]';
-		return $graphicData;
-	}
-
-	public function siguiente(Request $request)
-	{
-		/* EL id indica que vista se va a dibujar*/
-		$id_siguiente = $request -> id;
-
-		if ( $id_siguiente == 2 ){
-			/* La segunda vista es el Pronostico de ventas*/
-			$view = View::make('simulador.simulador.pronosticoVentas');
-			if($request -> ajax()){
-				$sections        = $view->renderSections();
-				$id_producto     = Session::get('prodSeleccionado') -> id;
-				$id_user         = Auth::user() -> id;
-				$data            = Session::get('PBBDData');
-				$dataPrecioVenta = [
-					"totalCostosPrimos" => Session::get('sumCI'),
-					"costoUnitario"     => Session::get('costoUnitario'),
-					"precioVenta"       => Session::get('precioVenta'),
-				];
-				$dataPrecioVenta = json_encode($dataPrecioVenta);
-				$PBBD            = Session::get('PBBD');
-				$datosGuardados = guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta);
-
-				/* Verifico que no haya errores al guardar los datos del costeo */
-				if ( $datosGuardados == "true"){
-					/* Si no hay errores agrego la etapa como completa */
-					$etapa = terminarEtapa($id_user, $id_producto, 1);
-				} else {
-					return response() -> json(['status' => 'error', 'message' => $datosGuardados], 500);
-				}
-				return response() -> json($sections['content']); 
-			} else {
-				return $view;
-			} 
-		}
+        
 	}
 }

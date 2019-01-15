@@ -92,6 +92,3 @@
     <!-- Custom Js -->
     <script src="{{ asset('js/admin.js')}}"></script>
 
-    <!-- Demo Js -->
-    <script src="{{ asset('js/demo.js')}}"></script>
-    <script src="{{ asset('js/menuScript.js') }}"></script>

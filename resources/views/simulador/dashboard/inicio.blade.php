@@ -1,4 +1,12 @@
 @extends('base')
+@section('assets')
+	<link href="{{ asset('css/style_tablero.css') }}" rel="stylesheet">
+    <style>
+        .tablero-button{
+            color:#9e9e9e
+        }
+    </style>
+@endsection
 
 @section('content')
     <div class="container-fluid">
@@ -13,7 +21,7 @@
                     </div>
                     <div class="body">
 						<!-- Nav tabs principal-->
-						<ul class="nav nav-tabs tab-nav-right tab-col-teal" role="tablist">
+						<!--<ul class="nav nav-tabs tab-nav-right tab-col-teal" role="tablist">
                             <li role="presentation" class="active"><a href="#simulador" data-toggle="tab">
 								<div>
 									<b>Simulador</b>
@@ -24,32 +32,32 @@
 									<b>Asesorías</b>
 								</div>
 							</a></li>
-                        </ul>
+                        </ul>-->
 						<div class="tab-content">
 							<div role="tabpanel" class="tab-pane fade active in" id="simulador">
 								<!-- Nav tabs simulador -->
 								<ul class="nav nav-tabs tab-nav-right" role="tablist">
 									<li role="presentation" class="active"><a href="#home" data-toggle="tab">
 										<div class="irs-demo">
-											<b>Falda</b>
+											<b>Oso grande</b>
 											<input type="text" id="range_01" value="50" class="ion-range"/>
 										</div>
 									</a></li>
 									<li role="presentation"><a href="#profile" data-toggle="tab">
 										<div class="irs-demo">
-											<b>Blusa</b>
+											<b>Oso mediano</b>
 											<input type="text" id="range_02" value="40" class="ion-range" />
 										</div>
 									</a></li>
 									<li role="presentation"><a href="#messages" data-toggle="tab">
 										<div class="irs-demo">
-											<b>Playera</b>
+											<b>Puff</b>
 											<input type="text" id="range_03" value="80" class="ion-range" />
 										</div>
 									</a></li>
 									<li role="presentation"><a href="#settings" data-toggle="tab">
 										<div class="irs-demo">
-											<b>Pantalon</b>
+											<b>Vestido 3 años</b>
 											<input type="text" id="range_04" value="30" class="ion-range" />
 										</div>
 									</a></li>
@@ -58,10 +66,16 @@
 									<div role="tabpanel" class="tab-pane fade active in" id="home">
 
 										<div class="col-sm-12">
-											<div class="col-sm-2">
-												<span class="titulo">Recursos Humanos</span>
+											<div class="col-sm-3">
+                                                <a class="tablero-button" href="/home">
+													<span class="titulo">Costeo de productos</span>
+                                                    <br /><br />
+                                                    <i class="fa fa-dollar-sign fa-4x"></i>
+												</a>
+												
+                                                
 											</div>
-											<div class="col-sm-4">
+											<div class="col-sm-3">
 												<div id="waterBall1" class="waterBall" style="width: 100px;height:100px; float:left"></div>
 											</div>
 											<div class="col-sm-6 timeline-area">
@@ -69,10 +83,14 @@
 											</div>
 											
 											<div class="row"></div>
-											<div class="col-sm-2">
-												<span class="titulo">Inventarios</span>
+											<div class="col-sm-3">
+                                                <a class="tablero-button" href="/home">
+													<span class="titulo">Pronóstico de ventas</span>
+                                                    <br /><br />
+                                                    <i class="fa fa-diagnoses fa-4x"></i>
+												</a>
 											</div>
-											<div class="col-sm-4">
+											<div class="col-sm-3">
 												<div id="waterBall2" class="waterBall" style="width: 100px;height:100px; float:left"></div>
 											</div>
 											<div class="col-sm-6 timeline-area">
@@ -80,10 +98,15 @@
 											</div>
 											
 											<div class="row"></div>
-											<div class="col-sm-2">
-												<span class="titulo">Producción</span>
+											<div class="col-sm-3">
+                                                <a class="tablero-button" href="/home">
+													<span class="titulo">Inventarios</span>
+                                                    <br /><br />
+                                                    <i class="fa fa-warehouse fa-4x"></i>
+												</a>
+												
 											</div>
-											<div class="col-sm-4">
+											<div class="col-sm-3">
 												<div id="waterBall3" class="waterBall" style="width: 100px;height:100px; float:left"></div>
 											</div>
 											<div class="col-sm-6 timeline-area">
@@ -92,30 +115,21 @@
 										</div>
 									</div>
 									<div role="tabpanel" class="tab-pane fade" id="profile">
-										<b>Profile Content</b>
+										<b>Contenido</b>
 										<p>
-											Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
-											Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
-											pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
-											sadipscing mel.
+											
 										</p>
 									</div>
 									<div role="tabpanel" class="tab-pane fade" id="messages">
-										<b>Message Content</b>
+										<b>Contenido</b>
 										<p>
-											Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
-											Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
-											pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
-											sadipscing mel.
+											
 										</p>
 									</div>
 									<div role="tabpanel" class="tab-pane fade" id="settings">
-										<b>Settings Content</b>
+										<b>Contenido</b>
 										<p>
-											Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
-											Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
-											pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
-											sadipscing mel.
+											
 										</p>
 									</div>
 								</div>
@@ -134,5 +148,5 @@
 @endsection
 
 @section('scripts')
-	<script src="{{ asset('js/dashboardScripts.js') }}"></script>
+	<script src="{{ asset('js/tableroScripts.js') }}"></script>
 @endsection

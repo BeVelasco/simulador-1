@@ -59,6 +59,7 @@
 												class       = "form-control"
 												placeholder = "Ej. 30%"
 												oninput     = "sumaSeg(this, 2)"
+												onkeypress  = "return checaEnter(event, 'NivelSocioEco')"
 											>
 										</div>
 									</div>

@@ -29,7 +29,16 @@
 								<!-- txt Personas -->
 								<div class="col-sm-6 col-lg-6 col-md-6">
 									<div class="form-line">
-										<input id="txtPersonas" type="number" class="form-control"  min="1" step="1" value="" required>
+										<input
+											id         = "txtPersonas"
+											type       = "number"
+											class      = "form-control"
+											onkeypress = "return checaEnter(event, '1')"
+											min        = "1"
+											step       = "1"
+											value      = ""
+											required
+										>
 										<label class="form-label">{{ __('messages.personas') }}</label>
 									</div>
 								</div>
@@ -40,14 +49,31 @@
 							<div class="row">
 								<div class="col col-sm-4 col-lg-4 col-md-4">
 									<div class="form-line">
-										<input id="txtCiudadObjetivo" type="text" class="form-control" value="" required>
+										<input
+											id         = "txtCiudadObjetivo"
+											type       = "text"
+											class      = "form-control"
+											onkeypress = "return checaEnter(event, '1')"
+											value      = ""
+											required
+										>
 										<label class="form-label">{{ __('messages.ciudadObj') }}</label>
 									</div>
 								</div>
 								<div class="col col-sm-4 col-lg-4 col-md-4">
 									<div class="form-line">
 										<div class="form-line">
-											<input id="txtPorcentaje" type="number" class="form-control" value="" max="100" min="0.01" step="0.01" required>
+											<input
+												id         = "txtPorcentaje"
+												type       = "number"
+												class      = "form-control"
+												onkeypress = "return checaEnter(event, '1')"
+												value      = ""
+												max        = "100"
+												min        = "0.01"
+												step       = "0.01"
+												required
+											>
 											<label class="form-label">%</label>
 										</div>
 									</div>
@@ -55,7 +81,7 @@
 								<div class="col col-sm-4 col-lg-4 col-md-4">
 									<div class="form-line">
 										<div class="form-line">
-											<input id="txtPerCiuObj" type="number" class="form-control">
+											<input id="txtPerCiuObj" type="number" class="form-control" disabled>
 											<label class="form-label">Total {{ __('messages.personas') }}</label>
 										</div>
 									</div>

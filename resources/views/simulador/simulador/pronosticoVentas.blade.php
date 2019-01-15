@@ -6,8 +6,9 @@
 
 @section('content')
 <meta name = "sinCalculo" content = "{{ __('messages.sincalculo') }}">
+<meta name = "porcentaje100" content = "{{ __('messages.porcentaje100') }}">
 <meta name = "pregunta" content = "{{ __('messages.mesInicioNego') }}">
-<div class="card">
+<div class="card" id="baseSegmentaciones">
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 				<div class="header bg-green">
@@ -85,15 +86,15 @@
 						{{-- Tab de Proyecciones de Veta --}}
 						<div role="tabpanel" class="tab-pane fade" id="panelProyVen">
 							<div clas="contenidosPronostico" id="contenidopanelProyVen"></div>
-							{{-- Botón de siguiente 
+							{{-- Botón de siguiente --}}
 							<div class="sm-12 align-right" id="divBtnSiguiente">
-								<button	type="button" class="btn bg-blue waves-effect" onclick="javascript:showMercDisp()">
+								<button	type="button" class="btn bg-blue waves-effect" onclick="javascript:showVista('Inventario')">
 									<i class="material-icons">verified_user</i>
 									<span>{{ __('messages.siguiente') }}</span>
 								</button>
 								&nbsp;
 								&nbsp;
-							</div>--}}
+							</div>
 						</div>
 					</div>
 				</div>

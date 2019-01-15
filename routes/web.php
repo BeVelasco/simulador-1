@@ -53,6 +53,30 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::post('/simulador/getProyeccion', 'PronosticoVentasController@getProyeccion') -> name('getProyeccion');
 	Route::post('/simulador/getMeses', 'PronosticoVentasController@getMeses') -> name('getMeses');
 
+
+	/* Rutas de Inventario */
+	Route::get('/simulador/inventario','InventarioController@index') -> name('inventario');
+	Route::post('/simulador/guardarInventario', 'InventarioController@guardar') -> name('guardarInventario');
+	
+	/* Rutas de Mercadotecnia */
+	Route::get('simulador/mercadotecnia', 'MercadotecniaController@index') -> name('mercadotecnia');
+	/* Rutas de la mercadotecnia
+	Route::get('/mercadotecnia', function () {
+		return view('/simulador/mercadotecnia/selectMerca');
+	});
+	Route::get('/mercadotecnia/altaMerca', function () {
+		return view('/simulador/mercadotecnia/estrategiaAlta');
+	});
+	Route::get('/mercadotecnia/selectivaMerca', function () {
+		return view('/simulador/mercadotecnia/estrategiaSelectiva');
+	});
+	Route::get('/mercadotecnia/ambiciosaMerca', function () {
+		return view('/simulador/mercadotecnia/estrategiaAmbiciosa');
+	});
+	Route::get('/mercadotecnia/bajaMerca', function () {
+		return view('/simulador/mercadotecnia/estrategiaBaja');
+	});*/
+
 	/* Rutas de la guía */
 	Route::post('guia', 'GuiaController@mostrarMensaje') -> name('guia');
     

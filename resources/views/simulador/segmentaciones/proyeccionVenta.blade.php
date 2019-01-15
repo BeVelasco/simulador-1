@@ -18,12 +18,13 @@
 										<div class="form-line">
 											<input
 												type        = "number"
-												id          = "txttasaCreVen"
+												id          = "txtTasaCreVen"
 												class       = "form-control" 
 												placeholder = "Ej. 5%"
 												min         = "1"
 												max         = "100"
 												oninput     = "validarInput(this)"
+												onkeypress  = "return checaEnter(event, 'proyecciones')"
 												value       = "17"
 												required
 											>
@@ -39,12 +40,13 @@
 										<div class="form-line">
 											<input
 												type        = "number"
-												id          = "txttasaCrePob"
+												id          = "txtTasaCrePob"
 												class       = "form-control"
 												placeholder = "Ej. 5%"
 												min         = "1"
 												max         = "100"
 												oninput     = "validarInput(this)"
+												onkeypress  = "return checaEnter(event, 'proyecciones')"
 												value       = "9"
 												requied
 											>

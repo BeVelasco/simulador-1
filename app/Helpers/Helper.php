@@ -1,6 +1,6 @@
 <?php
 
-use App\Etapa, App\Costeo, Carbon\Carbon;
+use App\Etapa, App\Costeo, Carbon\Carbon, App\Pronostico, App\Inventario;
 
 /** 
  * =====================================================
@@ -39,7 +39,7 @@ function terminarEtapa($id_user, $id_producto, $seccion) {
 	} else { return "Datos erróneos"; }
 }
 
-/* Obtiene el avance del usuario */
+/* Obtiene el avance del usuario (Etapa en la que se encuentra) */
 function obtenAvance($id_user, $id_producto){
 	$avance = Etapa::where('id_user', $id_user)
 		-> where('id_producto', $id_producto)
@@ -277,6 +277,8 @@ function guardaNivelSocioEco($request, $messages){
         }
         /* Si todo sale bien se guarda en la sesión y se regresa true */
         $nivelSocioEcon["mercadoPotencial"] = $sum;
+        /* Si la variable ya existe la elimino para evitar errores */
+        if (!is_null(Session::get('NivelSocioEcon'))) Session::forget('NivelSocioEcon');
         Session::put('NivelSocioEcon', $nivelSocioEcon);
         return "true";
     } else { return 'Datos erróneos'; }
@@ -289,7 +291,7 @@ function guardaEstimDemanda($request){
             'variables.intUsarProd'    => ['required', 'numeric','between:0.01,100'],
             'variables.capUsarComProd' => ['required', 'numeric','between:0.01,100'],
             'variables.capAbaMerc'     => ['required', 'numeric','between:0.01,100'],
-            'variables.uniConsPot'     => ['required', 'numeric','between:0.01,100'],
+            'variables.uniConsPot'     => ['required', 'numeric'],
         ];
         $atributos = [
             'variables.intUsarProd'    => Lang::get('messages.interesProd'),
@@ -297,7 +299,176 @@ function guardaEstimDemanda($request){
             'variables.capAbaMerc'     => Lang::get('messages.CapAbaMerc'),
             'variables.uniConsPot'     => Lang::get('messages.uniConsPot'),
         ];
+        $messages = [
+            'required' => 'El valor :attribute es requerido',
+            'numeric'  => 'El valor de :attribute debe ser numérico',
+            'between'   => 'El valor de :attribute debe estar entre 0.01 y 100',
+        ];
+        /* Se validan los datos */
+        $validator = \Validator::make($request->all(), $rules, $messages);
+        $validator -> setAttributeNames($atributos);
+        /* Si hubo algún error se regresa el mensaje para mostrarlo al usuario */ 
+        if ($validator -> fails()) return $validator -> errors() -> first();
+        /* Obtengo el mercado potencial para hacer los siguientes calculos */
+        $mercadoPotencial = Session::get('NivelSocioEcon');
+        $mercadoPotencial = $mercadoPotencial["mercadoPotencial"];
+        /* Guarda las variables para hacer los cálculos */
+        $intUsarProd    = $request -> variables["intUsarProd"];
+        $capUsarComProd = $request -> variables["capUsarComProd"];
+        $capAbaMerc     = $request -> variables["capAbaMerc"];
+        $uniConsPot     = $request -> variables["uniConsPot"];
+        /* Se calcula el mercado disponible */
+        $mercadoDisponible = ($mercadoPotencial * $intUsarProd)/100;
+        /* Se calcula el Mercado Efectivo */
+        $mercadoEfectivo   = ($mercadoDisponible * $capUsarComProd)/100;
+        /* Se calcula el Mercado Objetivo */
+        $mercadoObjetivo   = ($mercadoEfectivo * $capAbaMerc)/100;
+        /* Se calcula el consumo Anual del mercado objetivo */
+        $consumoAnual      = $mercadoObjetivo * $uniConsPot;
+        $estimacionDemanda = [
+            "intUsarProd"       => $intUsarProd,
+            "capUsarComProd"    => $capUsarComProd,
+            "capAbaMerc"        => $capAbaMerc,
+            "uniConsPot"        => $uniConsPot,
+            "mercadoDisponible" => $mercadoDisponible,
+            "mercadoEfectivo"   => $mercadoEfectivo,
+            "mercadoObjetivo"   => $mercadoObjetivo,
+            "consumoAnual"      => $consumoAnual,
+        ];
+        /* Si la variable ya existe la elimino para evitar errores */
+        if (!is_null(Session::get('estimacionDemanda'))) Session::forget('estimacionDemanda');
+        Session::put('estimacionDemanda', $estimacionDemanda);
+        return "true";
         
         return $request -> variables["intUsarProd"];
     } else { return 'Datos erróneos'; }
+}
+
+function guardaProyeccionVentas($request){
+    if (Auth::check()){
+        $rules = [
+            'variables.tasaCreVen' => ['required', 'numeric','between:0.01,100'],
+            'variables.tasaCrePob' => ['required', 'numeric','between:0.01,100'],
+            'variables.uniVenAnu'  => ['required', 'numeric']
+        ];
+        $atributos = [
+            'variables.tasaCreVen'    => Lang::get('messages.tasaCreVen'),
+            'variables.tasaCrePob'    => Lang::get('messages.tasaCrePob'),
+            'variables.uniVenAnu'     => Lang::get('messages.uniVenAnu')
+        ];
+        $messages = [
+            'required' => 'El valor :attribute es requerido',
+            'numeric'  => 'El valor de :attribute debe ser numérico',
+            'between'   => 'El valor de :attribute debe estar entre 0.01 y 100',
+        ];
+        /* Se validan los datos */
+        $validator = \Validator::make($request->all(), $rules, $messages);
+        $validator -> setAttributeNames($atributos);
+        /* Si hubo algún error se regresa el mensaje para mostrarlo al usuario */ 
+        if ($validator -> fails()) return $validator -> errors() -> first();
+        /* Guarda los datos en la variable */
+        $proyeccionVentas = [
+            "tasaCreVen" => $request -> variables["tasaCreVen"],
+            "tasaCrePob" => $request -> variables["tasaCrePob"],
+            "uniVenAnu"  => $request -> variables["uniVenAnu"],
+        ];
+        /* Si la variable ya existe la elimino para evitar errores */
+        if (!is_null(Session::get('proyeccionVentas'))) Session::forget('proyeccionVentas');
+        /* Si todo es correcto se guarda en la sesión y se regresa true */
+        Session::put('proyeccionVentas', $proyeccionVentas);
+        return "true";
+    } else  { return 'Datos erróneos'; }
+}
+
+function guardaPronosticoVenta() {
+    try {
+        /* Variable para regresar el status al guardar en la BD */
+        $status = null;
+        /* Busco si existe algun calculo previo para el producto que selecciono el usuario*/
+        $pronostico = Pronostico::where(['id_producto' => Session::get('prodSeleccionado')->id])->first();
+        /* Si no se encontró se creará uno nuevo */
+        if ($pronostico == null){
+            $pronostico                = New Pronostico;
+            $pronostico -> id_user     = Auth::user() -> id;
+            $pronostico -> id_producto = Session::get('prodSeleccionado')->id;
+        }	
+        /* Si se encontró solo se actualizan los datos con los nuevos*/
+        $pronostico -> regionObjetivo      = json_encode(Session::get('regionObjetivo'));
+        $pronostico -> segmentacion        = json_encode(Session::get('segmentacion'));
+        $pronostico -> nivelSocioeconomico = json_encode(Session::get('NivelSocioEcon'));
+        $pronostico -> estimacionDemanda   = json_encode(Session::get('estimacionDemanda'));
+        $pronostico -> proyeccionVentas    = json_encode(Session::get('proyeccionVentas'));
+        $pronostico -> totalPersonas       = Session::get('regionObjetivo.totalPersonas');
+        $pronostico -> poblacionNeta       = Session::get('segmentacion.poblacionNeta');
+        $pronostico -> mercadoPotencial    = Session::get('NivelSocioEcon.mercadoPotencial');
+        $pronostico -> mercadoDisponible   = Session::get('estimacionDemanda.mercadoDisponible');
+        $pronostico -> mercadoEfectivo     = Session::get('estimacionDemanda.mercadoEfectivo');
+        $pronostico -> mercadoObjetivo     = Session::get('estimacionDemanda.mercadoObjetivo');
+        $pronostico -> consumoAnual        = Session::get('estimacionDemanda.consumoAnual');
+        $pronostico -> totalunidades       = Session::get('proyeccionVentas.uniVenAnu');
+        /* Se guarda en la base de datos el registro */
+        $pronostico -> save();
+        $status = "true";
+        $pronostico = Pronostico::where(['id_user'=>Auth::user()->id,'id_producto'=>Session::get('prodSeleccionado')->id])-> first();
+        Session::put('pronostico', $pronostico);
+    } catch (Exception $e) { 
+        $status = $e -> getMessage(); 
+    }
+    return $status;
+}
+
+/* Ontiene el costo unitario de un producto mediante su id   */
+function obtenCostoUnitario($idProd){
+    $costoUnitario = Costeo::where("id_producto", $idProd)->pluck("dataPrecioVenta")->first();
+    $e             = json_decode($costoUnitario, true);
+    $costoUnitario = substr($e["costoUnitario"],2);
+    return $costoUnitario;
+}
+
+/*===================================================================================================
+FUNCIONES PARA INVENTARIO
+====================================================================================================*/
+
+function guardaInventario($request){
+    $rules = [
+        'uniVenAnu'    => ['required', 'numeric'],
+        'venPromMen'   => ['required', 'numeric'],
+        'porFinDes'    => ['required', 'numeric','between:0.01,100'],
+        'uniDesInvFin' => ['required', 'numeric'],
+        'valInvFinDes' => ['required', 'numeric'],
+    ];
+    $atributos = [
+        'uniVenAnu'    => Lang::get('messages.ventasAnuales'),
+        'venPromMen'   => Lang::get('messages.ventasPromMensual'),
+        'porFinDes;'    => Lang::get('messages.porcInvDeseado'),
+        'uniDesInvFin' => Lang::get('messages.uniDesInvFin'),
+        'valInvFinDes' => Lang::get('messages.valInvFinDes'),
+    ];
+    $messages = [
+        'required' => 'El valor :attribute es requerido',
+        'numeric'  => 'El valor de :attribute debe ser numérico',
+        'between'  => 'El valor de :attribute debe estar entre 0.01 y 100',
+    ];
+    /* Se validan los datos */
+    $validator = \Validator::make($request->all(), $rules, $messages);
+    $validator -> setAttributeNames($atributos);
+    /* Si hubo algún error se regresa el mensaje para mostrarlo al usuario */ 
+    if ($validator -> fails()) return $validator -> errors() -> first();
+    try{
+        $inventario = Inventario::where("id_producto", Session::get('prodSeleccionado.id'))
+                            ->where("id_user", Auth::user() -> id)
+                            ->first();
+        if ($inventario == null){
+            $inventario = New Inventario;
+            $inventario -> id_user       = Auth::user() -> id;
+            $inventario -> id_producto   = Session::get('prodSeleccionado.id');
+        }
+        $inventario -> ventasAnuales = $request -> uniVenAnu;
+        $inventario -> venPromMen    = $request -> venPromMen;
+        $inventario -> porInvFinDes  = $request -> porFinDes;
+        $inventario -> uniInvFinDes  = $request -> uniDesInvFin;
+        $inventario -> valInvFinDes  = $request -> valInvFinDes;
+        $inventario -> save();
+        return "true";
+    } catch (Exception $e) { return $e->getMessage();	}
 }

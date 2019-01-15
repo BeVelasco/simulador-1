@@ -22,7 +22,7 @@
 										class       = "form-control"
 										placeholder = "Ej. 30%"
 										value       = 0
-										oninput     = "calculaMercDisp(this)"
+										oninput     = "calcularMercados()"
 									>
 								</div>
 							</div>
@@ -55,7 +55,7 @@
 										class       = "form-control"
 										placeholder = "Ej. 30%"
 										value       = 0
-										oninput     = "calculaCapComProd(this)"
+										oninput     = "calcularMercados()"
 									>
 								</div>
 							</div>
@@ -91,7 +91,7 @@
 										class       = "form-control"
 										placeholder = "Ej. 30%"
 										value       = 0
-										oninput     = "calculaCapAbaMerc(this)"
+										oninput     = "calcularMercados()"
 									>
 								</div>
 							</div>
@@ -123,7 +123,7 @@
 										class       = "form-control"
 										placeholder = "Ej. 30%"
 										value       = 0
-										oninput     = "calcularConsumoAnual(this)"
+										oninput     = "calcularMercados()"
 										onkeypress  = "return checaEnter(event, 'ProyVen')"
 									>
 								</div>

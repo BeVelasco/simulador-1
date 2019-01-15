@@ -15,8 +15,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-
-use App\Producto, App\Catum, App\User, App\Etapa;
+use App\Producto, App\Catum, App\User, App\Etapa, App\Pronostico;
 use Auth, View, Session, Lang, Route;
 
 
@@ -59,31 +58,36 @@ class SimuladorController extends Controller
 	public function inicio(Request $request)
 	{
 		/* El usuario debe estar loggeado */
-		if ( Auth::check() )
-		{
-			
+		if ( Auth::check() ){
 			/* El usuario debe tener un producto seleccionado */
-			if ( Session::get('prodSeleccionado') == null )
-			{
+			if ( Session::get('prodSeleccionado') == null ){
 				return redirect('/home');
 			} else {
 				/* Obtengo el avance que lleva el usuario para saber que vista mostrar 
 				 * default - Inicio
 				 * 1 - Pronostico de ventas
+				 * 2 - Inventario
 				*/
 				$avance = obtenAvance(Auth::user() ->id, Session::get('prodSeleccionado')->id);
 				switch ($avance) {
 					case 1:
 						return view('simulador.simulador.pronosticoVentas');
 						break;
+					case 2:
+						$pronostico = Pronostico::where('id_user', Auth::user() -> id)
+												->where('id_producto', Session::get('prodSeleccionado.id'))
+												->first();
+						$costoUnitario = obtenCostoUnitario(Session::get('prodSeleccionado.id'));
+						Session::put('pronostico', $pronostico);
+						Session::put('costoUnitario', $costoUnitario);
+						return view('simulador.inventario.index');
+					return;
 					default:
 						return view('simulador.simulador.inicio');
 						break;
 				}
 			}
-		} else {
-			return view('auth.login');
-		}
+		} else { return view('auth.login'); }
 	}
 
 	/** 

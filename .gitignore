@@ -5032,3 +5032,4 @@ vendor/vlucas/phpdotenv/src/Exception/InvalidPathException.php
 vendor/vlucas/phpdotenv/src/Exception/ValidationException.php
 vendor/vlucas/phpdotenv/src/Loader.php
 vendor/vlucas/phpdotenv/src/Validator.php
+.env

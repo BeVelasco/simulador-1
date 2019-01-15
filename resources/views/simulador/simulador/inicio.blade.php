@@ -9,6 +9,8 @@
 @endsection
 
 @section('content')
+<div class="container-fluid">
+	<br>
 	<div class="card">
 		<div class="header bg-pink">
 			<h2>
@@ -135,7 +137,8 @@
 			</div>
 		</div>
 	</div>
-	
+	simulador.inicio
+</div>
 @endsection
 
 @section('scripts')

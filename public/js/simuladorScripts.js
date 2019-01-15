@@ -229,30 +229,26 @@ function pintaJexcel(data)
  * Función actualiza el siguiente paso en el simulador del usuario
  * =========================================================================
  */
-function siguiente(id)
-{
-	$(document).ready(function(){
-		var url = $('meta[name="urlNext"]').attr('content');
-		$.ajax({
-			url : url,
-			type: 'POST',
-			data: {
-				id: id,
-			},
-			dataType: 'JSON',
-			/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
-			success: function (data) { 
-				 $('.content').empty();
-				 $('.content').append(data);
-			},
-			/* Si existió algún otro tipo de error se muestra en la consola */
-			error: function(data) {
-				swal({
-					type : 'error',
-					title: 'Oops...',
-					text : 'Error, copie y muestre este código al administrador: ' + data.responseJSON.message,
-				});
-			}
-		});
+function siguiente(id){
+	var url = $('meta[name="urlNext"]').attr('content');
+	$.ajax({
+		url : url,
+		type: 'POST',
+		data: {
+			id: id,
+		},
+		dataType: 'JSON',
+		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
+		success: function (data) { 
+			if (data.message == "ok") location.reload();
+		},
+		/* Si existió algún otro tipo de error se muestra en la consola */
+		error: function(data) {
+			swal({
+				type : 'error',
+				title: 'Oops...',
+				text : 'Error, copie y muestre este código al administrador: ' + data.responseJSON.message,
+			});
+		}
 	});
 }

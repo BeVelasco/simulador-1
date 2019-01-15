@@ -13,7 +13,7 @@
 @endphp
 {{'nse'}}
 <h2 class="align-center col-pink">{{ __('messages.segNSE') }}</h2>
-	<div class="row">
+	<div class="container-fluid">
 		<div class="col-lg-1 col-md-1"></div>
 		<div class="col-lg-7 col-md-7">
 			<div class="card">

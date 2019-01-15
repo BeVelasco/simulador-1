@@ -67,6 +67,7 @@
 		<!-- #END# Right Sidebar -->
 	</section>
 	<section class="content" id="baseContent">
+		<br>
 			@yield('content')
 	</section>
 	</div>

@@ -111,7 +111,7 @@
     <script src="{{ asset('plugins/jquery-blockUI/jquery.blockUI.js')}}"></script>
     
     <!-- sweet alert -->
-    <script src="{{ asset('plugins/sweetalert/sweetalert.min.js')}}"></script>
+    <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
     
     <!-- Custom Js -->
     <script src="{{ asset('js/admin.js')}}"></script>

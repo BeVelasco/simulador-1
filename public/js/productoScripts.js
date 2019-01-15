@@ -3,18 +3,14 @@
  * @author Emmanuel Hernández Díaz
  * ======================================================================
  */
- var ajaxBlock = function() { $.blockUI({message: 'Procesando...'}) }
+ var ajaxBlock = function() { $.blockUI({message: 'Procesando...'}); };
 $(document).ajaxStart(ajaxBlock).ajaxStop($.unblockUI);
-
-
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
-
 $(document).ready(function(){
-    
 	$.ajax({
 		url     : '/producto/get_producto',
 		type    : 'POST',
@@ -23,7 +19,7 @@ $(document).ready(function(){
 		success : function (data) { 
 		  
 			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
-			if (data['status'] == 'success')
+			if (data.status == 'success')
 			{
 				/* Muestra jExcel con los datos recibidos */
 				pintaJexcel(data);
@@ -40,13 +36,10 @@ $(document).ready(function(){
 		},
 		error: function(data) {
 			/* Si existió algún otro tipo de error se muestra en la consola */
-			console.log(data)
+			console.log(data);
 		}
 	});
 });
-
-
-
 
 /**======================================================================
  * Función que formatea el como se muestran las etiquetas del gráfico
@@ -61,13 +54,11 @@ function labelFormatter(label, series) {
  * Función que formatea las celdas para que se muestren con 2 decimales,
  * y/o de solo lectura.
  * @author Emmanuel Hernández Díaz
- * ======================================================================
- */
+ * ======================================================================*/
 function formateaCeldas(){
 	$('#mytable').jexcel('updateSettings',{
-		table: function (instance, cell, col, row, val, id) {
-            
-			if (col == 5 || col == 11  || col == 13 || col == 14 || col == 15) {
+		table: function (instance, cell, col, row, val, id) { 
+			if ( (col == 5) || (col == 11)  || (col == 13) || (col == 14) || (col == 15)) {
 				$(cell).html(' $ ' + numeral($(cell).text()).format('0,0.00'));
 			}
 			if (col == 6 || col == 7 || col == 8 || col == 9 || col == 10 || col == 12) {
@@ -78,16 +69,6 @@ function formateaCeldas(){
                 || col == 15){
 				$(cell).addClass('readonly');
 			}
-            
-            
-            //Colores
-            /*if (col == 0 || col == 1 || col == 2 || col == 3 || col == 4 || col == 5 || col==6)
-                $(cell).css('background-color', '#eee');
-            if (col == 8 )
-                $(cell).css('background-color', '#7ec3ff');
-            if (col == 10 || col == 11)
-                $(cell).css('background-color', '#eee');*/
-                
             if ($(cell).text() == 'TOTALES') {
                 $('.r' + row).css('font-weight', 'bold');
                 $('.r' + row).css('background-color', '#fffaa3');
@@ -99,37 +80,30 @@ function formateaCeldas(){
 /**======================================================================
  * Función que actualiza los datos en el texto de la página web
  * @author Emmanuel Hernández Díaz
- * ======================================================================
- */
+ * ====================================================================*/
 function actualizaDatos(data)
 {
-	console.log('precioVenta: ');
-	console.log(data.precioVenta);
-	document.getElementById('sumCI').innerHTML         = data.sumCI;
-	document.getElementById('recetaPara').innerHTML    = data.porcionpersona;
-	document.getElementById('costounitario').innerHTML = data.costoUnitario;
-	document.getElementById('costoUni').innerHTML      = data.costoUnitario;
-	document.getElementById('precioVen').innerHTML     = data.precioVenta;
+	$('#sumCI').html(data.sumCI);
+	$('#recetaPara').html(data.porcionpersona);
+	$('#costounitario').html(data.costoUnitario);
+	$('#costoUni').html(data.costoUnitario);
+	$('#precioVen').html(data.precioVenta);
 }
-
 
 /**=========================================================================
  * Función que pinta el jExcel con los datos recibidos desde el controlador
- * =========================================================================
- */
-function pintaJexcel(data)
-{
-        
+ * =======================================================================*/
+function pintaJexcel(data){
 	$('#mytable').jexcel({
-		data             : data.data,
-		colHeaders       : data.colHeaders,
-		colWidths        : data.colWidths,
-		allowInsertRow   : "false",
-        allowManualInsertRow: "false",
-		allowInsertColumn: "false",
-		allowDeleteRow   : "false",
-		allowDeleteColumn: "false",
-        contextMenu      : "false",
+		data                : data.data,
+		colHeaders          : data.colHeaders,
+		colWidths           : data.colWidths,
+		allowInsertRow      : "false",
+		allowManualInsertRow: "false",
+		allowInsertColumn   : "false",
+		allowDeleteRow      : "false",
+		allowDeleteColumn   : "false",
+		contextMenu         : "false",
 		/* Tipos de columnas enviados desde el controlador */
 		columns          :[
             { "type": "hidden"},
@@ -145,7 +119,7 @@ function pintaJexcel(data)
             { "type": "hidden"},
             { "type": "numeric"},
             { "type": "numeric" },
-           { "type": "numeric"},
+            { "type": "numeric"},
             { "type": "numeric" }
 		],
 
@@ -156,31 +130,28 @@ function pintaJexcel(data)
  * Función actualiza el siguiente paso en el simulador del usuario
  * =========================================================================
  */
-function siguiente(id)
-{
-	$(document).ready(function(){
-		var url = $('meta[name="urlNext"]').attr('content');
-		$.ajax({
-			url : url,
-			type: 'POST',
-			data: {
-				id: id,
-			},
-			dataType: 'JSON',
-			/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
-			success: function (data) { 
-				 $('.content').empty();
-				 $('.content').append(data);
-			},
-			/* Si existió algún otro tipo de error se muestra en la consola */
-			error: function(data) {
-				swal({
-					type : 'error',
-					title: 'Oops...',
-					text : 'Error, copie y muestre este código al administrador: ' + data.responseJSON.message,
-				});
-			}
-		});
+function siguiente(id){
+	var url = $('meta[name="urlNext"]').attr('content');
+	$.ajax({
+		url : url,
+		type: 'POST',
+		data: {
+			id: id,
+		},
+		dataType: 'JSON',
+		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
+		success: function (data) {
+			console.log(data);
+			$('.content').html(data);
+		},
+		/* Si existió algún otro tipo de error se muestra en la consola */
+		error: function(data) {
+			swal({
+				type : 'error',
+				title: 'Oops...',
+				text : 'Error, copie y muestre este código al administrador: ' + data.responseJSON.message,
+			});
+		}
 	});
 }
 
@@ -188,6 +159,4 @@ function siguiente(id)
  * Regresar al menu de productos
  * =========================================================================
  */
-function regresar(){
-    window.location.href = "/productomenu";
-}
+function regresar(){ window.location.href = "/productomenu"; }

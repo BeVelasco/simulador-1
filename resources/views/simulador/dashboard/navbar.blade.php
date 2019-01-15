@@ -4,7 +4,7 @@
             <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
             <a href="javascript:void(0);" class=""></a>
 			<a class="bars toggle"><span></span></a>
-            <a class="navbar-brand" href="/dashboard">SIMULADOR v1.0</a>
+            <a class="navbar-brand" href="{{ route('home') }}">SIMULADOR v1.0</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
 			<div class="header-right">
@@ -151,7 +151,7 @@
 						<ul class="list-unstyled">
 							<li class="divider"></li>
 							<li>
-								<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> My Profile</a>
+								<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> Mi perfil</a>
 							</li>
 							<li>
 								<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Lock Screen</a>

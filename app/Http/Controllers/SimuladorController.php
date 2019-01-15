@@ -270,12 +270,9 @@ class SimuladorController extends Controller
 	{
 		/* EL id indica que vista se va a dibujar*/
 		$id_siguiente = $request -> id;
-
 		if ( $id_siguiente == 2 ){
 			/* La segunda vista es el Pronostico de ventas*/
-			$view = View::make('simulador.simulador.pronosticoVentas');
 			if($request -> ajax()){
-				$sections        = $view->renderSections();
 				$id_producto     = Session::get('prodSeleccionado') -> id;
 				$id_user         = Auth::user() -> id;
 				$data            = Session::get('PBBDData');
@@ -287,7 +284,6 @@ class SimuladorController extends Controller
 				$dataPrecioVenta = json_encode($dataPrecioVenta);
 				$PBBD            = Session::get('PBBD');
 				$datosGuardados = guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta);
-
 				/* Verifico que no haya errores al guardar los datos del costeo */
 				if ( $datosGuardados == "true"){
 					/* Si no hay errores agrego la etapa como completa */
@@ -295,7 +291,7 @@ class SimuladorController extends Controller
 				} else {
 					return response() -> json(['status' => 'error', 'message' => $datosGuardados], 500);
 				}
-				return response() -> json($sections['content']); 
+				return response() -> json(["message" => "ok"],200); 
 			} else {
 				return $view;
 			} 

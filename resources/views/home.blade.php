@@ -1,11 +1,8 @@
 @extends('base')
 
 @section('content')
+<br>
 <div class="container-fluid">
-	<div class="block-header">
-		<h2>¡{{ __('messages.hola') }} {{ Auth::user()->name}}!</h2><!-- messages.hola -->
-	</div>
-	<!-- Widgets -->
 	@include('simulador.dashboard.widgets')
 	<div class="row clearfix">
 		<!-- Task Info -->

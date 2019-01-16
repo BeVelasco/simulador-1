@@ -24,7 +24,7 @@ $textos =[
 @endphp
 	{{'spe'}}
 	<h2 class="align-center col-pink">{{ __('messages.spe') }}</h2>
-	<div class="row">
+	<div class="container-fluid">
 		<div class="col-lg-4 col-md-4">
 			<div class="card">
 				<div class="body" id="divHombres">

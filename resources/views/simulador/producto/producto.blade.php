@@ -49,7 +49,6 @@
 			         <div id="mytable"></div>
                 </div>                     
             </div>
-			
 		</div>
 	</div>
 	

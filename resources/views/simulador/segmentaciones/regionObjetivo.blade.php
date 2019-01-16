@@ -1,5 +1,4 @@
-<div class="row">
-	{{'region.Objetivo'}}
+<div class="container-fluid">
 	<h2 class="align-center col-pink">{{ __('messages.regionObj') }}</h2>
 	<div class="col-lg-2 col-md-2"></div>
 
@@ -82,7 +81,6 @@
 									<div class="form-line">
 										<div class="form-line">
 											<input id="txtPerCiuObj" type="number" class="form-control" disabled>
-											<label class="form-label">Total {{ __('messages.personas') }}</label>
 										</div>
 									</div>
 								</div>

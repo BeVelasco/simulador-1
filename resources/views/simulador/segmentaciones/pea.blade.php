@@ -2,7 +2,7 @@
 @section('content')
 {{'pea'}}
 	<h2 class="align-center col-pink">{{ __('messages.pea') }}</h2>
-	<div class="row">
+	<div class="container-fluid">
 		<div class="col-lg-8 col-md-8">
 			<div class="card">
 				<div class="body">

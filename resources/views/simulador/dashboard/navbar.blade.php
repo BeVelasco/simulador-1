@@ -131,9 +131,9 @@
 				</ul>
 				<!-- #END# Tasks -->
 				<!--<li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="material-icons">more_vert</i></a></li>-->
-				
+
 				<span class="separator"></span>
-				
+
 				<div id="userbox" class="userbox">
 					<a href="#" data-toggle="dropdown" aria-expanded="false">
 						<figure class="profile-picture">
@@ -143,10 +143,10 @@
 							<span class="name">{{ __('messages.hola') }} {{ Auth::user()->name}}</span>
 							<span class="role">Usuario</span>
 						</div>
-		
+
 						<i class="fa custom-caret"></i>
 					</a>
-		
+
 					<div class="dropdown-menu">
 						<ul class="list-unstyled">
 							<li class="divider"></li>
@@ -173,7 +173,7 @@
 					</div>
 				</div>
 			</div>
-            
+
         </div>
     </div>
 </nav>

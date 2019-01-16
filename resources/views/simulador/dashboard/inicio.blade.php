@@ -72,8 +72,8 @@
                                                     <br /><br />
                                                     <i class="fa fa-dollar-sign fa-4x"></i>
 												</a>
-												
-                                                
+
+
 											</div>
 											<div class="col-sm-3">
 												<div id="waterBall1" class="waterBall" style="width: 100px;height:100px; float:left"></div>
@@ -81,7 +81,7 @@
 											<div class="col-sm-6 timeline-area">
 												<div id="timeline1" class="timeline" style="overflow: auto;padding: 100px !important;"> </div>
 											</div>
-											
+
 											<div class="row"></div>
 											<div class="col-sm-3">
                                                 <a class="tablero-button" href="/home">
@@ -96,7 +96,7 @@
 											<div class="col-sm-6 timeline-area">
 												<div id="timeline2" class="timeline" style="overflow: auto;padding: 100px !important;"> </div>
 											</div>
-											
+
 											<div class="row"></div>
 											<div class="col-sm-3">
                                                 <a class="tablero-button" href="/home">
@@ -104,7 +104,7 @@
                                                     <br /><br />
                                                     <i class="fa fa-warehouse fa-4x"></i>
 												</a>
-												
+
 											</div>
 											<div class="col-sm-3">
 												<div id="waterBall3" class="waterBall" style="width: 100px;height:100px; float:left"></div>
@@ -117,34 +117,62 @@
 									<div role="tabpanel" class="tab-pane fade" id="profile">
 										<b>Contenido</b>
 										<p>
-											
+
 										</p>
 									</div>
 									<div role="tabpanel" class="tab-pane fade" id="messages">
 										<b>Contenido</b>
 										<p>
-											
+
 										</p>
 									</div>
 									<div role="tabpanel" class="tab-pane fade" id="settings">
 										<b>Contenido</b>
 										<p>
-											
+
 										</p>
 									</div>
 								</div>
-							</div>
-							<div role="tabpanel" class="tab-pane fade" id="asesorias">
+								<div role="tabpanel" class="tab-pane fade" id="profile">
+									<b>Profile Content</b>
+									<p>
+										Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+										Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+										pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+										sadipscing mel.
+									</p>
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="messages">
+									<b>Message Content</b>
+									<p>
+										Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+										Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+										pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+										sadipscing mel.
+									</p>
+								</div>
+								<div role="tabpanel" class="tab-pane fade" id="settings">
+									<b>Settings Content</b>
+									<p>
+										Lorem ipsum dolor sit amet, ut duo atqui exerci dicunt, ius impedit mediocritatem an. Pri ut tation electram moderatius.
+										Per te suavitate democritum. Duis nemore probatus ne quo, ad liber essent aliquid
+										pro. Et eos nusquam accumsan, vide mentitum fabellas ne est, eu munere gubergren
+										sadipscing mel.
+									</p>
+								</div>
 							</div>
 						</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- #END# Example Tab -->
-        
-        <!-- #END# Tabs With Custom Animations -->
-    </div>
+						<div role="tabpanel" class="tab-pane fade" id="asesorias">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- #END# Example Tab -->
+
+	<!-- #END# Tabs With Custom Animations -->
+</div>
 @endsection
 
 @section('scripts')

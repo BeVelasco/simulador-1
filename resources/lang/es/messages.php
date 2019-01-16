@@ -262,7 +262,10 @@
 
     //Producto
     'producto_editarboton'=>'Editar producto',
-    'producto_tktboton'=>'Takt time'
+    'producto_tktboton'=>'Takt time',
+    'nomina_boton'=>'Nómina',
+    'producto_acumuladoboton'=>'Acumulado inicial'
+    
 
 
 ];

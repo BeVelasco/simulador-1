@@ -23,6 +23,10 @@
 				<div class="sm-8 align-right" id="divBtnSiguiente">
                     <ul class="toolbar-form">
                         <li>
+            				    <input type="checkbox" id="chkGuardarvacias" class="filled-in"  />
+                                <label for="basic_checkbox_2">Guardar con celdas vacías</label>
+            			</li>
+                        <li>
             				<button type="button" class="btn bg-blue waves-effect" onclick="javascript:Guardar();">
         						<i class="material-icons">save</i>
         						<span>{{ __('messages.guardar') }}</span>

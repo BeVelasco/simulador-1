@@ -101,6 +101,11 @@ Route::group(['middleware' => ['auth']], function() {
     /* Rutas de Nomina*/
     Route::get('/nomina/editarInicio', 'NominaController@editarInicio') -> name('editarInicio');
     Route::post('/nomina/get_nomina', 'NominaController@get_nomina') -> name('get_nomina');
+    Route::post('/nomina/set_nomina', 'NominaController@set_nomina') -> name('set_nomina');
+    
+    /* Rutas del Acumulado*/
+    Route::get('/acumulado/editarInicio', 'AcumuladoController@editarInicio') -> name('editarInicio');
+    Route::post('/acumulado/get_formulacion', 'AcumuladoController@get_acumulado') -> name('get_acumulado');
     
 });
 Route::group(['middleware' => ['web']], function ()

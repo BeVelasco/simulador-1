@@ -36,6 +36,8 @@
                                                 <ul class="dropdown-menu">
                                                     <li><a href="javascript:linkmenu('{{ $producto->id }}','/producto/editarProducto','/producto/editarInicio');">{{ __('messages.producto_editarboton') }}</a></li>
                                                     <li><a href="javascript:linkmenu('{{ $producto->id }}','/producto/editarProducto','/tkt/editarInicio');">{{ __('messages.producto_tktboton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/producto/editarProducto','/nomina/editarInicio');">{{ __('messages.nomina_boton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/producto/editarProducto','/acumulado/editarInicio');">{{ __('messages.producto_acumuladoboton') }}</a></li>
                                                 </ul>
                                             </div>
 										</td>

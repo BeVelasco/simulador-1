@@ -3,15 +3,16 @@
  * @author Emmanuel Hernández Díaz
  * ======================================================================
  */
+ var renglonconceldasvacias=[];
  var ajaxBlock = function() { $.blockUI({message: 'Procesando...'}) }
 $(document).ajaxStart(ajaxBlock).ajaxStop($.unblockUI);
 
 
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
+$.ajaxSetup({
+	headers: {
+		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	}
+});
 
 $(document).ready(function(){
     
@@ -247,6 +248,104 @@ function pintaJexcel(data)
     
     
 }
+
+/**======================================================================
+ * Función para guardar los datos
+ * @author JAVG
+ * ======================================================================
+ */
+function Guardar(){
+    datos=LeerExcel()
+    
+    if(renglonconceldasvacias.length==0){
+	/*$.ajax({
+		url     : '/producto/set_producto',
+        data    :{datos:datos},
+		type    : 'POST',
+		dataType: 'JSON',
+		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD *
+		success : function (data) { 
+		  
+			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  *
+			if (data['status'] == 'success')
+			{
+				swal({
+					type : 'success',
+					title: 'Mensaje',
+					text : data.msg,
+				});
+                
+			/* Si hubo algún error se muestra al usuario para su correción *
+			} else {
+				swal({
+					type : 'error',
+					title: 'Oops...',
+					text : data.msg,
+				});
+			}	
+		},
+		error: function(data) {
+			/* Si existió algún otro tipo de error se muestra en la consola *
+			console.log(data)
+		}
+	});
+    */
+    }
+    else{
+        swal({
+			type : 'error',
+			title: 'Existen celdas vacías (marcadas en amarillo) en una o más tablas del formulario, si desea continuar aún con las celdas vacías, marque la casilla "Guardar con celdas vacías" ubicada a la izquierda del botón "Guardar"',
+			onClose: () => {
+				
+			}
+		});
+    }
+}
+
+/**=========================================================================
+ * Leer excel
+ * =========================================================================
+ */
+ 
+ function LeerExcel(){
+    var celdasvacias=false;
+    renglonconceldasvacias=[];
+    
+    var data=$('#excelformula').jexcel('getData');
+    for(i=0;i<data.length;i++){
+        cantidadceldasrenglon=0;
+        for(j=1;j<data[i].length;j++){//J=1 para saltar el ID que está oculto
+            //Poner en blanco las celdas, por si anteriormente ya se habian marcado como vacias (amarillo)
+            $('td#'+j+'-'+i).css("background-color","#fff");
+            
+            if(data[i][j].indexOf("=")==0)
+                data[i][j]=$('#excelformula input[value="'+data[i][j]+'"]').parent("td").text();
+            else{
+                data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
+                if(data[i][j]=="" && data.length>1 && (!($("#chkGuardarvacias").is(":checked"))) ){
+                    //Poner en amarillo si no tiene contenido
+                    $('td#'+j+'-'+i).css("background-color","#ff0");
+                    celdasvacias=true;
+                    cantidadceldasrenglon++;
+                }
+            }
+        }    
+        if(celdasvacias){
+            //Las celdas vacias son las misma cantidad de celdas existentes
+            if(cantidadceldasrenglon==data[i].length-1){//-1 por la columna ID que no se toma en cuenta
+                for(j=1;j<data[i].length;j++){
+                    //Poner en blanco las celdas, por si anteriormente ya se habian marcado como vacias (amarillo)
+                    $('td#'+j+'-'+i).css("background-color","#fff");
+                }    
+            }
+            else
+                renglonconceldasvacias.push(i)
+        }
+    }
+        
+    return data;
+}
+
 
 /**=========================================================================
  * Función actualiza el siguiente paso en el simulador del usuario

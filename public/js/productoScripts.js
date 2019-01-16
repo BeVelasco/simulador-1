@@ -3,15 +3,17 @@
  * @author Emmanuel Hernández Díaz
  * ======================================================================
  */
+ 
+ var celdasvacias=false;
  var ajaxBlock = function() { $.blockUI({message: 'Procesando...'}) }
 $(document).ajaxStart(ajaxBlock).ajaxStop($.unblockUI);
 
 
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
+$.ajaxSetup({
+	headers: {
+		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	}
+});
 
 $(document).ready(function(){
     
@@ -46,8 +48,8 @@ $(document).ready(function(){
 });
 
 /**======================================================================
- * Función que formatea el como se muestran las etiquetas del gráfico
- * @author Emmanuel Hernández Díaz
+ * Función para guardar los datos
+ * @author JAVG
  * ======================================================================
  */
 function Guardar(){
@@ -196,14 +198,25 @@ function pintaJexcel(data)
  */
  
  function LeerExcel(){
+    celdasvacias=false;
 
     var data=$('#mytable').jexcel('getData');
     for(i=0;i<data.length;i++){
         for(j=0;j<data[i].length;j++){
+            //Poner en blanco las celdas, por si anteriormente ya se habian marcado como vacias (amarillo)
+            $('td#'+j+'-'+i).css("background-color","#fff");
+            
             if(data[i][j].indexOf("=")==0)
                 data[i][j]=$('#mytable input[value="'+data[i][j]+'"]').parent("td").text();
-            else
+            else{
                 data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
+                
+                if(j>0 && data[i][j]=="" && data.length>1 && (!($("#chkGuardarvacias").is(":checked")))){
+                    //Poner en amarillo si no tiene contenido
+                    $('td#'+j+'-'+i).css("background-color","#ff0");
+                    celdasvacias=true;
+                }
+            }
         }    
     }
         

@@ -3,21 +3,26 @@
  * @author Emmanuel Hernández Díaz
  * ======================================================================
  */
- var ajaxBlock = function() { $.blockUI({message: 'Procesando...'}); };
+
+ var celdasvacias=false;
+ var ajaxBlock = function() { $.blockUI({message: 'Procesando...'}) }
 $(document).ajaxStart(ajaxBlock).ajaxStop($.unblockUI);
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
+
+
+$.ajaxSetup({
+	headers: {
+		'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	}
+});
+
 $(document).ready(function(){
 	$.ajax({
 		url     : '/producto/get_producto',
 		type    : 'POST',
 		dataType: 'JSON',
 		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
-		success : function (data) { 
-		  
+		success : function (data) {
+
 			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
 			if (data.status == 'success')
 			{
@@ -32,7 +37,7 @@ $(document).ready(function(){
 					title: 'Oops...',
 					text : data.msg,
 				});
-			}	
+			}
 		},
 		error: function(data) {
 			/* Si existió algún otro tipo de error se muestra en la consola */
@@ -40,6 +45,47 @@ $(document).ready(function(){
 		}
 	});
 });
+
+/**======================================================================
+ * Función para guardar los datos
+ * @author JAVG
+ * ======================================================================
+ */
+function Guardar(){
+    datos=LeerExcel()
+	$.ajax({
+		url     : '/producto/set_producto',
+        data    :{datos:datos},
+		type    : 'POST',
+		dataType: 'JSON',
+		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
+		success : function (data) {
+
+			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
+			if (data['status'] == 'success')
+			{
+				swal({
+					type : 'success',
+					title: 'Mensaje',
+					text : data.msg,
+				});
+
+			/* Si hubo algún error se muestra al usuario para su correción */
+			} else {
+				swal({
+					type : 'error',
+					title: 'Oops...',
+					text : data.msg,
+				});
+			}
+		},
+		error: function(data) {
+			/* Si existió algún otro tipo de error se muestra en la consola */
+			console.log(data)
+		}
+	});
+
+}
 
 /**======================================================================
  * Función que formatea el como se muestran las etiquetas del gráfico
@@ -57,7 +103,7 @@ function labelFormatter(label, series) {
  * ======================================================================*/
 function formateaCeldas(){
 	$('#mytable').jexcel('updateSettings',{
-		table: function (instance, cell, col, row, val, id) { 
+		table: function (instance, cell, col, row, val, id) {
 			if ( (col == 5) || (col == 11)  || (col == 13) || (col == 14) || (col == 15)) {
 				$(cell).html(' $ ' + numeral($(cell).text()).format('0,0.00'));
 			}
@@ -112,7 +158,7 @@ function pintaJexcel(data){
 			{ "type": "text"},
             { "type": "text" },
             { "type": "numeric"},
-            { "type": "numeric"}, 
+            { "type": "numeric"},
             { "type": "numeric" },
             { "type": "hidden"},
             { "type": "hidden"},
@@ -124,6 +170,37 @@ function pintaJexcel(data){
 		],
 
 	});
+}
+
+/**=========================================================================
+ * Leer excel
+ * =========================================================================
+ */
+
+ function LeerExcel(){
+    celdasvacias=false;
+
+    var data=$('#mytable').jexcel('getData');
+    for(i=0;i<data.length;i++){
+        for(j=0;j<data[i].length;j++){
+            //Poner en blanco las celdas, por si anteriormente ya se habian marcado como vacias (amarillo)
+            $('td#'+j+'-'+i).css("background-color","#fff");
+
+            if(data[i][j].indexOf("=")==0)
+                data[i][j]=$('#mytable input[value="'+data[i][j]+'"]').parent("td").text();
+            else{
+                data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
+
+                if(j>0 && data[i][j]=="" && data.length>1 && (!($("#chkGuardarvacias").is(":checked")))){
+                    //Poner en amarillo si no tiene contenido
+                    $('td#'+j+'-'+i).css("background-color","#ff0");
+                    celdasvacias=true;
+                }
+            }
+        }
+    }
+
+    return data;
 }
 
 /**=========================================================================

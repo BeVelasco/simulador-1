@@ -533,6 +533,8 @@ function calcularMercados(){
 		}
 	}
 }
+function regresar(){ window.location.href = "/home"; }
+
 /* Función que formatea un número con comas y los decimales especifícados */
 function formatear(num, dec) { var estilo = { minimumFractionDigits: dec,maximumFractionDigits: dec};
     return num.toLocaleString('en', estilo);

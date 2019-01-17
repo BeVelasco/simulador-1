@@ -4,6 +4,7 @@ if (typeof jQuery === "undefined") {
 
 $.AdminBSB = {};
 $.AdminBSB.options = {
+    numeroAletras:["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"],
     colors: {
         red: '#F44336',
         pink: '#E91E63',

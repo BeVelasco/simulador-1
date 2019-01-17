@@ -69,3 +69,9 @@ function formatear(num, dec) {
     var estilo = { minimumFractionDigits: dec, maximumFractionDigits: dec };
     return num.toLocaleString('en', estilo);
 }
+
+/**=========================================================================
+ * Regresar al menu de productos
+ * =========================================================================
+ */
+function regresar(){ window.location.href = "/home"; }

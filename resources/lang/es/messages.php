@@ -1,4 +1,4 @@
-<?php 
+<?php
 	/*
 	|--------------------------------------------------------------------------
 	| Mensajes para usar dentro del simulador
@@ -258,8 +258,10 @@
 	'noNumerico'       => 'No es numérico',
 	'elValor'          => 'El valor',
 	'vistaNoExiste'    => 'La vista no existe',
+  'guardar'          => 'Guardar',
 	'sinPronostico'    => 'Aún no calcula el pronóstico del producto seleccionado.',
-    
-    //Producto
-    'producto_editarboton'=>'Editar producto'
+  'producto_editarboton'=>'Editar producto',
+  'producto_tktboton'=>'Takt time',
+  'nomina_boton'=>'Nómina',
+  'producto_acumuladoboton'=>'Acumulado inicial'
 ];

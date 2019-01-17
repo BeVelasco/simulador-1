@@ -8,26 +8,23 @@
 		<!-- Task Info -->
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="card" id="divPrueba">
-				<div class="header">
+				<div class="header" style="padding-bottom: 0px;">
 					<h2 style="text-transform: uppercase;">{{ trans_choice('messages.productos', 2) }}</h2><!-- messages.productos -->
-					<ul class="header-dropdown m-r--5">
-						<li class="dropdown">
-							<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-								<i class="material-icons" id="paso1Guia" onclick="javascript:quitarPopover('#paso1Guia');">more_vert</i>
-							</a>
-							<ul class="dropdown-menu pull-right">
+    	               <div class="sm-8 align-right">
+							<ul class="toolbar-form" style="top: -20px;position: relative;">
 								<li>
-									<a 	
+									<button class="btn bg-blue waves-effect"	
+                                        type          = "button"
 										data-toggle   = "modal"
 										data-target   = "#addProduct"
 										data-backdrop = "static"
 										data-keyboard = "false"
 									>
 										{{ __('messages.agregarProducto')}} <!-- messages.agregarProducto -->
-									</a>
+									</button>
 								</li>
 								<li>
-									<a 
+									<button class="btn bg-blue waves-effect"
 										type          = "button"
 										data-toggle   = "modal"
 										data-target   = "#addUnidaMedida"
@@ -35,13 +32,13 @@
 										data-keyboard = "false""
 									>
 										{{ __('messages.agregarUM')}}<!-- messages.agregarUM -->
-									</a>
+									</button>
 								</li>
 							</ul>
-						</li>
-					</ul>
+                        </div>
 				</div>
 				<div class="body">
+                    
 					<div class="table-responsive">
 						<table class="table table-hover dashboard-task-infos">
 							<thead>
@@ -67,11 +64,15 @@
 										</td>
 										<td> {{$producto -> created_at -> diffForHumans()}}</td>
 										<td>
-										<a href="javascript:comenzarSimulador('{{ $producto->id }}');">
-												<button type="button" class="btn bg-black waves-effect waves-light">
-													{{ __('messages.iniSimulador') }}
-												</button>
-											</a>
+                                            <div class="dropdown">
+                                                <a href="#" data-toggle="dropdown" class="btn bg-black waves-effect waves-light dropdown-toggle">Ir a ...<b class="caret"></b></a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/simulador/inicio');">{{ __('messages.iniSimulador') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/tkt/editarInicio');">{{ __('messages.producto_tktboton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/nomina/editarInicio');">{{ __('messages.nomina_boton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/acumulado/editarInicio');">{{ __('messages.producto_acumuladoboton') }}</a></li>
+                                                </ul>
+                                            </div>
 										</td>
 									</tr>
 								@endforeach

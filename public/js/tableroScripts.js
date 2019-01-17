@@ -1,6 +1,6 @@
 /**======================================================================
  * Función Menu principal
- * @author Jaiem Vazquez Dic 2018
+ * @author Jaime Vazquez Dic 2018
  * ======================================================================
  */
 $(function () {
@@ -93,13 +93,13 @@ $(function () {
 	/* ultimas actividades */
 	$(".timeline").timeline({
 		data:   [
-		{date: new Date(2014,2,15), type: "someType", title: "Event Title 1", description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"},
-		{date: new Date(2014,2,12), type: "someType", title: "Event Title 2", description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"},
-		{date: new Date(2014,3,5), type: "someType", title: "Event Title 3", description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"},
-		{date: new Date(2014,4,2), type: "someType", title: "Event Title 4", description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"},
-		{date: new Date(2014,4,9), type: "someType", title: "Event Title 5", description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"},
-		{date: new Date(2014,3,23), type: "someType", title: "Event Title 6", description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"},
-		{date: new Date(2014,5,20), type: "someType", title: "Event Title 6", description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur"}
+		{date: new Date(2018,2,12), type: "someType", title: "Registro 1", description: "Registro de datos"},
+		{date: new Date(2018,2,15), type: "someType", title: "Registro 2", description: "Registro de datos"},
+		{date: new Date(2018,3,5), type: "someType", title: "Registro 3", description: "Registro de datos"},
+		{date: new Date(2018,4,2), type: "someType", title: "Registro 4", description: "Registro de datos"},
+		{date: new Date(2018,4,9), type: "someType", title: "Registro 5", description: "Registro de datos"},
+		{date: new Date(2018,3,23), type: "someType", title: "Registro 6", description: "Registro de datos"},
+		{date: new Date(2018,5,20), type: "someType", title: "Registro 7", description: "Registro de datos"}
 		],
 		height: 600
 	});

@@ -112,9 +112,9 @@ class SimuladorController extends Controller
 		} else {
 			/* Data por deafult, mientras el simulador está en pruebas*/
 			$data = [
-				[ "Ingredientes por platillo para 5 comidas", 5, 1, 53,52.80],
+				/*[ "Ingredientes por platillo para 5 comidas", 5, 1, 53,52.80],
 				[ "Mano de Obra", 6, 1, 53,52.80],
-				[ "Empaque/Presentación", 7, 1, 53,52.80],
+				[ "Empaque/Presentación", 7, 1, 53,52.80],*/
 			];
 			/* Al ser la primer vista aún no se muestra la columna costo por ingrediente y se elimina del arrelo */
 			$cols            = $this -> colHeaders;

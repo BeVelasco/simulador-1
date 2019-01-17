@@ -4,7 +4,7 @@
             <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
             <a href="javascript:void(0);" class=""></a>
 			<a class="bars toggle"><span></span></a>
-            <a class="navbar-brand" href="../../index.html">SIMULADOR v1.0</a>
+            <a class="navbar-brand" href="#">SIMULADOR v1.0</a>
         </div>
         <div class="collapse navbar-collapse" id="navbar-collapse">
 			<div class="header-right">

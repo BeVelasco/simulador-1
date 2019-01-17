@@ -5,11 +5,11 @@
 
 		<ul class="first-nav">
 		  <li class="devices">
-			
+			<a href="/noticias1">Noticias</a>
 		  </li>
 		  <li class="asesorias">
-			<a href="#">Asesorías</a>
-			<ul>
+			<a href="/simulador/tutoriales">Asesorías</a>
+			<!--<ul>
 			  <li>
 				<a href="#">Clothes</a>
 				<ul>
@@ -43,7 +43,7 @@
 			  <li>
 				<a href="#">Grocery</a>
 			  </li>
-			</ul>
+			</ul>-->
 		  </li>
 		  <li class="capacitacion">
 			<a href="#">Capacitación</a>
@@ -86,6 +86,7 @@
 		  <li class="simulador">
 			<a href="#">Simulación</a>
 			<ul>
+                <li class="devices"><a href="/inicio">Tablero</a></li>
 			  <li><a href="/home">Inicio</a></li>
 			  <li><a href="/mercadotecnia">Mercadotecnia</a></li>
 			  <li><a href="#">Producción</a></li>

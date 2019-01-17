@@ -258,6 +258,7 @@
 	'noNumerico'       => 'No es numérico',
 	'elValor'          => 'El valor',
 	'vistaNoExiste'    => 'La vista no existe',
+	'sinPronostico'    => 'Aún no calcula el pronóstico del producto seleccionado.',
     
     //Producto
     'producto_editarboton'=>'Editar producto'

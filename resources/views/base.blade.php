@@ -61,7 +61,8 @@
 			@include('simulador.menu.leftSideBar')
 		</section>
 	<section class="content">
-			@yield('content')
+        @if(Session::has('error')) @include('simulador.dashboard.alertas.error') @endif
+        @yield('content')
 	</section>
 	</div>
 </body>

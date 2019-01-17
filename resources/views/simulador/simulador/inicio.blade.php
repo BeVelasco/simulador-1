@@ -14,9 +14,10 @@
 	<div class="card">
 		<div class="header bg-pink">
 			<h2>
-				{{ Session::get('prodSeleccionado') -> idesc }}
+				@php $idProducto = Session::get('prodSeleccionado'); @endphp
+				{{ producto($idProducto, 'idesc') }}
 				<small>
-					Para: {{ Session::get('prodSeleccionado') -> porcionpersona }} {{ Session::get('prodSeleccionado') -> catum -> idesc }}
+					Para: {{ producto($idProducto,'porcionpersona') }} {{ catum(producto($idProducto,'idcatnum1'), 'idesc') }}
 				</small>
 			</h2>
 		</div>
@@ -70,7 +71,7 @@
 											{{ __('messages.sumaCP') }}:
 										</th>
 										<td>
-											<span id="sumCI">@if ( !Session::get('sumCI') == null ) {{ Session::get('sumCI') }}@endif</span>
+											$ <span id="sumCI">@if ( !Session::get('sumCI') == null ) {{ Session::get('sumCI') }}@endif</span>
 										</td>
 									</tr>
 									<tr class="bg-teal">
@@ -79,7 +80,7 @@
 										</th>
 										<td>
 											<span id="recetaPara">
-												{{ Session::get('prodSeleccionado') -> porcionpersona }} {{ Session::get('prodSeleccionado') -> catum -> idesc }}
+												{{ producto($idProducto,'porcionpersona') }} {{ catum(producto($idProducto,'idcatnum1'), 'idesc') }}
 											</span>
 										</td>
 									</tr>

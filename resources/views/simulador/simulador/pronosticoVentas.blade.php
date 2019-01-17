@@ -1,6 +1,7 @@
 @extends('base')
 
 @section('content')
+@php $idProducto = Session::get('prodSeleccionado'); @endphp
 <meta name = "sinCalculo" content = "{{ __('messages.sincalculo') }}">
 <meta name = "porcentaje100" content = "{{ __('messages.porcentaje100') }}">
 <meta name = "pregunta" content = "{{ __('messages.mesInicioNego') }}">
@@ -14,7 +15,7 @@
 					<h2>
 						{{ __('messages.pronVen') }}
 						<small>
-							{{ Session::get('prodSeleccionado') -> idesc }} para: {{ Session::get('prodSeleccionado') -> porcionpersona }} {{ Session::get('prodSeleccionado') -> catum -> idesc }}
+							{{ producto($idProducto,'idesc') }} para: {{ producto($idProducto,'porcionpersona') }} {{ catum(producto($idProducto,'idcatnum1'),'idesc') }}
 						</small>
 					</h2>
 				</div>

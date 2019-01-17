@@ -55,12 +55,12 @@ class SimuladorController extends Controller
 	 * @author Emmanuel Hernández Díaz
 	 * ====================================================================
 	*/
-	public function inicio(Request $request)
-	{
+	public function inicio(Request $request){
+		$idProducto = Session::get('prodSeleccionado');
 		/* El usuario debe estar loggeado */
 		if ( Auth::check() ){
 			/* El usuario debe tener un producto seleccionado */
-			if ( Session::get('prodSeleccionado') == null ){
+			if ( $idProducto == null ){
 				return redirect('/home');
 			} else {
 				/* Obtengo el avance que lleva el usuario para saber que vista mostrar 
@@ -68,16 +68,19 @@ class SimuladorController extends Controller
 				 * 1 - Pronostico de ventas
 				 * 2 - Inventario
 				*/
-				$avance = obtenAvance(Auth::user() ->id, Session::get('prodSeleccionado')->id);
+				$avance = obtenAvance(Auth::user() ->id, $idProducto);
+				eliminaVariablesSesion();
 				switch ($avance) {
 					case 1:
 						return view('simulador.simulador.pronosticoVentas');
 						break;
 					case 2:
-						$pronostico = Pronostico::where('id_user', Auth::user() -> id)
-												->where('id_producto', Session::get('prodSeleccionado.id'))
-												->first();
-						$costoUnitario = obtenCostoUnitario(Session::get('prodSeleccionado.id'));
+						$pronostico = obtenPronostico(Auth::user() -> id, $idProducto);
+						if ($pronostico == null){
+							$request->session()->flash('error', Lang::get('messages.sinPronostico'));
+							return redirect('home');
+						}
+						$costoUnitario = obtenCostoUnitario($idProducto);
 						Session::put('pronostico', $pronostico);
 						Session::put('costoUnitario', $costoUnitario);
 						return view('simulador.inventario.index');
@@ -96,13 +99,11 @@ class SimuladorController extends Controller
 	 * cabeceras y formato de filas.
 	 * ==============================================================
 	*/
-	public function getData(Request $request)
-	{
+	public function getData(Request $request){
 		/* Compruebo que no se haya hecho el calculo con anterioridad
 		 * para evitar que se agreguen datos duplicados en jExcel  */
 		$msg  = Session::get('PBBDData');
-		if ( $msg != null ) 
-		{
+		if ( $msg != null ) {
 			/* Obtener los datos guardados en sesion */
 			$data            = $msg;
 			$cols            = $this -> colHeaders;
@@ -149,85 +150,59 @@ class SimuladorController extends Controller
 	 * @author Emmanuel Hernández Díaz
 	 * ==============================================================
 	*/
-	public function calcularPrecioVenta(Request $request)
-	{
+	public function calcularPrecioVenta(Request $request){
 		/* Mensajes personalizados cuando hay errores en la validación */
 		$messages = [
 			'required' => 'El campo es obligatorio',
 			'numeric'  => 'El valor debe ser numérico',
 			'between'  => 'El valor de PBBD debe estar entre 1 y 99',
 		];
-
 		/* Reglas de validacion */
 		$rules = [
 			'jExcel' => ['required'],
 			'PBBD'   => ['required','numeric','between:1,99']
 		];
-
 		/* Se validan los datos con las reglas y mensajes especificados */
 		$validate = \Validator::make($request -> all(), $rules, $messages);
-
 		/* Si la validación falla, regreso solamente el primer error. */
-		if ($validate -> fails())
-		{
-			return response()->json([
-				'status' => 'error',
-				'msg'    => $validate -> errors() -> first()]);
-		}
-
+		if ($validate -> fails()){ return response()->json(['status' => 'error', 'msg' => $validate -> errors() -> first()]); }
 		/* Guardo los datos enviados por el usuario en las variables */
 		$jExcel = $request -> jExcel;
 		$PBBD   = $request -> PBBD;
-
 		/* Obtengo el largo del arreglo */
 		$largo = count($jExcel);
-
 		/* Suma de todos los Costos de Ingredientes */
 		$sumCI = 0;
-
 		/* Calculo el costo del ingrediente (Cantidad/Unidad * Precio Unitario) */
-		for ($i=0;$i<$largo;$i++)
-		{
+		for ($i=0;$i<$largo;$i++){
 			$costoIng      = $jExcel[$i][1] * substr($jExcel[$i][4],2);
-
 			/* Guardo la suma de todos los costos por ingredientes */
 			$sumCI += $costoIng;
-
 			/* Guardo en la posición 5 el nuevo valor */
 			$jExcel[$i][5] = '$ '. number_format($costoIng, 2, '.', ',');
 		}
-		
 		/* Agrego una variable a la sesión para saber que ya se hizo el calculo */
 		Session::put('PBBDData', $jExcel);
-
 		/* Variable para conservar el valor de Beneficio Bruto Deseado y mostrarlo en la vista */ 
 		Session::put('PBBD', $PBBD);
-
 		/* Calculo el costo unitario, antes de convertir a cadena sumCI */
-		$porcionPersona  = Session::get('prodSeleccionado') -> porcionpersona;
-		$unidadMedida    = Session::get('prodSeleccionado') -> catum -> idesc;
+		$porcionPersona  = producto(Session::get('prodSeleccionado'),'porcionpersona');
+		$unidadMedida    = catum(producto(Session::get('prodSeleccionado'),'idcatnum1'), 'idesc');
 		$costoUnitario   = $sumCI / $porcionPersona;
 		$costoPrimoVenta = 100 - $PBBD;
-
 		/* Calculo el precio de venta */
 		$precioVenta     = number_format((100*$costoUnitario) / $costoPrimoVenta, 2, '.', ',');
 		Session::put('precioVenta', $precioVenta);
-
 		/* Variable para guardar la suma de todos los costos de ingredientes formato $ 0,000.00*/
-		$sumCI ='$ '.number_format($sumCI, 2, '.', ',');
-
+		$sumCI = number_format($sumCI, 2, '.', ',');
 		/* Guardo la suma de todos los costos de ingredientes ne la sesion */
 		Session::put('sumCI', $sumCI);
-
 		/* Variable para guardar el costo uniario => Costo por ingrediente/porciones */
 		$costoUnitario = '$ '.number_format($costoUnitario, 2, '.', ',');
 		Session::put('costoUnitario', $costoUnitario);
-
 		/* Guardo si los datos han sido calculados o no */
 		Session::put('datosCalculados', true);
-
 		$graphicData = $this -> getGraphicData($PBBD);
-
 		/* Regreso la respuesta con los datos para el jExcel */
 		return response() -> json([
 			'status'               => 'success',
@@ -256,8 +231,7 @@ class SimuladorController extends Controller
 	 * @author Emmanuel Hernández Díaz
 	 * ==============================================================
 	*/
-	public function getGraphicData($PBDD)
-	{
+	public function getGraphicData($PBDD){
 		$costoPrimoVenta = 100 - $PBDD;
 		$graphicData     = '[
 			{"label":"'.Lang::get('messages.PBBB').'","data":'.$PBDD.',"color":"#E91E63"  },
@@ -266,14 +240,13 @@ class SimuladorController extends Controller
 		return $graphicData;
 	}
 
-	public function siguiente(Request $request)
-	{
+	public function siguiente(Request $request){
 		/* EL id indica que vista se va a dibujar*/
 		$id_siguiente = $request -> id;
 		if ( $id_siguiente == 2 ){
 			/* La segunda vista es el Pronostico de ventas*/
 			if($request -> ajax()){
-				$id_producto     = Session::get('prodSeleccionado') -> id;
+				$id_producto     = Session::get('prodSeleccionado');
 				$id_user         = Auth::user() -> id;
 				$data            = Session::get('PBBDData');
 				$dataPrecioVenta = [
@@ -288,13 +261,9 @@ class SimuladorController extends Controller
 				if ( $datosGuardados == "true"){
 					/* Si no hay errores agrego la etapa como completa */
 					$etapa = terminarEtapa($id_user, $id_producto, 1);
-				} else {
-					return response() -> json(['status' => 'error', 'message' => $datosGuardados], 500);
-				}
+				} else { return response() -> json(['status' => 'error', 'message' => $datosGuardados], 500); }
 				return response() -> json(["message" => "ok"],200); 
-			} else {
-				return $view;
-			} 
+			} else { return $view; } 
 		}
 	}
 }

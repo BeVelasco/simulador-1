@@ -271,10 +271,15 @@ function showVista(vista) {
 		break;
 		case 'Inventario' :
 			if (sumasProyeccion[0] != 100) { muestraAlertaError(globales.porcentaje100); return; }
+			var porcentajeMeses = [];
+			$(".classInputPorcentaje").each(function (index) {
+			    porcentajeMeses[index] = Number($(this).val());
+			});
 			variables = {
-				tasaCreVen: Number($("#txtTasaCreVen").val()),
-				tasaCrePob: Number($("#txtTasaCrePob").val()),
-				uniVenAnu : sumasProyeccion[1],
+				tasaCreVen     : Number($("#txtTasaCreVen").val()),
+				tasaCrePob     : Number($("#txtTasaCrePob").val()),
+				uniVenAnu      : sumasProyeccion[1],
+				porcentajeMeses: porcentajeMeses
 			};
 		break;
 		default: return;
@@ -370,7 +375,7 @@ function hacerProyeccion()
 			globales.meses = data.meses;
 			globales.precioVenta = JSON.parse(data.precioVenta);
 			$(".spanPrecioVenta").each(function() {
-				$(this).html('$ '+ globales.precioVenta.precioVenta);
+				$(this).html('$ '+ globales.precioVenta);
 			});
 			sumaVentasMensuales();//Eliminar despues de pruebas
 		},
@@ -414,7 +419,6 @@ function sumaVentasMensuales(){
 	sumasProyeccion = {0: 0,1: 0,2: 0,3: 0};
 	/* Si no tiene valor no hace nada, si tiene algo lo suma */	
 	$(".classInputPorcentaje").each(function() { if ($(this).val() != '') sumasProyeccion[0] += parseFloat($(this).val()); });
-
 	$(".spanUnidad").each(function(index) {
 		i2 = index+1;
 		/* Obtengo y guardo el porcentaje */
@@ -422,11 +426,11 @@ function sumaVentasMensuales(){
 		/* Inserto el procentaje en el HTML */
 		$(this).html(globales.unidades[i2].toLocaleString('en', estilo));
 		/* Obtengo el total y lo guardo */
-		globales.total[i2] = globales.unidades[i2] * globales.precioVenta.precioVenta;
+		globales.total[i2] = globales.unidades[i2] * globales.precioVenta;
 		/* Inserto el total en el HTML */
 		$('#spanTotal' + i2).html('$ ' + globales.total[i2].toLocaleString('en', estilo));
 		/* Obtengo el costo unitario y lo muesto en el HTML*/
-		globales.costoUnitario[i2] = globales.precioVenta.costoUnitario.replace('$ ', '') * parseFloat($("#spanUnidad" + (i2)).text());
+		globales.costoUnitario[i2] = globales.precioVenta * parseFloat($("#spanUnidad" + (i2)).text());
 		$('#spanCostoUnitario' + i2).html('$ ' + globales.costoUnitario[index + 1].toLocaleString('en', estilo));
 		/* Obtengo las sumas para mostrarlas al final de la tabla */
 		if (globales.unidades[i2] != '') sumasProyeccion[1]      += parseFloat(globales.unidades[i2]);
@@ -434,6 +438,7 @@ function sumaVentasMensuales(){
 		if (globales.costoUnitario[i2] != '') sumasProyeccion[3] += parseFloat(globales.costoUnitario[i2]);
 	});
 	/* Si la suma sobrepasa el 100% -> rojo, si no -> negro*/
+	sumasProyeccion[0] = formatear(sumasProyeccion[0],2);
 	if ( (sumasProyeccion[0] > 100) || (sumasProyeccion[0]<100) ){color = "red";} else { color = "#4CAF50";}
 	/* Se applica el estilo */
 	$(".claseSuma").each(function(ind){
@@ -527,4 +532,8 @@ function calcularMercados(){
 			$("#labeluniConsPot").html(redondear(mercados.consumoAnual) + ' ');
 		}
 	}
+}
+/* Función que formatea un número con comas y los decimales especifícados */
+function formatear(num, dec) { var estilo = { minimumFractionDigits: dec,maximumFractionDigits: dec};
+    return num.toLocaleString('en', estilo);
 }

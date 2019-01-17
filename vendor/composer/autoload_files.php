@@ -30,4 +30,5 @@ return array(
     '801c31d8ed748cfa537fa45402288c95' => $vendorDir . '/psy/psysh/src/functions.php',
     '0d8253363903f0ac7b0978dcde4e28a0' => $vendorDir . '/beyondcode/laravel-dump-server/helpers.php',
     '8fde5feda9697fe0ee53a3938c839fb0' => $baseDir . '/app/Helpers/Helper.php',
+    '0cceb7af865487cccc555e662f898879' => $baseDir . '/app/Helpers/FuncionesHelper.php',
 );

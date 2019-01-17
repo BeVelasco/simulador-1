@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('content')
-
+@php $idProducto = Session::get('prodSeleccionado'); @endphp
 <div class="card" id="baseInventario">
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -9,7 +9,7 @@
 				<h2>
 					{{ trans_choice('messages.inventario', 2) }}
 					<small>
-						{{ Session::get('prodSeleccionado') -> idesc }} para: {{ Session::get('prodSeleccionado') -> porcionpersona }} {{ Session::get('prodSeleccionado') -> catum -> idesc }}
+						{{ producto($idProducto,'idesc') }} para: {{ producto($idProducto,'porcionpersona') }} {{ catum(producto($idProducto,'idcatnum1'),'idesc') }}
 					</small>
 				</h2>
 			</div>

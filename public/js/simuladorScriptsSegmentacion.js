@@ -528,3 +528,9 @@ function calcularMercados(){
 		}
 	}
 }
+
+/**=========================================================================
+ * Regresar al menu de productos
+ * =========================================================================
+ */
+function regresar(){ window.location.href = "/home"; }

@@ -21,7 +21,12 @@ Route::group(['middleware' => ['auth']], function() {
     /*Panel de control*/
     /* Rutas del mensajero*/
     Route::get('/inicio', function () {
-		return view('/simulador/dashboard/inicio');
+		return view('/noticias');//return view('/simulador/dashboard/inicio');
+	});
+    
+    /* Rutas de noticias */
+    Route::get('/noticias1', function () {
+		return view('/noticias');
 	});
     
 	/* Rutas del dashboard */
@@ -29,11 +34,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/dashboard', 'DashboardController@dashboard') -> name('dashboard');
 	Route::post('addUnidadMedida', 'DashboardController@addUnidadMedida') -> name('addUnidadMedida');
 	Route::post('addProducto', 'DashboardController@addProducto') -> name('addProducto');
-	Route::post('inciarSimulador', 'DashboardController@iniciarSimulador') -> name('iniciarSimulador');
+	Route::post('iniciarSimulador', 'DashboardController@iniciarSimulador') -> name('iniciarSimulador');
 
 	/* Rutas del simulador */
     //Tablero
 	Route::get('/simulador/inicio', 'SimuladorController@inicio') -> name('inicioSimulador');
+    
     //Tutoriales
     Route::get('/simulador/tutoriales', function () {
 		return view('/simulador/tutoriales/inicio');

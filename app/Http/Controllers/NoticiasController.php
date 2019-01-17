@@ -24,9 +24,6 @@ class DashboardController extends Controller
 		$totProd   = User::find($idUser) -> productos() -> count();
 		/* Obtengo las UM ordenadas */
 		$um        = Catum::all() -> sortBy('idesc');
-        
-        /* Menu de modulos del producto */
-        
 
 		/* Return the view withe some needed variables */
 		return view('home',[

@@ -19,6 +19,21 @@
 					</h2>
 				</div>
 				<div class="body">
+                    <div class="row">
+        				<div class="sm-8 align-right" id="divBtnSiguiente">
+                            <ul class="toolbar-form">
+                   				<li>
+                					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:regresar();">
+                						<i class="material-icons">arrow_back</i>
+                						<span>{{ __('messages.regresar') }}</span>
+                					</button>
+                				</li>
+                			</ul>
+        				</div>
+        			</div>
+                    <div class="row">
+                        &nbsp;
+                    </div>
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs tab-nav-right" role="tablist">
 						<li role="presentation" >

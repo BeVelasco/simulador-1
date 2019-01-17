@@ -63,5 +63,5 @@ function pintaTablas(data)
  * =========================================================================
  */
 function regresar(){
-    window.location.href = "/productomenu";
+    window.location.href = "/home";
 }

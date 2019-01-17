@@ -44,7 +44,7 @@ class TktController extends Controller
 			{
 				return redirect('/productomenu');
 			} else {
-			     return view('/simulador/tkt/inicio');
+			     return view('/simulador/tkt/tkt');
 			}
 		} else {
 			return view('auth.login');

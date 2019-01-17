@@ -216,10 +216,10 @@ function agregarProductoTable($num, $desc, $porcion, $idProd, $idUser, $url)
 	row.insertCell(5).innerHTML = $url;
 }
 
-/* Función que inicia el simulador, obteniendo el avance en el que se encuentra el usuario */
-/*function comenzarSimulador($iP){ 
+/* Funciónq ue inicia el simulador, obteniendo el avacne en el que se ecnuentra el usuario */
+function comenzarSimulador($iP){ 
 	$.ajax({
-		url : 'iniciarSimulador',
+		url : 'inciarSimulador',
 		type: 'POST',
 		data: {
 			iP: $iP,
@@ -227,39 +227,10 @@ function agregarProductoTable($num, $desc, $porcion, $idProd, $idUser, $url)
 		dataType: 'JSON',
 		success: function (data) {
 			if (data.status == 'success'){ 
-				/* Redirijo al usuario a la página principal del simulador *
+				/* Redirijo al usuario a la página principal del simulador */
 				window.location.href = "/simulador/inicio";
 			} else { console.log(data); }
 		},
 		error: function (data){ console.log(data); }
-	});
-}*/
-
-/* =============================================================
- * Atiende al menu de botones
- * 
- * ============================================================= */
-function linkmenu($id,$url,$href)
-{
-	$.ajax({
-		url : $url,
-		type: 'POST',
-		data: {
-			iP: $id,
-		},
-		dataType: 'JSON',
-		/* Si no hay errores regresa SUCCESS, inclusive si existen errores de validación y/o de BD */
-		success: function (data) {
-			if (data.status == 'success')
-			{ 
-				/* Redirijo al usuario a la página principal del simulador */
-				window.location.href = $href;
-			} else {
-				console.log(data);
-			}
-		},
-		error: function (data){
-			console.log(data);
-		}
 	});
 }

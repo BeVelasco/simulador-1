@@ -258,14 +258,10 @@
 	'noNumerico'       => 'No es numérico',
 	'elValor'          => 'El valor',
 	'vistaNoExiste'    => 'La vista no existe',
-    'guardar'          => 'Guardar',
-
-    //Producto
-    'producto_editarboton'=>'Editar producto',
-    'producto_tktboton'=>'Takt time',
-    'nomina_boton'=>'Nómina',
-    'producto_acumuladoboton'=>'Acumulado inicial'
-    
-
-
+  'guardar'          => 'Guardar',
+	'sinPronostico'    => 'Aún no calcula el pronóstico del producto seleccionado.',
+  'producto_editarboton'=>'Editar producto',
+  'producto_tktboton'=>'Takt time',
+  'nomina_boton'=>'Nómina',
+  'producto_acumuladoboton'=>'Acumulado inicial'
 ];

@@ -1,6 +1,6 @@
 <?php
 
-use App\Etapa, App\Costeo, Carbon\Carbon, App\Pronostico, App\Inventario;
+use App\Etapa, App\Costeo, Carbon\Carbon, App\Pronostico, App\Inventario, App\VentaMensual;
 
 /** 
  * =====================================================
@@ -39,21 +39,10 @@ function terminarEtapa($id_user, $id_producto, $seccion) {
 	} else { return "Datos erróneos"; }
 }
 
-/* Obtiene el avance del usuario (Etapa en la que se encuentra) */
-function obtenAvance($id_user, $id_producto){
-	$avance = Etapa::where('id_user', $id_user)
-		-> where('id_producto', $id_producto)
-		-> where('realizado', 1) 
-		-> orderBy('updated_at', 'DESC')
-		-> pluck('seccion')
-		-> first();
-	return $avance;
-}
-
 function guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta){
 	/* Verifico que el usuario esté logeado y corresponda su id */
 	if ( (Auth::check()) && (Auth::user() -> id == $id_user) ){
-		/* Verifico que se hayan mandado todos los datos */
+        /* Verifico que se hayan mandado todos los datos */
 		if ( ($id_producto || null) && ($data || null) && ($PBBD || null)){
 			try{
 				$existe = Costeo::where('id_user', $id_user)
@@ -79,12 +68,6 @@ function guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta){
 			return "true";
 		} else { return "Datos incompletos"; }
 	} else { return "Datos erróneos"; }
-}
-
-/* Finción que obtiene el precio de venta de un producto mediante su Id */
-function obtenPrecioVenta($idProducto){
-	$dataPrecioVenta = Costeo::whereId_producto(4)->pluck('dataPrecioVenta');
-	return $dataPrecioVenta;
 }
 
 /**
@@ -347,9 +330,10 @@ function guardaEstimDemanda($request){
 function guardaProyeccionVentas($request){
     if (Auth::check()){
         $rules = [
-            'variables.tasaCreVen' => ['required', 'numeric','between:0.01,100'],
-            'variables.tasaCrePob' => ['required', 'numeric','between:0.01,100'],
-            'variables.uniVenAnu'  => ['required', 'numeric']
+            'variables.tasaCreVen'      => ['required', 'numeric','between:0.01,100'],
+            'variables.tasaCrePob'      => ['required', 'numeric','between:0.01,100'],
+            'variables.uniVenAnu'       => ['required', 'numeric'],
+            'variables.porcentajeMeses' => ['required']
         ];
         $atributos = [
             'variables.tasaCreVen'    => Lang::get('messages.tasaCreVen'),
@@ -359,7 +343,7 @@ function guardaProyeccionVentas($request){
         $messages = [
             'required' => 'El valor :attribute es requerido',
             'numeric'  => 'El valor de :attribute debe ser numérico',
-            'between'   => 'El valor de :attribute debe estar entre 0.01 y 100',
+            'between'  => 'El valor de :attribute debe estar entre 0.01 y 100',
         ];
         /* Se validan los datos */
         $validator = \Validator::make($request->all(), $rules, $messages);
@@ -368,10 +352,14 @@ function guardaProyeccionVentas($request){
         if ($validator -> fails()) return $validator -> errors() -> first();
         /* Guarda los datos en la variable */
         $proyeccionVentas = [
-            "tasaCreVen" => $request -> variables["tasaCreVen"],
-            "tasaCrePob" => $request -> variables["tasaCrePob"],
-            "uniVenAnu"  => $request -> variables["uniVenAnu"],
+            "tasaCreVen"      => $request -> variables["tasaCreVen"],
+            "tasaCrePob"      => $request -> variables["tasaCrePob"],
+            "uniVenAnu"       => $request -> variables["uniVenAnu"],
+            "porcentajeMeses" => $request -> variables["porcentajeMeses"],
         ];
+        $respuesta = calculaVentasMensuales($proyeccionVentas["porcentajeMeses"]);
+        /* Verifico que no haya errores al calcular las ventas mensuales */
+        if ($respuesta != "true") return $respuesta;
         /* Si la variable ya existe la elimino para evitar errores */
         if (!is_null(Session::get('proyeccionVentas'))) Session::forget('proyeccionVentas');
         /* Si todo es correcto se guarda en la sesión y se regresa true */
@@ -385,12 +373,12 @@ function guardaPronosticoVenta() {
         /* Variable para regresar el status al guardar en la BD */
         $status = null;
         /* Busco si existe algun calculo previo para el producto que selecciono el usuario*/
-        $pronostico = Pronostico::where(['id_producto' => Session::get('prodSeleccionado')->id])->first();
+        $pronostico = Pronostico::where('id_producto', Session::get('prodSeleccionado'))->first();
         /* Si no se encontró se creará uno nuevo */
         if ($pronostico == null){
             $pronostico                = New Pronostico;
             $pronostico -> id_user     = Auth::user() -> id;
-            $pronostico -> id_producto = Session::get('prodSeleccionado')->id;
+            $pronostico -> id_producto = Session::get('prodSeleccionado');
         }	
         /* Si se encontró solo se actualizan los datos con los nuevos*/
         $pronostico -> regionObjetivo      = json_encode(Session::get('regionObjetivo'));
@@ -409,7 +397,7 @@ function guardaPronosticoVenta() {
         /* Se guarda en la base de datos el registro */
         $pronostico -> save();
         $status = "true";
-        $pronostico = Pronostico::where(['id_user'=>Auth::user()->id,'id_producto'=>Session::get('prodSeleccionado')->id])-> first();
+        $pronostico = Pronostico::where(['id_user'=>Auth::user()->id,'id_producto'=>Session::get('prodSeleccionado')])-> first();
         Session::put('pronostico', $pronostico);
     } catch (Exception $e) { 
         $status = $e -> getMessage(); 
@@ -455,13 +443,13 @@ function guardaInventario($request){
     /* Si hubo algún error se regresa el mensaje para mostrarlo al usuario */ 
     if ($validator -> fails()) return $validator -> errors() -> first();
     try{
-        $inventario = Inventario::where("id_producto", Session::get('prodSeleccionado.id'))
+        $inventario = Inventario::where("id_producto", Session::get('prodSeleccionado'))
                             ->where("id_user", Auth::user() -> id)
                             ->first();
         if ($inventario == null){
             $inventario = New Inventario;
             $inventario -> id_user       = Auth::user() -> id;
-            $inventario -> id_producto   = Session::get('prodSeleccionado.id');
+            $inventario -> id_producto   = Session::get('prodSeleccionado');
         }
         $inventario -> ventasAnuales = $request -> uniVenAnu;
         $inventario -> venPromMen    = $request -> venPromMen;
@@ -470,5 +458,65 @@ function guardaInventario($request){
         $inventario -> valInvFinDes  = $request -> valInvFinDes;
         $inventario -> save();
         return "true";
-    } catch (Exception $e) { return $e->getMessage();	}
+    } catch (Exception $e) { return $e->getMessage(); }
+}
+
+/* Función para calcular las ventas mensuales */
+function calculaVentasMensuales($porcMeses){
+    $totalUnidades = Session::get('estimacionDemanda.consumoAnual');
+    $precioVenta   = obtenPrecioVenta(Session::get('prodSeleccionado'));
+    /* Verifico que la suma de porcentajes sea igual a 100 */
+    if (array_sum($porcMeses) != 100) return Lang::get('messages.porcentaje100');
+    for($i=0;$i<12;$i++){
+        $a      = $i+1;
+        $vM[$i] = [
+            "mes"         => Session::get("ventasMensuales.meses.$a"),
+            "porcentaje"  => $porcMeses[$i],
+            "unidades"    => ($totalUnidades * $porcMeses[$i])/100,
+            "precioVenta" => $precioVenta,
+            "total"       => $precioVenta * ($totalUnidades * $porcMeses[$i]),
+        ];
+    }
+    /* Guarda en la sesión las ventas mensuales */
+    $ventasMensuales = Session::get('ventasMensuales');
+    $ventasMensuales["venta"] = $vM;
+    Session::put('ventasMensuales', $ventasMensuales);
+    return "true";
+}
+
+/* Guarda la ventas mensuales en la BD */
+function guardaVentasMensuales(){
+    try {
+        $ventaMensual = VentaMensual::where('id_user', Auth::user() -> id)
+                                    ->where('id_producto', Session::get('prodSeleccionado'))
+                                    ->orderBy('id', 'ASC')
+                                    ->get();
+        $venta        = Session::get('ventasMensuales.venta');
+        /* Si no existen datos en la Bd se crean nuevos */
+        if (count($ventaMensual) == 0){
+            for ($i=0;$i<12;$i++){
+                $ventaMensual = New VentaMensual;
+                $ventaMensual -> id_user = Auth::user() -> id;
+                $ventaMensual -> id_producto = Session::get('prodSeleccionado');
+                $ventaMensual -> mes         = $venta[$i]["mes"];
+                $ventaMensual -> porcentaje  = $venta[$i]["porcentaje"];
+                $ventaMensual -> unidades    = $venta[$i]["unidades"];
+                $ventaMensual -> precioVenta = $venta[$i]["precioVenta"];
+                $ventaMensual -> total       = $venta[$i]["total"];
+                $ventaMensual -> save();
+            }
+            return "true";
+        } else {
+            /* Si eexisten datos solo los actualiza */
+            for ($i=0;$i<12;$i++){
+                $ventaMensual[$i] -> mes         = $venta[$i]["mes"];
+                $ventaMensual[$i] -> porcentaje  = $venta[$i]["porcentaje"];
+                $ventaMensual[$i] -> unidades    = $venta[$i]["unidades"];
+                $ventaMensual[$i] -> precioVenta = $venta[$i]["precioVenta"];
+                $ventaMensual[$i] -> total       = $venta[$i]["total"];
+                $ventaMensual[$i] -> save();
+            }
+            return "true";
+        }
+    } catch (Exception $e) { return $e->getMessage(); }
 }

@@ -155,15 +155,14 @@ class PronosticoVentasController extends Controller
 					$respuesta = guardaPronosticoVenta();
 					/* Si hubo algun error muetro un mensaje */
 					if ($respuesta != 'true') return response() -> json(["message" => $respuesta],400);
-					$guardaEtapa = terminarEtapa(Auth::user()->id,Session::get('prodSeleccionado')->id, 2);
+					/* Guarda o actualiza las ventas mensuales en la BD*/
+					$respuesta = guardaVentasMensuales();
+					/* Si hubo algun error muetro un mensaje */
+					if ($respuesta != 'true') return response() -> json(["message" => $respuesta],400);
+					$guardaEtapa = terminarEtapa(Auth::user()->id,Session::get('prodSeleccionado'), 2);
 					if ($guardaEtapa == "true"){
-						return response() -> json([
-							//'vista' => $vista,
-							'var'   => 'etapa3',
-							'ruta'  => URL::route('inventario'),
-						]);
+						return response() -> json(['var'   => 'etapa3','ruta'  => URL::route('inventario'),]);
 					} else { return response() -> json(["message" => $guardarEtapa], 401);}
-					
 				break;
 				default: 
 					return response() -> json(['message' => Lang::get('messages.vistaNoExiste')]);
@@ -212,11 +211,12 @@ class PronosticoVentasController extends Controller
 			/* Regreso error si la validación falló */
 			if ($validate -> fails()){ return response()->json(['message' => $validate -> errors() -> first()], 400); }
 			$mesInicio = $request -> mesInicio;
-			for ( $i=1;$i<13;$i++ )
-			{
+			for ( $i=1;$i<13;$i++ ){
 				$a[$i]     = $this -> meses[$mesInicio];
 				$mesInicio == 12 ? $mesInicio = 1 : $mesInicio++;
 			}
+			$ventasMensuales['meses'] = $a;
+			Session::put('ventasMensuales', $ventasMensuales);
 			return  response() -> json(['meses' => $a], 200);
 		} else return response() -> json(['message' => 'No autorizado'], 403);
 	}
@@ -250,10 +250,10 @@ class PronosticoVentasController extends Controller
 				'1' => $variables['mercadoPotencial'] * 1,
 				'2' => $variables['mercadoDisponible'] * 1,
 				'3' => $variables['mercadoEfectivo'] * 1,
-				'4' => $variables['mercadoObjetivo'] * 1,
+				'4' => $variables['mercadoObjetivo'] * 1, 
 				'5' => $variables['consumoAnual'] * 1,
 			];
-			$precioVenta = obtenPrecioVenta($idProducto['id']);
+			$precioVenta = obtenPrecioVenta($idProducto);
 			for ( $i=1;$i<4;$i++ ){
 				$proy[$i] = [
 					'1' => ( ( $proy[$i-1][1] * $crePob )/100) +  $proy[$i-1][1],

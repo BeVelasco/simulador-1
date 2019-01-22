@@ -21,7 +21,7 @@ Route::group(['middleware' => ['auth']], function() {
     /*Panel de control*/
     /* Rutas del mensajero*/
     Route::get('/inicio', function () {
-		return view('/noticias');//return view('/simulador/dashboard/inicio');
+		return view('/simulador/dashboard/inicio');
 	});
     
     /* Rutas de noticias */
@@ -103,6 +103,7 @@ Route::group(['middleware' => ['auth']], function() {
     /* Rutas del TKT*/
     Route::get('/tkt/editarInicio', 'TktController@editarInicio') -> name('editarInicio');
     Route::post('/tkt/get_formulacion', 'TktController@get_formulacion') -> name('get_formulacion');
+    Route::post('/tkt/set_formulacion', 'TktController@set_formulacion') -> name('set_formulacion');
     
     /* Rutas de Nomina*/
     Route::get('/nomina/editarInicio', 'NominaController@editarInicio') -> name('editarInicio');
@@ -113,9 +114,13 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/acumulado/editarInicio', 'AcumuladoController@editarInicio') -> name('editarInicio');
     Route::post('/acumulado/get_formulacion', 'AcumuladoController@get_acumulado') -> name('get_acumulado');
     
+    /* Reportes*/
+    Route::get('/reportes/perdidasganancias', 'ReportesController@perdidasganancias');
+    Route::post('/reportes/get_perdidasganancias', 'ReportesController@get_perdidasganancias') -> name('get_perdidasganancias');
+    
 });
 Route::group(['middleware' => ['web']], function ()
 {
-	Route::resource('/prueba','PruebaController');
-	Route::post('/grabar', 'PruebaController@store') -> name('grabarprueba');
+	/*Route::resource('/prueba','PruebaController');
+	Route::post('/grabar', 'PruebaController@store') -> name('grabarprueba');*/
 });

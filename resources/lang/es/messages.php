@@ -260,8 +260,8 @@
 	'vistaNoExiste'    => 'La vista no existe',
   'guardar'          => 'Guardar',
 	'sinPronostico'    => 'Aún no calcula el pronóstico del producto seleccionado.',
-  'producto_editarboton'=>'Editar producto',
-  'producto_tktboton'=>'Takt time',
+  'productoproduccion_boton'=>'Insumos producción',
+  'tkt_boton'=>'Takt time',
   'nomina_boton'=>'Nómina',
   'producto_acumuladoboton'=>'Acumulado inicial'
 ];

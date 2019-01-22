@@ -21,10 +21,10 @@ class CreateVentasMensualesTable extends Migration
             $table -> integer('id_producto') -> unsigned(11) -> nullable();
             $table -> foreign('id_producto') -> references('id') -> on('productos');
             $table -> string('mes');
-            $table -> double('porcentaje', 14, 6);
-            $table -> double('unidades', 14, 6);
-            $table -> double('precioVenta', 14, 6);
-            $table -> double('total', 30, 6);
+            $table -> double('porcentaje', 11, 2);
+            $table -> double('unidades', 11, 2);
+            $table -> double('precioVenta', 11, 2);
+            $table -> double('total', 15, 2);
 
             $table -> softDeletes();
             $table -> timestamps();

@@ -52,7 +52,9 @@ $(document).ready(function(){
  * ======================================================================
  */
 function Guardar(){
+    
     datos=LeerExcel()
+    
 	$.ajax({
 		url     : '/producto/set_producto',
         data    :{datos:datos},
@@ -104,15 +106,15 @@ function labelFormatter(label, series) {
 function formateaCeldas(){
 	$('#mytable').jexcel('updateSettings',{
 		table: function (instance, cell, col, row, val, id) {
-			if ( (col == 5) || (col == 11)  || (col == 13) || (col == 14) || (col == 15)) {
+			if ( (col == 4) || (col == 10)  || (col == 12) || (col == 13) || (col == 14)) {
 				$(cell).html(' $ ' + numeral($(cell).text()).format('0,0.00'));
 			}
-			if (col == 6 || col == 7 || col == 8 || col == 9 || col == 10 || col == 12) {
+			if (col == 5 || col == 6 || col == 7 || col == 8 || col == 9 || col == 11) {
 				$(cell).html(numeral($(cell).text()).format('0,0.00'));
 			}
 			if (col == 0 || col == 1 || col == 2 || col == 3 || col == 4 || col == 5
-                || col == 6 || col == 8 || col == 9 || col == 10 || col == 11 || col == 14
-                || col == 15){
+                || col == 7 || col == 8 || col == 9 || col == 10 || col == 13
+                || col == 14){
 				$(cell).addClass('readonly');
 			}
             if ($(cell).text() == 'TOTALES') {
@@ -152,7 +154,6 @@ function pintaJexcel(data){
 		contextMenu         : "false",
 		/* Tipos de columnas enviados desde el controlador */
 		columns          :[
-            { "type": "hidden"},
 			{ "type": "text"},
 			{ "type": "text"},
 			{ "type": "text"},
@@ -236,4 +237,4 @@ function siguiente(id){
  * Regresar al menu de productos
  * =========================================================================
  */
-function regresar(){ window.location.href = "/productomenu"; }
+function regresar(){ window.location.href = "/home"; }

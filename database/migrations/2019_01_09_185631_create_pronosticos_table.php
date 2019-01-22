@@ -19,6 +19,8 @@ class CreatePronosticosTable extends Migration
             $table -> foreign('id_user') -> references('id')->on('users');
             $table -> integer('id_producto') -> unsigned(11) -> nullable();
             $table -> foreign('id_producto') -> references('id')->on('productos');
+            
+            $table -> double('regionObjetivo');
             $table -> text('regionObjetivo');
             $table -> text('totalPersonas');
             $table -> text('segmentacion');

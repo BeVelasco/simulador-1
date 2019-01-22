@@ -18,7 +18,9 @@ class CreateTktformulasTable extends Migration
 
             $table -> integer('id_user') -> unsigned(11);
             $table -> integer('id_productos') -> unsigned(11) -> nullable();
-            $table -> string('proceso');
+            $table -> text('proceso')->nulleable();
+            $table -> double('sumatakttime', 10, 2)->default(0);
+            
             $table -> string('tiempo');
             $table -> string('cantidad');
             $table -> string('insumos');

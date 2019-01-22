@@ -39,7 +39,7 @@
 				</div>
 				<div class="body">
                     
-					<div class="table-responsive">
+					<div class="table-responsive" style="height: 10000px;">
 						<table class="table table-hover dashboard-task-infos">
 							<thead>
 								<tr>
@@ -68,7 +68,8 @@
                                                 <a href="#" data-toggle="dropdown" class="btn bg-black waves-effect waves-light dropdown-toggle">Ir a ...<b class="caret"></b></a>
                                                 <ul class="dropdown-menu">
                                                     <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/simulador/inicio');">{{ __('messages.iniSimulador') }}</a></li>
-                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/tkt/editarInicio');">{{ __('messages.producto_tktboton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/producto/editarInicio');">{{ __('messages.productoproduccion_boton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/tkt/editarInicio');">{{ __('messages.tkt_boton') }}</a></li>
                                                     <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/nomina/editarInicio');">{{ __('messages.nomina_boton') }}</a></li>
                                                     <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/acumulado/editarInicio');">{{ __('messages.producto_acumuladoboton') }}</a></li>
                                                 </ul>

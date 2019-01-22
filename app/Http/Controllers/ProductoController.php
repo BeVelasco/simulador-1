@@ -27,11 +27,10 @@ class ProductoController extends Controller
 	 * =================================================*/
 
 	/* Ancho de las columnas */
-	protected $colWidths = [ 1,220, 50, 50, 150, 90, 90, 90, 1, 1, 1, 90, 90, 90, 90, 90, 90 ];
+	protected $colWidths = [ 220, 50, 50, 150, 90, 90, 90, 1, 1, 1, 90, 90, 90, 90, 90, 90 ];
 
 	/* Cabeceras de las columnas */
 	protected $colHeaders =[
-                'ID',
 				'Insumos',
 				'Unidad',
 				'Piezas',
@@ -51,7 +50,6 @@ class ProductoController extends Controller
 			 ];
 	/* Tipo de datos y formato de columnas */
 	protected $columns = '[
-            { "type": "hidden"},
 			{ "type": "text"},
 			{ "type": "text"},
 			{ "type": "text"},
@@ -104,49 +102,19 @@ class ProductoController extends Controller
 	*/
 	public function editarProducto(Request $request)
 	{
-		/* Mensajes personalizados cuando hay errores en la validación */
-		$messages = [
-			'exists'   => 'El :attribute no existe.',
-			'required' => 'El campo :attribute es obligatorio.',
-		];
-
-		/* Reglas de validacion */
-		$rules = [
-			'id' => ['required','exists:productos,id'],
-		];
-
-		/* Se validan los datos con las reglas y mensajes especificados */
-		$validate = \Validator::make($request->all(), $rules, $messages);
-
-		/* Si la validación falla, regreso solamente el primer error. */
-		if ($validate -> fails())
-		{
-			return response()->json([
-				'status' => 'error',
-				'msg'    => $validate->errors()->first()]);
-		}
-
-		/* Verifica que el usuario esté logeado y coincida con el id que envió*/
-		$idProd   = $request -> id;
-		$error    = ['status' => 'error','msg' => 'Datos no coinciden.'];
-		$producto = Producto::find($idProd);
-
+	   /* El usuario debe estar loggeado */
 		if ( Auth::check() )
 		{
-			if (  $producto -> id_user_r == Auth::user() -> id )
+			
+			/* El usuario debe tener un producto seleccionado */
+			if ( Session::get('prodSeleccionado') == null )
 			{
-				/* Agrego a la sesión los datos del producto seleccionado */
-				Session::put('prodSeleccionado', $producto);
-				return response()->json([
-					'status' => 'success',
-					'msg'    => 'Correcto']);
+				return redirect('/home');
 			} else {
-				/* El producto no es de el*/
-				return response()->json([$error]);
+			     return view('/simulador/producto/producto');
 			}
-		} else { 
-			/* Usuario no está logeado o los datos no coinciden*/
-			return response()->json([$error]);
+		} else {
+			return view('auth.login');
 		}
 	}
     
@@ -184,45 +152,47 @@ class ProductoController extends Controller
 	public function get_producto(Request $request)
 	{
 		/* Inserto la variable en la sesion, puede ser true o false*/
-		$id_producto=Session::get('prodSeleccionado')->id;
+		$id_producto=Session::get('prodSeleccionado');
         
         /* Obtengo el id del usuario */
 		$idUser    = Auth::user() -> id;
         
-        
-        /* Obtener los datos de la BD */
-        $sql='SELECT pin.`id`,pin.`insumo`,pin.`unidad`,pin.`piezas`,pin.`um`,pin.`costo`
-                ,"=IF(H[x]>0,D[x]/H[x],D[x])" AS `piezasxunidad`
-                ,pin.`unidadesconesapieza`
-                ,"=IF(AND(H[x]<=0.9,M[x]<=1),F[x]*H[x],0)" AS `prodx1`
-                ,"=IF(AND(H[x]>=1,M[x]<=1),F[x]/H[x],0)" AS `prodx2`
-                ,"=IF(AND(H[x]<=0,M[x]<=0),D[x]*F[x],0)" AS `prodx3`
-            	,"=IF(M[x]<=0,(I[x]+J[x]+K[x]),0)" AS `totalproduccion`
-                ,pin.`piezaser`
-                ,pin.`costoser`
-                ,"=IF(M[x]>=1,M[x]*O[x],0)" AS `totalser`
-                ,"=(L[x]+O[x])*C[x]" AS `total`
+        /* Productos */
+        $sql='SELECT datos,totalproduccion,totaltotal
+            FROM `productosinsumos`
+            WHERE `id_user`=:id_usuario AND `id_productos`=:id_producto';
+    
                 
-            FROM `productos` AS p
-            	LEFT JOIN `productosinsumos` AS pin ON p.`id`=pin.`id_productos`
-            WHERE p.`id_user_r`=:id_usuario AND p.`id`=:id_producto';
-
         $res = DB::select($sql, ['id_usuario'=>$idUser,'id_producto'=>$id_producto]);
         //Pasarlo a forma de array de puros valores [[][]...]
         $data=Array();
-        if(count($res)>0){
-            for($i=0;$i<count($res);$i++){
-                $row=Array();
-                foreach ($res[$i] as $key => $value){
-                    if(in_array($key, ["piezasxunidad","prodx1","prodx2","prodx3","totalproduccion","totalser","total"]))
-                        $value=str_replace("[x]",$i+1,$value);
-                    $row[]=$value;
-                }
-                $data[]=$row;
-            }
-            //Totales
-            $row=Array("TOTALES","TOTALES","","","","","","","","","","=SUM(L1:L".count($res).")","","","","=SUM(P1:P".count($res).")","");
-            $data[]=$row;
+        //dd($res);
+        if(count($res)>0 && $res[0]->datos!=null){
+            $data=json_decode($res[0]->datos);
+            $totalproduccion=$res[0]->totalproduccion;
+            $totaltotal=$res[0]->totaltotal;
+        }
+        else{
+            /* Productos */
+            $sql='SELECT data
+                FROM `costeoproductos`
+                WHERE `id_user`=:id_usuario AND `id_producto`=:id_producto';
+        
+                    
+            $res = DB::select($sql, ['id_usuario'=>$idUser,'id_producto'=>$id_producto]);
+            //Pasarlo a forma de array de puros valores [[][]...]
+            $data=json_decode($res[0]->data);
+        }
+        
+        //Colocar las fformulas
+        for($i=0;$i<count($data);$i++){
+            $data[$i][5]="=IF(G[x]>0,C[x]/G[x],C[x])";
+            $data[$i][7]="=IF(AND(G[x]<=0.9,L[x]<=1),E[x]*G[x],0)";
+            $data[$i][8]="=IF(AND(G[x]>=1,L[x]<=1),E[x]/G[x],0)";
+            $data[$i][9]="=IF(AND(G[x]<=0,L[x]<=0),C[x]*E[x],0)";
+        	$data[$i][10]="=IF(L[x]<=0,(H[x]+I[x]+J[x]),0)";
+            $data[$i][13]="=IF(L[x]>=1,L[x]*N[x],0)";
+            $data[$i][14]="=(K[x]+N[x])*B[x]";
         }
         
 		/* Regreso la respuesta con los datos para el jExcel */

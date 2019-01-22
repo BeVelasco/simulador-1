@@ -1,6 +1,7 @@
 @extends('base')
 
 @section('assets')
+@php $idProducto = Session::get('prodSeleccionado'); @endphp
 	<link href="{{ asset('css/jExcel/jquery.jcalendar.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jdropdown.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.bootstrap.css') }}" rel="stylesheet">
@@ -12,9 +13,9 @@
 	<div class="card">
 		<div class="header bg-pink">
 			<h2>
-				{{ Session::get('prodSeleccionado') -> idesc }}
+				{{ producto($idProducto,'idesc') }}
 				<small>
-					Para: {{ Session::get('prodSeleccionado') -> porcionpersona }} {{ Session::get('prodSeleccionado') -> catum -> idesc }}
+					{{ producto($idProducto,'idesc') }} para: {{ producto($idProducto,'porcionpersona') }} {{ catum(producto($idProducto,'idcatnum1'),'idesc') }}
 				</small>
 			</h2>
 		</div>

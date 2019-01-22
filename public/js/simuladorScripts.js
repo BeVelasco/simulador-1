@@ -75,7 +75,7 @@ function calcularPrecioVenta()
 							text : '¡'+data.msg+'!'
 						});
 						/* Muestro el jExcel con los datos recibido */
-						pintaJexcel(data);
+						//pintaJexcel(data);
 
 						/* Actualizo los datos contenidos en el texto de la página web */
 						actualizaDatos(data);
@@ -164,7 +164,7 @@ function labelFormatter(label, series) {
 function formateaCeldas(){
 	$('#mytable').jexcel('updateSettings',{
 		table: function (instance, cell, col, row, val, id) {
-			if (col == 4 || col == 3) {
+			if (col == 4 || col == 5) {
 				$(cell).html(' $ ' + numeral($(cell).text()).format('0,0.00'));
 			}
 			if (col == 2 || col == 1) {
@@ -213,16 +213,59 @@ function pintaJexcel(data)
 {
 	$('#mytable').jexcel({
 		data             : data.data,
-		colHeaders       : data.colHeaders,
-		colWidths        : data.colWidths,
-		allowInsertRow   : data.allowInsertRow,
-		allowInsertColumn: data.allowInsertColumn,
-		allowDeleteRow   : data.allowDeleteRow,
-		allowDeleteColumn: data.allowDeleteColumn,
+		colHeaders       : [
+				'Ingredientes',
+				'Cantidad (según tu receta <br>para elaborar el producto)<br>A',
+				'Piezas<br>B',
+				'Unidad de medida',
+				'Precio unitario (precio de lista <br>del proveedor)<br>C',
+				'Costo por ingrediente<br>A/B*C',
+			 ],
+		colWidths        : [ 220, 200, 80, 100, 200, 150 ],
+		allowInsertRow   : true,
+		allowInsertColumn: false,
+		allowDeleteRow   : true,
+		allowDeleteColumn: false,
 		/* Tipos de columnas enviados desde el controlador */
-		columns          : JSON.parse(data.columns),
-
+		columns          : [
+			{ "type": "text"},
+			{ "type": "numeric" },
+			{ "type": "numeric" },
+			{ "type": "text"},
+			{ "type": "text"},
+			{ "type": "text"}
+		],
+        onchange:function (obj, cel, val) {
+            
+            // Get the cell position x, y
+            var id = $(cel).prop('id').split('-');
+            if(id[0]!=5){
+                $('td#5-'+id[1]).removeClass("readonly");
+                $('#mytable').jexcel('setValue', 'F' + (parseInt(id[1])+1), "=B" + (parseInt(id[1])+1) + "/C" + (parseInt(id[1])+1) +"*E" + (parseInt(id[1])+1));
+                $('td#5-'+id[1]).addClass("readonly");
+            }
+            else{
+                var suma=0;
+                $(".c5").each(function(index, value){
+                    suma+=parseFloat((value.innerText!=""?value.innerText:0));
+                });
+                $("#sumatakttime").val(Math.round(suma * 100) / 100);
+            }
+                
+            //Obtener el valor de la celda con formula
+            //$('input[value="=AVG(I1:M1)"]').parent("td").text();
+        }
 	});
+    
+    $('#mytable').find('thead tr').before(
+            '<tr>'
+        +'<td>&nbsp;</td>'
+        +'<td>&nbsp;</td>'
+        +'<td>&nbsp;</td>'
+        +'<td colspan="2">Unidad (presentación como lo adquieres o lo pagas)</td>'
+        +'<td>&nbsp;</td>'
+        +'<td>&nbsp;</td>'
+        +'</tr>');
 }
 
 /**=========================================================================

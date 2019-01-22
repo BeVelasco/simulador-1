@@ -6,6 +6,12 @@
 	<link href="{{ asset('css/jExcel/jquery.jexcel.bootstrap.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.green.css') }}" rel="stylesheet">
+    
+    <style>
+        .jexcel > thead > tr, .jexcel > tbody > tr {
+            display: table-row
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -23,7 +29,7 @@
 		</div>
 		<div class="body">
             <div class="row">
-				<div class="sm-8 align-right" id="divBtnSiguiente">
+				<div class="sm-8 align-right"> 
                     <ul class="toolbar-form">
            				<li>
         					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:regresar();">

@@ -54,6 +54,8 @@ return [
 			'prefix_indexes' => true,
 			'strict'         => true,
 			'engine'         => null,
+            //add addition options here
+            'options'   => [PDO::ATTR_EMULATE_PREPARES => true]
 		],
 
 		'pgsql' => [

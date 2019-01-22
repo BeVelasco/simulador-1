@@ -17,6 +17,9 @@ class CreateNominasTable extends Migration
             $table->increments('id');
 
             $table -> integer('id_user') -> unsigned(11);
+            $table -> text('datos')->nulleable();
+            $table -> double('sumanomina', 10, 2)->default(0);
+            
             //$table -> integer('id_productos') -> unsigned(11) -> nullable();
             $table -> double('sueldode', 10, 2);
             $table -> double('sueldoa', 10, 2);

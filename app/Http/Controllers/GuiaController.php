@@ -17,8 +17,7 @@ use App\Guia;
 class GuiaController extends Controller
 {
 	/* Funcion para mostrar el mensaje del paso que se solicita mendiante request */
-	public function mostrarMensaje(Request $request)
-	{
+	public function mostrarMensaje(Request $request){
 		/* Reglas de validacion */
 		$rules = [
 			'paso' => ['required','numeric']

@@ -1,6 +1,6 @@
 <?php
 
-use App\Etapa, App\Producto, App\Catum, App\Costeo, App\Pronostico;
+use App\Etapa, App\Producto, App\Catum, App\Costeo, App\Pronostico, App\User;
 
 /* Obtiene el avance del usuario (Etapa en la que se encuentra) */
 function obtenAvance($id_user, $id_producto){
@@ -62,5 +62,14 @@ function eliminaVariablesSesion(){
     // if (!is_null(Session::get('NivelSocioEcon'))) Session::forget('NivelSocioEcon');
      //if (!is_null(Session::get('estimacionDemanda'))) Session::forget('estimacionDemanda');
     // if (!is_null(Session::get('proyeccionVentas'))) Session::forget('proyeccionVentas');
+    if (!is_null(Session::get('tasaCreVen'))) Session::forget('tasaCreVen');
     return true;
 }
+
+/* Función que obtiene el total de productos del ide del usuario enviado */
+    function obtenTotalProductos($idUser){
+        try{
+            $totalProductos = User::find($idUser) -> productos -> count();
+            return $totalProductos;
+        } catch (Exception $e) { return response() -> json(['message' => $e -> getMessage()], 401); }
+    }

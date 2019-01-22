@@ -23,7 +23,7 @@
 												step        = "0.01"
 												class       = "form-control"
 												placeholder = "Ej. 30%"
-												oninput     = "sumaSeg(this, 1)"
+												oninput     = "sumaSeg(this, 3)"
 												onkeypress  = "return checaEnter(event, 'NivelSocioEco')"
 												autofocus
 											>
@@ -58,7 +58,7 @@
 												step        = "0.01"
 												class       = "form-control"
 												placeholder = "Ej. 30%"
-												oninput     = "sumaSeg(this, 2)"
+												oninput     = "sumaSeg(this, 4)"
 												onkeypress  = "return checaEnter(event, 'NivelSocioEco')"
 											>
 										</div>

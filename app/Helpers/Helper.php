@@ -364,6 +364,7 @@ function guardaProyeccionVentas($request){
         if (!is_null(Session::get('proyeccionVentas'))) Session::forget('proyeccionVentas');
         /* Si todo es correcto se guarda en la sesión y se regresa true */
         Session::put('proyeccionVentas', $proyeccionVentas);
+        Session::put('tasaCreVen', $request -> variables["tasaCreVen"]);
         return "true";
     } else  { return 'Datos erróneos'; }
 }
@@ -394,6 +395,7 @@ function guardaPronosticoVenta() {
         $pronostico -> mercadoObjetivo     = Session::get('estimacionDemanda.mercadoObjetivo');
         $pronostico -> consumoAnual        = Session::get('estimacionDemanda.consumoAnual');
         $pronostico -> totalunidades       = Session::get('proyeccionVentas.uniVenAnu');
+        $pronostico -> tasaCreVen          = Session::get('tasaCreVen');
         /* Se guarda en la base de datos el registro */
         $pronostico -> save();
         $status = "true";

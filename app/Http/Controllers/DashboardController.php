@@ -90,42 +90,46 @@ class DashboardController extends Controller
 			'porcion'      => ['required','numeric','regex:/(?!^0*$)(?!^0*\.0*$)^\d{1,6}(\.\d{1,2})?$/u'],
 		];
 		/* Se validan los datos con las reglas y mensajes especificados */
-		$data = \Validator::make($request->all(), $rules, $messages);
+		$data = \Validator::make($request -> all(), $rules, $messages);
 		/* Si la validación falla, regreso solamente el primer error. */
-		if ($data->fails()){ return response()->json(['status' => 'error','msg' => $data->errors()->first()]); }
+		if ($data -> fails()){ return response() -> json(['status' => 'error','msg' => $data -> errors() -> first()], 401); }
 		/* Sanitiza los datos y pone el primer caracter en mayuscula */
-		$desc    = ucfirst(strip_tags($request->descripcion));
-		$um      = strip_tags($request->unidadMedida);
-		$porcion = $request->porcion;
+		$desc    = ucfirst(strip_tags($request -> descripcion));
+		$um      = strip_tags($request -> unidadMedida);
+		$porcion = $request -> porcion;
 		/* Se verifica si la categoría existe en la BD, si no se encuentra
 		   se manda un mensaje de error solicitando el refresco de la página */
 		$res = Catum::find($um);
-		if (!$res){ return response() -> json(['status' => 'error','msg' => 'No se encontró la unidad de medida, actualice la página.',]); }
+		if (!$res){ return response() -> json(['status' => 'error','message' => 'No se encontró la unidad de medida, actualice la página.',], 401); }
 		/* Obtiene el id del usuario */
 		$idUser = Auth::user() -> id;
 		/* Se agregan los valores enviados por el usuario y se guarda en la BD */
-		$prod   = new Producto();
-		$prod -> idesc          = $desc;
-		$prod -> idcatnum1      = $um;
-		$prod -> porcionpersona = $porcion;
-		$prod -> id_user_r      = $idUser;
-		$prod -> save();
-		$porcion = $porcion.' - '.Catum::find($um)->idesc;
+		try {
+			$prod                   = new Producto();
+			$prod -> idesc          = $desc;
+			$prod -> idcatnum1      = $um;
+			$prod -> porcionpersona = $porcion;
+			$prod -> id_user_r      = $idUser;
+			$prod -> save();
+		} catch (Exception $e) { return response() -> json(['message' => $e -> getMessage()], 401);	}
+		$porcion = $porcion.' - '.Catum::find($um) -> idesc;
 		/* Obtengo el id del producto guardado */
-		$idProd = Producto::all()->last() -> id;
-
+		$idProd  = Producto::all() -> last() -> id;
 		/* Obtengo el total de productos que tiene registrado el usuario */
-		$totProd = User::find($idUser) -> productos -> count();
-		
+		$totProd = obtenTotalProductos($idUser);
+		/* Creo el botón que se agregará al HTML */
+		$boton   = obtenVista('simulador.componentes.boton');
+		/* Inserta el id del producto creado en el nuevo botón */
+		$boton = str_replace("%id%", $idProd, $boton);
 		/* Regreso la respuesta exitosa con el total para actualizar el número en la vista  */
 		return response() -> json([
 			'status'  => 'success',
-			'msg'     => 'Producto '.$desc.' agregado con exito.',
+			'message' => 'Producto '.$desc.' agregado con exito.',
 			'totProd' => $totProd,
 			'desc'    => $desc,
 			'porcion' => $porcion,
-			'url'     => '<a href="javascript:comenzarSimulador('.$idProd.')"><button type="button" class="btn bg-black waves-effect waves-light">Comenzar simulador</button></a>'
-		]);
+			'boton'   => $boton
+		], 200);
 	}
 	/**
 	 * Función para comenzar el simulador dependiendo de la etapa en la que
@@ -140,19 +144,19 @@ class DashboardController extends Controller
 		/* Reglas de validacion */
 		$rules = ['iP' => ['required','exists:productos,id'],];
 		/* Se validan los datos con las reglas y mensajes especificados */
-		$validate = \Validator::make($request->all(), $rules, $messages);
+		$validate = \Validator::make($request -> all(), $rules, $messages);
 		/* Si la validación falla, regreso solamente el primer error. */
-		if ($validate -> fails()){ return response()->json(['status' => 'error','msg' => $validate->errors()->first()]); }
+		if ($validate -> fails()){ return response() -> json(['status' => 'error','message' => $validate -> errors() -> first()], 401); }
 		/* Verifica que el usuario esté logeado y coincida con el id que envió*/
 		$idProd   = $request -> iP;
 		$producto = Producto::find($idProd);
 		if (  $producto -> id_user_r == Auth::user() -> id ){
 			/* Agrego a la sesión el id del producto seleccionado */
 			Session::put('prodSeleccionado', $producto->id);
-			return response()->json([
+			return response() -> json([
 				'status'  => 'success',
 				'message' => 'Correcto'
-			]);
-		} else { return response()->json(['status' => 'error','msg' => 'Datos no coinciden.'],401); }
+			],200);
+		} else { return response() -> json(['status' => 'error','message' => 'Datos no coinciden.'],401); }
 	}
 }

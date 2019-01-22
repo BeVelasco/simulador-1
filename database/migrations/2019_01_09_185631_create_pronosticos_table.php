@@ -32,6 +32,7 @@ class CreatePronosticosTable extends Migration
             $table -> text('consumoAnual');
             $table -> text('proyeccionVentas');
             $table -> double('totalUnidades');
+            $table -> text('tasaCreVen');
 
             $table -> softDeletes();
             $table -> timestamps();

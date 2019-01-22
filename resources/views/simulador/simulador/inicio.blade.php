@@ -23,7 +23,7 @@
 		</div>
 		<div class="body">
             <div class="row">
-				<div class="sm-8 align-right" id="divBtnSiguiente">
+				<div class="sm-8 align-right">
                     <ul class="toolbar-form">
            				<li>
         					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:regresar();">

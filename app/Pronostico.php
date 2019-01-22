@@ -26,7 +26,8 @@ class Pronostico extends Model
 		'mercadoObjetivo',
 		'consumoAnual',
 		'proyeccionVentas',
-		'totalUnidades'
+		'totalUnidades',
+		'tasaCreVen'
 	];
 
 	/**

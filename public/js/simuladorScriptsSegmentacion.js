@@ -163,13 +163,13 @@ function sumaSeg(a, id)
 		/* 3 y 4 SPG */
 		case 3:
 			/* Lo formateo: 123,456 personas */
-			$('#txtTotal1').val(Intl.NumberFormat().format(val) +' personas');
+			$('#txtTotalHombresEcoAct').val(Intl.NumberFormat().format(val) + ' personas');
 			/* Guardo el valor en campo oculto */
 			$('#val1').val(val);
 		break;
 		case 4:
 			/* Lo formateo: 123,456 personas */
-			$('#txtTotal2').val(Intl.NumberFormat().format(val) +' personas');
+			$('#txtTotalMujeresEcoAct').val(Intl.NumberFormat().format(val) + ' personas');
 			/* Guardo el valor en campo oculto */
 			$('#val2').val(val);
 		break;

@@ -46,7 +46,7 @@ class SimuladorController extends Controller
 		/* El usuario debe estar loggeado */
 		if ( Auth::check() ){
 			/* El usuario debe tener un producto seleccionado */
-			if ( $idProducto == null ){
+			if ( $idProducto == null ){ 
 				return redirect('/home');
 			} else {
 				/* Obtengo el avance que lleva el usuario para saber que vista mostrar 

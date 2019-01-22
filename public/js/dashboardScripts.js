@@ -1,21 +1,13 @@
-/*!
-
+/*
 =========================================================
 * Scripts para Dashboard de Simulador - v0.1
 =========================================================
-
 * Autor: Emmanuel Hernández Díaz
 * Copyright 2018
 * Integra Ideas Consultores
-
 =========================================================
-
 */
-$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
+$.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
 /*Funcion para agregar unidad de medida*/
 function addUnidadMedida() {
 	/* Espero a que el documento esté completamente cargado */
@@ -25,9 +17,7 @@ function addUnidadMedida() {
 			$.ajax({
 				url: 'addUnidadMedida',
 				type: 'POST',
-				data: {
-					descripcion :$("#descripcionUM").val()
-				},
+				data: { descripcion :$("#descripcionUM").val() },
 				dataType: 'JSON',
 				/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
 				success: function (data) { 
@@ -85,27 +75,21 @@ function addProducto() {
 						if (data.status == 'success'){
 							swal({
 								type : 'success',
-								title: data.msg,
+								title: data.message,
 								/* Cuando se cierra el modal limpia los campos y seleccion la primer opcion del select */
 								onClose: () => {
 									$("#cerrarProd").click();
 									$("#descProd").val('');
 									$("#porcion").val('');
-									document.getElementById("noProd").innerHTML = data.totProd;
-									/* Llamo a la funci´´on que agrega el producto nuevo a la tabla*/
-									agregarProductoTable(data.totProd, data.desc, data.porcion, data.idProd, data.idUser, data.url);
+									$("#noProd").html(data.totProd);
+									/* Llamo a la función que agrega el producto nuevo a la tabla*/
+									agregarProductoTable(data.totProd, data.desc, data.porcion, data.boton);
 								}
 							});
 						/* Si hubo algún error se muestra al usuario para su correción */
-						} else {
-							swal({
-								type : 'error',
-								title: 'Oops...',
-								text : data.msg,
-							});
-						}
+						} else { muestraAlerta('error', data.message); }
 					},
-					error: function(data) { console.log(data); }
+					error: function (data) { muestraAlerta('error', data.message); }
 				}); 
 				}
 			else { $("#form-producto")[0].reportValidity(); }
@@ -120,7 +104,7 @@ function addProducto() {
  *
  * ============================================================= */
  
-function mostrarAlerta($tipo, $titulo, $mensaje, $msj) {
+function mostrarAlertaPopUp($tipo, $titulo, $mensaje, $msj) {
 	$(document).ready(function(){
 		/* Si falta algúna variable no hace nada */
 		if( ($tipo === undefined) || ($mensaje === undefined) || ($titulo === undefined) ){
@@ -163,6 +147,7 @@ function mostrarPopoverGuia($elemento, $paso) {
 		success: function (data) {
 			if (data.status == 'success'){ 
 				/* Agrego el popover al elemento recibido junto con la descripcion del paso */
+				
 				$($elemento).popover({
 					placement: 'auto',
 					trigger  : 'manual',
@@ -201,65 +186,36 @@ function quitarPopover($paso){ $($paso).popover('hide'); }
  * $idUSer  Integer [id del usuario]
  * 
  * ============================================================= */
-function agregarProductoTable($num, $desc, $porcion, $idProd, $idUser, $url)
-{
+function agregarProductoTable($num, $desc, $porcion, $url){
 	/* Obtengo la tabla */
 	var table = document.getElementById("tablaProd");
 	/* Inserto una nueva fila */
-	var row = table.insertRow(0);
+	var row   = table.insertRow(0);
 	/* Agrego los datos recibidos */
 	row.insertCell(0).innerHTML = $num;
 	row.insertCell(1).innerHTML = $desc;
 	row.insertCell(2).innerHTML = $porcion;
 	row.insertCell(3).innerHTML = '<span class="label bg-green">Activo</span>';
-	row.insertCell(4).innerHTML = "justo ahora";
+	row.insertCell(4).innerHTML = "Justo ahora";
 	row.insertCell(5).innerHTML = $url;
 }
-
-/* Función que inicia el simulador, obteniendo el avance en el que se encuentra el usuario */
-/*function comenzarSimulador($iP){ 
-	$.ajax({
-		url : 'iniciarSimulador',
-		type: 'POST',
-		data: {
-			iP: $iP,
-		},
-		dataType: 'JSON',
-		success: function (data) {
-			if (data.status == 'success'){ 
-				/* Redirijo al usuario a la página principal del simulador *
-				window.location.href = "/simulador/inicio";
-			} else { console.log(data); }
-		},
-		error: function (data){ console.log(data); }
-	});
-}*/
-
 /* =============================================================
  * Atiende al menu de botones
- * 
  * ============================================================= */
-function linkmenu($id,$url,$href)
-{
+function linkmenu($id,$url,$href){
 	$.ajax({
-		url : $url,
-		type: 'POST',
-		data: {
-			iP: $id,
-		},
+		url     : $url,
+		type    : 'POST',
+		data    : { iP: $id },
 		dataType: 'JSON',
-		/* Si no hay errores regresa SUCCESS, inclusive si existen errores de validación y/o de BD */
-		success: function (data) {
-			if (data.status == 'success')
-			{ 
+		success : function (data) {
+			if (data.status == 'success'){ 
 				/* Redirijo al usuario a la página principal del simulador */
 				window.location.href = $href;
-			} else {
-				console.log(data);
+			} else { 
+				console.log(data); 
 			}
 		},
-		error: function (data){
-			console.log(data);
-		}
+		error: function (data){ muestraAlerta('error', data.mensaje); }
 	});
 }

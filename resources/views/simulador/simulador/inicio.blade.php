@@ -6,7 +6,7 @@
 	<link href="{{ asset('css/jExcel/jquery.jexcel.bootstrap.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.green.css') }}" rel="stylesheet">
-    
+
     <style>
         .jexcel > thead > tr, .jexcel > tbody > tr {
             display: table-row
@@ -29,7 +29,7 @@
 		</div>
 		<div class="body">
             <div class="row">
-				<div class="sm-8 align-right"> 
+				<div class="sm-8 align-right">
                     <ul class="toolbar-form">
            				<li>
         					<button type="button" class="btn bg-blue waves-effect" onclick="javascript:regresar();">
@@ -76,7 +76,7 @@
 						</div>
 						<div class="body" style="text-align: center !important;">
 							<center><div id="divGrafica" style="width:50%; height:50%"></div></center>
-						</div>	
+						</div>
 					</div>
 				</div>
 				<div class="col-sm-4" id="divResultados" @if ( Session::get('datosCalculados') == false ) hidden @endif>

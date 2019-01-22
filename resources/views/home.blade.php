@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('content')
-<br>
+home
 <div class="container-fluid">
 	@include('simulador.dashboard.widgets')
 	<div class="row clearfix">
@@ -14,11 +14,13 @@
 							<ul class="toolbar-form" style="top: -20px;position: relative;">
 								<li>
 									<button class="btn bg-blue waves-effect"	
+										id            = "paso1Guia"
                                         type          = "button"
 										data-toggle   = "modal"
 										data-target   = "#addProduct"
 										data-backdrop = "static"
 										data-keyboard = "false"
+										onclick       = "javascript:quitarPopover('#paso1Guia')"
 									>
 										{{ __('messages.agregarProducto')}} <!-- messages.agregarProducto -->
 									</button>
@@ -44,10 +46,10 @@
 							<thead>
 								<tr>
 									<th>#</th>
-									<th>{{ __('messages.descripcion') }}</th><!-- messages.descripcion -->
-									<th>{{ __('messages.porcion') }}</th><!-- messages.porcion -->
-									<th>{{ __('messages.status') }}</th><!-- messages.status -->
-									<th>{{ __('messages.creado') }}</th><!-- messages.creado -->
+									<th>{{ __('messages.descripcion') }}</th>
+									<th>{{ __('messages.porcion') }}</th>
+									<th>{{ __('messages.status') }}</th>
+									<th>{{ __('messages.creado') }}</th>
 									<th>{{ __('messages.acciones') }}</th>
 								</tr>
 							</thead>
@@ -79,6 +81,7 @@
 								@endforeach
 							</tbody>
 						</table>
+						<br><br><br><br><br><br>
 						{{ $productos->links() }}
 					</div>
 				</div>
@@ -94,7 +97,7 @@
 	<script src="{{ asset('js/dashboardScripts.js') }}"></script>
 	<script src="{{ asset('js/adminTemplate/pages/ui/tooltips-popovers.js') }}"></script>
 	@if ($noProductos == 0)
-		<script>mostrarAlerta('error','{{ config('app.name') }}','{{ __('messages.sinProductos') }}', 'messages.sinProductos' )</script>
+		<script>mostrarAlertaPopUp('error','{{ config('app.name') }}','{{ __('messages.sinProductos') }}', 'messages.sinProductos' )</script>
 		<!-- messages.sinProductos -->
 	@endif
 @endsection

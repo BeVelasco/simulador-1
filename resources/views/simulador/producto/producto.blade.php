@@ -50,6 +50,41 @@
 			         <div id="mytable"></div>
                 </div>                     
             </div>
+            <br /><br />
+            <div class="row clearfix">
+				<div class="col-sm-4 align-right">
+					<label class="form-label">TOTAL PRODUCCIÓN:</label>
+				</div>
+                <div  class="col-sm-1 align-right">
+                    <div class="form-group form-float">
+						<div class="form-line">
+							<input 
+								id          = "totalproduccion"
+								name        = "totalproduccion"
+								class       = "form-control input-md" 
+								type        = "text"
+                                readonly
+							>
+						</div>
+					</div>
+                </div>
+                <div class="col-sm-5 align-right">
+					<label class="form-label">GRAN TOTAL:</label>
+				</div>
+                <div  class="col-sm-1 align-right">
+                    <div class="form-group form-float">
+						<div class="form-line">
+							<input 
+								id          = "grantotal"
+								name        = "grantotal"
+								class       = "form-control input-md" 
+								type        = "text"
+                                readonly
+							>
+						</div>
+					</div>
+                </div>
+            </div>
 		</div>
 	</div>
 	

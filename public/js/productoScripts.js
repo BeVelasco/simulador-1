@@ -26,6 +26,8 @@ $(document).ready(function(){
 			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
 			if (data.status == 'success')
 			{
+			     $("#totalproduccion").val(data.totalproduccion)
+                 $("#grantotal").val(data.grantotal)
 				/* Muestra jExcel con los datos recibidos */
 				pintaJexcel(data);
 				/* Formatea las celdas */
@@ -53,11 +55,11 @@ $(document).ready(function(){
  */
 function Guardar(){
     
-    datos=LeerExcel()
+    //datos=LeerExcel()
     
 	$.ajax({
 		url     : '/producto/set_producto',
-        data    :{datos:datos},
+        data    :{datos:$('#mytable').jexcel('getData')},
 		type    : 'POST',
 		dataType: 'JSON',
 		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
@@ -146,12 +148,12 @@ function pintaJexcel(data){
 		data                : data.data,
 		colHeaders          : data.colHeaders,
 		colWidths           : data.colWidths,
-		allowInsertRow      : "false",
-		allowManualInsertRow: "false",
-		allowInsertColumn   : "false",
-		allowDeleteRow      : "false",
-		allowDeleteColumn   : "false",
-		contextMenu         : "false",
+		allowInsertRow      : false,
+		allowManualInsertRow: false,
+		allowInsertColumn   : false,
+		allowDeleteRow      : false,
+		allowDeleteColumn   : false,
+		contextMenu         : false,
 		/* Tipos de columnas enviados desde el controlador */
 		columns          :[
 			{ "type": "text"},
@@ -169,7 +171,28 @@ function pintaJexcel(data){
             { "type": "numeric"},
             { "type": "numeric" }
 		],
-
+        onchange:function (obj, cel, val) {
+            
+            // Get the cell position x, y
+            var id = $(cel).prop('id').split('-');
+            if(id[0]!=10){
+                var suma=0;
+                $(".c10").each(function(index, value){
+                    suma+=parseFloat((value.innerText!=""?value.innerText:0));
+                });
+                $("#totalproduccion").val(Math.round(suma * 100) / 100);   
+            }
+            if(id[0]!=14){
+                var suma=0;
+                $(".c14").each(function(index, value){
+                    suma+=parseFloat((value.innerText!=""?value.innerText:0));
+                });
+                $("#grantotal").val(Math.round(suma * 100) / 100);
+            }
+                
+            //Obtener el valor de la celda con formula
+            //$('input[value="=AVG(I1:M1)"]').parent("td").text();
+        }
 	});
 }
 

@@ -396,6 +396,7 @@ function guardaPronosticoVenta() {
         $pronostico -> consumoAnual        = Session::get('estimacionDemanda.consumoAnual');
         $pronostico -> totalunidades       = Session::get('proyeccionVentas.uniVenAnu');
         $pronostico -> tasaCreVen          = Session::get('tasaCreVen');
+        $pronostico -> mesInicio           = Session::get('mesInicio');
         /* Se guarda en la base de datos el registro */
         $pronostico -> save();
         $status = "true";

@@ -118,12 +118,12 @@ function calcularRegionObjetivo(){
 									window.scrollTo(0, 0);
 									globales.segmentacion = segmentacion;
 								},
-								error: function(data1){ muestraAlertaError(data1.responseJSONresponseJSON.message); }
+								error: function(data1){ muestraAlerta('error',data1.responseJSONresponseJSON.message); }
 							});
 						}
 					})()
 				},
-				error : function (data) { muestraAlertaError(data.responseJSON.message); },
+				error : function (data) { muestraAlerta('error',data.responseJSON.message); },
 			});
 		}
 	} else {
@@ -220,7 +220,7 @@ function showVista(vista) {
 	var variables = [];
 	switch (vista){
 		case 'ProyVen':
-			if (globales.consumoAnual <= 0){ muestraAlertaError(globales.sinCalculo); return; }
+			if (globales.consumoAnual <= 0){ muestraAlerta('error',globales.sinCalculo); return; }
 			variables = {
 				intUsarProd   : Number($("#txtIntProd").val()),
 				capUsarComProd: Number($("#txtCapComProd").val()),
@@ -229,7 +229,7 @@ function showVista(vista) {
 			};
 		break;
 		case 'EstimDem':
-			if (globales.mercadoPotencial <= 0){ muestraAlertaError(globales.sinCalculo); return; }
+			if (globales.mercadoPotencial <= 0){ muestraAlerta('error',globales.sinCalculo); return; }
 			var nse = [];
 			$(".classTxtNse").each(function(index){
 				nse[index] = Number($(this).val());
@@ -239,7 +239,7 @@ function showVista(vista) {
 			};
 		break;
 		case 'NivelSocioEco':
-			if (globales.poblacionNeta <= 0){ muestraAlertaError(globales.sinCalculo); return; }
+			if (globales.poblacionNeta <= 0){ muestraAlerta('error',globales.sinCalculo); return; }
 			/* Mando las variables que insertó el usuario */
 			switch (globales.segmentacion) {
 				case "pea":
@@ -270,7 +270,7 @@ function showVista(vista) {
 			}
 		break;
 		case 'Inventario' :
-			if (sumasProyeccion[0] != 100) { muestraAlertaError(globales.porcentaje100); return; }
+			if (sumasProyeccion[0] != 100) { muestraAlerta('error',globales.porcentaje100); return; }
 			var porcentajeMeses = [];
 			$(".classInputPorcentaje").each(function (index) {
 			    porcentajeMeses[index] = Number($(this).val());
@@ -306,12 +306,9 @@ function showVista(vista) {
 			if (vista == "EstimDem") setfocus($("#txtIntProd"));
 			if (vista == "ProyVen") setfocus($("#txtTasaCreVen"));
 		},
-		error: function (data){ muestraAlertaError(data.responseJSON.message); }
+		error: function (data){ muestraAlerta('error',data.responseJSON.message); }
 	});
 }
-
-/* Funcion que muestra una alerta de error en el mensaje enviado */
-function muestraAlertaError(a){ swal({type:'error',title:'Simulador',text:a}); }
 
 function llenaVistaProyVent(year){
 	year = parseInt(year.actual);
@@ -373,13 +370,13 @@ function hacerProyeccion()
 			$('#spanYear3').html(anio+2);
 			$('#spanYear4').html(anio+3);
 			globales.meses = data.meses;
-			globales.precioVenta = JSON.parse(data.precioVenta);
+			globales.precioVenta = data.precioVenta;
 			$(".spanPrecioVenta").each(function() {
-				$(this).html('$ '+ globales.precioVenta);
+				$(this).html(globales.precioVenta);
 			});
 			sumaVentasMensuales();//Eliminar despues de pruebas
 		},
-		error: function (data){	muestraAlertaError(data.responseJSON.message); }
+		error: function (data){	muestraAlerta('error',data.responseJSON.message); }
 	});
 }
 
@@ -409,14 +406,15 @@ async function calcVentasAn1 () {
 				$(this).html(data.meses[index+1]);
 			});
 		},
-		error: function (data){ muestraAlertaError(data.responseJSON.message); }
+		error: function (data){ muestraAlerta('error',data.responseJSON.message); }
 	});
 }
 
 function sumaVentasMensuales(){
 	/* Variable para la suma de los inputs y forzar 2 decimales*/
 	var estilo = {minimumFractionDigits: 2,maximumFractionDigits: 2};
-	sumasProyeccion = {0: 0,1: 0,2: 0,3: 0};
+	
+	sumasProyeccion      = {0: 0,1: 0,2: 0,3: 0};
 	/* Si no tiene valor no hace nada, si tiene algo lo suma */	
 	$(".classInputPorcentaje").each(function() { if ($(this).val() != '') sumasProyeccion[0] += parseFloat($(this).val()); });
 	$(".spanUnidad").each(function(index) {
@@ -428,10 +426,10 @@ function sumaVentasMensuales(){
 		/* Obtengo el total y lo guardo */
 		globales.total[i2] = globales.unidades[i2] * globales.precioVenta;
 		/* Inserto el total en el HTML */
-		$('#spanTotal' + i2).html('$ ' + globales.total[i2].toLocaleString('en', estilo));
+		$('#spanTotal' + i2).html(globales.total[i2].toLocaleString('en', estilo));
 		/* Obtengo el costo unitario y lo muesto en el HTML*/
 		globales.costoUnitario[i2] = globales.precioVenta * parseFloat($("#spanUnidad" + (i2)).text());
-		$('#spanCostoUnitario' + i2).html('$ ' + globales.costoUnitario[index + 1].toLocaleString('en', estilo));
+		$('#spanCostoUnitario' + i2).html(globales.costoUnitario[index + 1].toLocaleString('en', estilo));
 		/* Obtengo las sumas para mostrarlas al final de la tabla */
 		if (globales.unidades[i2] != '') sumasProyeccion[1]      += parseFloat(globales.unidades[i2]);
 		if (globales.total[i2] != '') sumasProyeccion[2]         += parseFloat(globales.total[i2]);
@@ -446,14 +444,6 @@ function sumaVentasMensuales(){
 		$(this).html(sumasProyeccion[ind].toLocaleString('en', estilo));
 	});
 }
-/* Funcion que redondea un número */
-function redondear(num){
-	num = Intl.NumberFormat().format(Math.round(num));
-	return num;
-}
-
-/* Función que pone el foco en el input enviado */
-function setfocus(item) { setTimeout(function () { item.focus(); }, 250); }
 
 /* Función que calcula todos los mercados y oculta/muestra los paneles siguientes */
 function calcularMercados(){
@@ -535,7 +525,4 @@ function calcularMercados(){
 }
 function regresar(){ window.location.href = "/home"; }
 
-/* Función que formatea un número con comas y los decimales especifícados */
-function formatear(num, dec) { var estilo = { minimumFractionDigits: dec,maximumFractionDigits: dec};
-    return num.toLocaleString('en', estilo);
-}
+

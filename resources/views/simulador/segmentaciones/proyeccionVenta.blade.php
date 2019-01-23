@@ -173,7 +173,7 @@
 											>
 										</td>
 										<td><span class="spanUnidad" id="spanUnidad{{ $i }}"></span></td>
-										<td><span class="spanPrecioVenta"></span></td>
+										<td>$<span class="spanPrecioVenta"></span></td>
 										<td><span class="spanTotal" id="spanTotal{{ $i }}"></span></td>
 										<td><span id="spanCostoUnitario{{ $i }}"></span></td>
 									</tr>

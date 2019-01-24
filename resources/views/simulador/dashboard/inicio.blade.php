@@ -37,7 +37,7 @@
 							<div role="tabpanel" class="tab-pane fade active in" id="simulador">
 								<!-- Nav tabs simulador -->
 								<ul class="nav nav-tabs tab-nav-right" role="tablist">
-									<li role="presentation" class="active"><a href="#home" data-toggle="tab">
+									<li role="presentation" class="active"><a href="{{route('home')}}" data-toggle="tab">
 										<div class="irs-demo">
 											<b>Oso grande</b>
 											<input type="text" id="range_01" value="50" class="ion-range"/>
@@ -67,7 +67,7 @@
 
 										<div class="col-sm-12">
 											<div class="col-sm-3">
-                                                <a class="tablero-button" href="/home">
+                                                <a class="tablero-button" href="{{ route('home') }}">
 													<span class="titulo">Costeo de productos</span>
                                                     <br /><br />
                                                     <i class="fa fa-dollar-sign fa-4x"></i>
@@ -84,7 +84,7 @@
 
 											<div class="row"></div>
 											<div class="col-sm-3">
-                                                <a class="tablero-button" href="/home">
+                                                <a class="tablero-button" href="{{ route('home') }}">
 													<span class="titulo">Pronóstico de ventas</span>
                                                     <br /><br />
                                                     <i class="fa fa-diagnoses fa-4x"></i>
@@ -99,7 +99,7 @@
 
 											<div class="row"></div>
 											<div class="col-sm-3">
-                                                <a class="tablero-button" href="/home">
+                                                <a class="tablero-button" href="{{ route('home') }}">
 													<span class="titulo">Inventarios</span>
                                                     <br /><br />
                                                     <i class="fa fa-warehouse fa-4x"></i>

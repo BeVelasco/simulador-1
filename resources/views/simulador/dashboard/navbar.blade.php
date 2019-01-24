@@ -50,7 +50,7 @@
 					<!-- #END# Notifications -->
 					<!-- Tasks -->
 					<li class="dropdown">
-						<a href="/mensajero" role="button">
+						<a href="/simulador/mensajero/mensajero" role="button">
 							<i class="material-icons">mail</i>
 							<span class="label-count">2</span>
 						</a>

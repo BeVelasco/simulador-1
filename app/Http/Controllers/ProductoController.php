@@ -182,8 +182,11 @@ class ProductoController extends Controller
             $res = DB::select($sql, ['id_usuario'=>$idUser,'id_producto'=>$id_producto]);
             //Pasarlo a forma de array de puros valores [[][]...]
             $data=json_decode($res[0]->data);
-            $totalproduccion=0;
-            $grantotal=0;
+            
+            $totalproduccion=0;$grantotal=0;
+            for($i=0;$i<count($data);$i++){
+                $grantotal+=preg_replace('/[^0-9.]+/', '', $data[$i][5]);
+            }
         }
         
         //Colocar las fformulas

@@ -16,7 +16,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Producto, App\Catum, App\User, App\Etapa;
+use App\Producto, App\Catum, App\User, App\Etapa, App\Nomina;
 use Auth, View, Session, Lang, Route;
 
 
@@ -138,12 +138,12 @@ class NominaController extends Controller
                 
                 $tktformula["id_user"]=$idUser;
                 $tktformula["datos"]=json_encode($request["datos"]);
-                $tktformula["sumanomina"]=$request["sumanomina"];
+                $tktformula["sumanomina"]=preg_replace('/[^0-9.]+/', '', $request["sumanomina"]);
         		$tktformula -> save();
 			} else {
 				/* Si encuentra coincidencia solo actualiza el valor de realizado */
 				$existe["datos"]=json_encode($request["datos"]);
-                $existe["sumanomina"]=$request["sumanomina"];
+                $existe["sumanomina"]=preg_replace('/[^0-9.]+/', '', $request["sumanomina"]);
 				$existe -> save();
 			}			
 		}

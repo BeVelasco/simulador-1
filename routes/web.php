@@ -81,6 +81,11 @@ Route::group(['middleware' => ['auth']], function() {
     /* Rutas del Acumulado*/
     Route::get('/acumulado/editarInicio', 'AcumuladoController@editarInicio') -> name('editarInicio');
     Route::post('/acumulado/get_formulacion', 'AcumuladoController@get_acumulado') -> name('get_acumulado');
+    
+    /* Rutas de inversión inicial*/
+    Route::get('/inicial/editarInicio', 'InversioninicialController@editarInicio') -> name('editarInicio');
+    Route::post('/inicial/get_inversion', 'InversioninicialController@get_inversion') -> name('get_inversion');
+    Route::post('/inicial/set_inversion', 'InversioninicialController@set_inversion') -> name('set_inversion');
 
     /* Reportes*/
     Route::get('/reportes/perdidasganancias', 'ReportesController@perdidasganancias');

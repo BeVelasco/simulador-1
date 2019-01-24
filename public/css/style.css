@@ -1,7 +1,7 @@
 ﻿/* Navbar ====================================== */
 @import url(materialize.css);
 body{
-	font-family: 'Raleway',  sans-serif;
+	font-family: 'Arial',  sans-serif;
 	background-color:#b5b5b5;
 }
 .navbar {
@@ -25,7 +25,7 @@ body{
     vertical-align: middle;
 }
 .navbar {
-  font-family: "Raleway", sans-serif;
+  font-family: "Arial", sans-serif;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -2393,7 +2393,7 @@ body {
   -o-transition: all 0.5s;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  font-family: 'Raleway', Arial, Tahoma, sans-serif; }
+  font-family: 'Arial', Arial, Tahoma, sans-serif; }
 
 h1,
 h2,
@@ -6664,7 +6664,7 @@ fieldset[disabled] .form-control {
 
 /* Navbars ===================================== */
 .navbar {
-  font-family: "Raleway", sans-serif;
+  font-family: "Arial", sans-serif;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;
@@ -7499,7 +7499,7 @@ fieldset[disabled] .form-control {
   -o-transition: all 0.5s;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
-  font-family: "Raleway", sans-serif;
+  font-family: "Arial", sans-serif;
   background: #fdfdfd;
   width: 300px;
   overflow: hidden;

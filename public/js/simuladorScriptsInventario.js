@@ -17,8 +17,6 @@ $(document).ready(function () {
     $("#spanVenProMen").text(formatear(Inventario.venPromMen, 0));
     Inventario.costoDirecto = Number($("#spanCostoDirecto").text());
 });
-/* Función que no permite inster la letra "e" en inputs numéricos */
-function eliminaEInput(event) { return event.keyCode !== 69; }
 
 /* Función que calcula la valuación de inventario final deaseado */
 function calcularInventario(a) {
@@ -26,7 +24,7 @@ function calcularInventario(a) {
     Inventario.porFinDes = Number($("#txtPorFinDes").val());
     /* Compruebo que los valores sean numéricos */
     if (!Inventario.uniVenAnu || 0)  {
-        muestraAlertaError('Datos inesperados, actualice la página.');
+        muestraAlerta('error','Datos inesperados, actualice la página.');
     } else {
         Inventario.venPromMen   = Inventario.uniVenAnu/12;
         Inventario.uniDesInvFin = (Inventario.venPromMen * Inventario.porFinDes) / 100;
@@ -55,19 +53,9 @@ function guardarInventario(){
             return;
         },
         error: function(data) {
-            muestraAlertaError(data.message);
+            muestraAlerta('error',data.message);
         }
     });
-}
-
-/* Funcion que muestra una alerta de error en el mensaje enviado */
-function muestraAlertaError(a) { swal({ type: 'error', title: 'Simulador', text: a }); }
-/* Funcion que redondea un número */
-function redondear(num) { num = Intl.NumberFormat().format(Math.round(num)); return num; }
-/* Función que formatea un número con comas y los decimales especifícados */
-function formatear(num, dec) {
-    var estilo = { minimumFractionDigits: dec, maximumFractionDigits: dec };
-    return num.toLocaleString('en', estilo);
 }
 
 /**=========================================================================

@@ -217,6 +217,7 @@ class PronosticoVentasController extends Controller
 			}
 			$ventasMensuales['meses'] = $a;
 			Session::put('ventasMensuales', $ventasMensuales);
+			Session::put('mesInicio', $ventasMensuales['meses'][1]);
 			return  response() -> json(['meses' => $a], 200);
 		} else return response() -> json(['message' => 'No autorizado'], 403);
 	}

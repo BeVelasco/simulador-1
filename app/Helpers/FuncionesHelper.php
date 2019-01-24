@@ -36,8 +36,9 @@ function catum($id, $columna){
 
 /* Función que obtiene el precio de venta de un producto mediante su Id */
 function obtenPrecioVenta($idProducto){
-	$precioVenta = json_decode(Costeo::whereId_producto($idProducto)->pluck('dataPrecioVenta')->first());
-	return $precioVenta->precioVenta;
+    $precioVenta = json_decode(Costeo::whereId_producto($idProducto)->pluck('dataPrecioVenta')->first());
+    $precioVenta = str_replace( ',', '', $precioVenta->precioVenta);
+	return $precioVenta;
 }
 
 /* Funcion que regresa el pronostico del producto de un usuario */
@@ -55,7 +56,7 @@ function eliminaVariablesSesion(){
     if (!is_null(Session::get('precioVenta'))) Session::forget('precioVenta');
     if (!is_null(Session::get('sumCI'))) Session::forget('sumCI');
     if (!is_null(Session::get('costoUnitario'))) Session::forget('costoUnitario');
-     //if (!is_null(Session::get('regionObjetivo'))) Session::forget('regionObjetivo');
+    if (!is_null(Session::get('mesInicio'))) Session::forget('mesInici');
     // if (!is_null(Session::get('ventasMensuales'))) Session::forget('ventasMensuales');
     if (!is_null(Session::get('pronostico'))) Session::forget('pronostico');
      //if (!is_null(Session::get('segmentacion'))) Session::forget('segmentacion');

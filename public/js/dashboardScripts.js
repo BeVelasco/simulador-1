@@ -208,14 +208,7 @@ function linkmenu($id,$url,$href){
 		type    : 'POST',
 		data    : { iP: $id },
 		dataType: 'JSON',
-		success : function (data) {
-			if (data.status == 'success'){ 
-				/* Redirijo al usuario a la página principal del simulador */
-				window.location.href = $href;
-			} else { 
-				console.log(data); 
-			}
-		},
-		error: function (data){ muestraAlerta('error', data.mensaje); }
+		success : function () { window.location.href = $href; },
+		error: function (data) { muestraAlerta('error', data.responseJSON.message); }
 	});
 }

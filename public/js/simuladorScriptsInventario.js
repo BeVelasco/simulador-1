@@ -15,7 +15,7 @@ $(document).ready(function () {
     $("#spanUniVenAnu").text(formatear(Number($("#spanUniVenAnu").text()), 0));
     Inventario.venPromMen = Number($("#spanVenProMen").text());
     $("#spanVenProMen").text(formatear(Inventario.venPromMen, 0));
-    Inventario.costoDirecto = Number($("#spanCostoDirecto").text());
+    Inventario.costoDirecto = parseFloat(parseFloat($("#spanCostoDirecto").text().replace(/,/g, '')));
 });
 
 /* Función que calcula la valuación de inventario final deaseado */
@@ -29,6 +29,7 @@ function calcularInventario(a) {
         Inventario.venPromMen   = Inventario.uniVenAnu/12;
         Inventario.uniDesInvFin = (Inventario.venPromMen * Inventario.porFinDes) / 100;
         Inventario.valInvFinDes = Inventario.costoDirecto * Inventario.uniDesInvFin;
+        
         $("#spanVenProMen").html(formatear(Inventario.venPromMen,0));
         $("#spanUniDesInvFin").html(formatear(Inventario.uniDesInvFin, 2));
         $("#spanValInvFinDes").html(formatear(Inventario.valInvFinDes, 2));

@@ -78,7 +78,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/nomina/set_nomina', 'NominaController@set_nomina') -> name('set_nomina');
     /* Rutas del Acumulado*/
     Route::get('/acumulado/editarInicio', 'AcumuladoController@editarInicio') -> name('editarInicio');
-    Route::post('/acumulado/get_formulacion', 'AcumuladoController@get_acumulado') -> name('get_acumulado');
+	Route::post('/acumulado/get_formulacion', 'AcumuladoController@get_acumulado') -> name('get_acumulado');
+	
+	/* Rutas de mercadotecnia */
+	Route::post('/simulador/guardarMercadotecnia', 'MercadotecniaController@guardarMercadotecnia')->name('guardarMercadotecnia');
     
 });
 Route::group(['middleware' => ['web']], function ()

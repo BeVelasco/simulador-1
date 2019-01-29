@@ -116,7 +116,7 @@
                 </div>
                 <ul class="nav">
                     <li>
-                        <a class="nav-link" href="{{route'home'}}">
+                        <a class="nav-link" href="{{route('home')}}">
                         <i class="fa fa-edit"></i>
                         <span>Simulador</span></a>
                     </li>

@@ -13,7 +13,7 @@
 
 Route::get('/', function () {
 	return view('welcome');
-});
+})->name('welcome');
 
 Auth::routes();
 
@@ -21,7 +21,7 @@ Route::group(['middleware' => ['auth']], function() {
     /*Panel de control*/
     Route::get('/inicio', function () {
 		return view('/simulador/dashboard/inicio');//return view('/noticias');
-	});
+	})->name('inicio');
     /* Rutas de noticias */
     Route::get('/noticias1', function () {
 		return view('/noticias');

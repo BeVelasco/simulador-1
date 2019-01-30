@@ -37,6 +37,21 @@ class Producto extends Model
      */
 	public function catum()
     {
-        return $this -> hasOne('App\Catum', 'id', 'idcatnum1');
-    }
+        return $this->hasOne('App\Catum', 'id', 'idcatnum1');
+	}
+
+	public function scopeGetTotalProducts($query, $idUser)
+	{
+      return $query->where('id_user_r', $idUser)->count();
+	}
+
+	public function scopeCheckProductExists($query, $idUser, $idesc)
+	{
+		 return $query->where(['idesc'=>$idesc,'id_user_r'=>$idUser])->count();
+	}  
+
+	public function scopeGetProductosPaginated($query, $idUser, $paginate)
+	{
+		return $query->where('id_user_r', $idUser)->paginate($paginate);
+	}
 }

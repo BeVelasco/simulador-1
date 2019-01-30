@@ -68,13 +68,14 @@ class TableroController extends Controller
             WHERE p.`deleted_at` IS NULL
             	AND p.`id_user_r`=:id_usuario';
     
-                
+        
         $res = DB::select($sql, ['id_usuario'=>$idUser]);
         
 		/* Regreso la respuesta con los datos para el jExcel */
 		return response() -> json([
-			'status'         => 'success',
-			'data'           => $res,
+			'status'        => 'success',
+			'data'          => $res,
+            'ruta'          => route('home')
 		]);
 	}
     

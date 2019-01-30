@@ -20,7 +20,7 @@ class DashboardController extends Controller
 		$totProd   = User::find($idUser) -> productos() -> count();
 		$um        = Catum::all() -> sortBy('idesc');
 		Reloader::deleteSessionVariables();
-		return view('home',['unidadMedidas'=>$um,'noProductos'=>$totProd,'productos'=>$productos,'noCatum'=>$um->count(),]);
+		return view('home',['unidadMedidas'=>$um,'noProductos'=>$totProd,'productos'=>$productos,'noCatum'=>$um->count(),'proyecto'=>$proyecto]);
 	}
 
 	public function addUnidadMedida(Request $request){

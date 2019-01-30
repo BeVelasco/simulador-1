@@ -67,7 +67,7 @@ $(document).ready(function(){
                         //Elementos del contenido del tab
                         $('div#tabpanelcontent'+ i).append(
                             '<div class="col-sm-3">'
-                                + '<a class="tablero-button" href="/home">'
+                                + '<a class="tablero-button" href="' + data.ruta + '">'
         							+ '<span class="titulo">'+ contenido[j]["bloque"] +'</span>'
                                     + '<br /><br />'
                                     + '<i class="fa '+ contenido[j]["icono"] +' fa-4x"></i>'

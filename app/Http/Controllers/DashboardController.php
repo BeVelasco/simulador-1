@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Session;
 use Lang;
+use Reloader;
 use App\Http\Requests\UnidadDeMedidaRequest;
 use App\Http\Requests\ProductoNuevoRequest;
 use App\Http\Requests\IniciarSimuladorRequest;
@@ -29,12 +30,13 @@ class DashboardController extends Controller
 	 */
 	public function index()
 	{
-    Reloader::deleteSessionVariables();
+    	Reloader::deleteSessionVariables();
 		return view('home',[
 			'unidadMedidas' => Catum::getCatumSortBy('idesc'),
 			'noProductos'   => Producto::getTotalProducts(Auth::user()->id),
 			'productos'     => Producto::getProductosPaginated(Auth::user()->id, 10),
 			'noCatum'       => Catum::getCatumCount(),
+			'proyecto'      => User::find(Auth::user()->id)->proyecto
 		]);
 	}
 
@@ -149,16 +151,6 @@ class DashboardController extends Controller
 		], 200);
 	}
 
-	public function iniciarSimulador(Request $request){
-		$respuesta = Reloader::setProdSession(Auth::user() -> id, $request -> iP);
-		if ($respuesta != "true"){ return response() -> json(['message' => $respuesta] ,401);}
-		return response() -> json(['message' => 'Correcto'],200);
-	/**
-	 * Inicia el simulador dependiendo de la etapa en la que el usario se quedó la última vez
-	 *
-	 * @param Request $request
-	 * @return Response
-	 */
 	public function iniciarSimulador(IniciarSimuladorRequest $request)
 	{	
 		$idProd   = $request->iP;

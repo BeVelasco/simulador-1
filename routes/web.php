@@ -43,7 +43,8 @@ Route::group(['middleware' => ['auth']], function() {
     //Tutoriales
     Route::get('/simulador/tutoriales', function () {
 		return view('/simulador/tutoriales/inicio');
-	});
+    });
+    Route::get('/simulador/inicio', 'SimuladorController@inicio') -> name('inicioSimulador');
 	Route::post('/simulador/getData', 'SimuladorController@getData') -> name('getDataSimulador');
 	Route::post('/simulador/calcularPrecioVenta', 'SimuladorController@calcularPrecioVenta') -> name('calcularPrecioVenta');
 	Route::post('/simulador/siguiente','SimuladorController@siguiente') -> name('simSiguiente');

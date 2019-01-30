@@ -40,6 +40,9 @@ class CreateInversioninicialsTable extends Migration
             $table -> double('papeleria',11,2);
 
             $table -> double('totalinversion',11,2);
+            $table -> double('totalotrosactivos',11,2);
+            $table -> double('totalactivosnocirculantes',11,2);
+            
             
             $table -> softDeletes();
             $table -> timestamps();

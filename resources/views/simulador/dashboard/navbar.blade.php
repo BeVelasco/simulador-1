@@ -64,7 +64,7 @@
 				<div id="userbox" class="userbox">
 					<a href="#" data-toggle="dropdown" aria-expanded="false">
 						<figure class="profile-picture">
-							<img src="{{ asset('img/adminTemplate/usuario-male.png') }}" class="img-circle" data-lock-picture="{{ asset('img/adminTemplate/usuario-male.png') }}">
+							<img id="imgAvatar" src="{{ asset('img/adminTemplate/'.Auth::user()->avatar.'.png') }}" class="img-circle" data-lock-picture="{{ asset('img/adminTemplate/usuario-male.png') }}">
 						</figure>
 						<div class="profile-info" data-lock-name="" data-lock-email="">
 							<span class="name">{{ __('messages.hola') }} {{ Auth::user()->name}}</span>
@@ -78,11 +78,11 @@
 						<ul class="list-unstyled">
 							<li class="divider"></li>
 							<li>
-								<a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="fa fa-user"></i> Mi perfil</a>
+								<a role="menuitem" tabindex="-1" href="/usuario/editarInicio"><i class="fa fa-user"></i> Mi perfil</a>
 							</li>
-							<li>
+							<!--<li>
 								<a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Bloquear pantalla</a>
-							</li>
+							</li>-->
 							<li>
 								<a
 									class   = "dropdown-item"

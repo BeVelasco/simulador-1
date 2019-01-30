@@ -19,7 +19,7 @@ class CreateTktformulasTable extends Migration
             $table -> integer('id_user') -> unsigned(11);
             $table -> integer('id_productos') -> unsigned(11) -> nullable();
             $table -> text('proceso')->nulleable();
-            $table -> double('sumatakttime', 10, 2)->default(0);
+            $table -> double('sumatakttime', 11, 2)->default(0);
             
             $table -> string('tiempo');
             $table -> string('cantidad');
@@ -27,15 +27,15 @@ class CreateTktformulasTable extends Migration
             $table -> string('personas');
             $table -> string('maquinaria');
             $table -> string('herramienta');
-            $table -> double('check1', 10, 2);
-            $table -> double('check2', 10, 2);
-            $table -> double('check3', 10, 2);
-            $table -> double('check4', 10, 2);
-            $table -> double('check5', 10, 2);
-            $table -> double('promedio', 10, 2);
+            $table -> double('check1', 11, 2);
+            $table -> double('check2', 11, 2);
+            $table -> double('check3', 11, 2);
+            $table -> double('check4', 11, 2);
+            $table -> double('check5', 11, 2);
+            $table -> double('promedio', 11, 2);
             $table -> string('analisisempleado');
-            $table -> double('porcmedicionempleado', 10, 2);
-            $table -> double('porcmedicionmaquinaria', 10, 2);
+            $table -> double('porcmedicionempleado', 11, 2);
+            $table -> double('porcmedicionmaquinaria', 11, 2);
             
             $table -> softDeletes();
             $table->timestamps();

@@ -10,7 +10,7 @@ function muestraAlerta(tipo, mensaje) {
 
 /* Funcion que redondea un número */
 function redondear(num) {
-    num = Intl.NumberFormat().format(Math.round(num));
+    num = Intl.NumberFormat('es-MX').format(Math.round(num));
     return num;
 }
 

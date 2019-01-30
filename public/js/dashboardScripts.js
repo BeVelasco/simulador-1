@@ -95,6 +95,45 @@ function addProducto() {
 			else { $("#form-producto")[0].reportValidity(); }
 		}
 	)}
+    
+/*Funcion para agregar un producto nuevo*/
+function addProyecto() {
+		/* Espero a que el docuemnto esté completamente cargado */
+		$(document).ready(function(){
+			if($("#form-proyecto")[0].checkValidity()) {
+				/* Mando los datos introducidos por el usuario */
+				$.ajax({
+					url: 'addProyecto',
+					type: 'POST',
+					data: {
+						descripcion :$("#descProyecto").val(),
+					},
+					dataType: 'JSON',
+					/* Si no hay errores regresa SUCCESS, inclusi si existen errores de validación y/o de BD */
+					success: function (data) { 
+						/* Informa al usuario que el nuevo producto ha sido creado */
+						if (data.status == 'success'){
+							swal({
+								type : 'success',
+								title: data.message,
+								/* Cuando se cierra el modal limpia los campos y seleccion la primer opcion del select */
+								onClose: () => {
+									/* Llamo a la función que agrega el producto nuevo a la tabla*/
+									$("#tituloProyecto").text("Productos de: " + $("#descProyecto").val());
+                                    
+								    $("#cerrarProyecto").click();
+									$("#descProyecto").val('');
+								}
+							});
+						/* Si hubo algún error se muestra al usuario para su correción */
+						} else { muestraAlerta('error', data.message); }
+					},
+					error: function (data) { muestraAlerta('error', data.message); }
+				}); 
+			}
+			else { $("#form-proyecto")[0].reportValidity(); }
+		}
+	)}
 
 /* =============================================================
  * Funcion para mostar alertas referentes a la guia (tutorial)
@@ -203,19 +242,25 @@ function agregarProductoTable($num, $desc, $porcion, $url){
  * Atiende al menu de botones
  * ============================================================= */
 function linkmenu($id,$url,$href){
-	$.ajax({
-		url     : $url,
-		type    : 'POST',
-		data    : { iP: $id },
-		dataType: 'JSON',
-		success : function (data) {
-			if (data.status == 'success'){ 
-				/* Redirijo al usuario a la página principal del simulador */
-				window.location.href = $href;
-			} else { 
-				console.log(data); 
-			}
-		},
-		error: function (data){ muestraAlerta('error', data.mensaje); }
-	});
+    if($id!=0){
+    	$.ajax({
+    		url     : $url,
+    		type    : 'POST',
+    		data    : { iP: $id },
+    		dataType: 'JSON',
+    		success : function (data) {
+    			if (data.status == 'success'){ 
+    				/* Redirijo al usuario a la página principal del simulador */
+    				window.location.href = $href;
+    			} else { 
+    				console.log(data); 
+    			}
+    		},
+    		error: function (data){ muestraAlerta('error', data.mensaje); }
+    	});
+     }
+     else{
+        /* Redirijo al usuario a la página principal del simulador */
+        window.location.href = $href;
+     }
 }

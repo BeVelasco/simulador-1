@@ -3,10 +3,10 @@
 /**
  * Este archivo forma parte del Simulador de Negocios.
  *
- * (c) Emmanuel Hernández <emmanuelhd@gmail.com>
+ * (c) Emmanuel HernÃ¡ndez <emmanuelhd@gmail.com>
  *
- *  Prohibida su reproducción parcial o total sin 
- *  consentimiento explícito de Integra Ideas Consultores.
+ *  Prohibida su reproducciÃ³n parcial o total sin 
+ *  consentimiento explÃ­cito de Integra Ideas Consultores.
  *
  *  Noviembre - 2018
  */
@@ -94,10 +94,10 @@ class ProductoController extends Controller
     
     /** 
 	 * ==================================================================== 
-	 * Función para seleccionar el producto y ponerlo en la sesión
+	 * FunciÃ³n para seleccionar el producto y ponerlo en la sesiÃ³n
      * $request->id=>producto
 	 * 
-	 * @author Jaime Vázquez
+	 * @author Jaime VÃ¡zquez
 	 * ====================================================================
 	*/
 	public function editarProducto(Request $request)
@@ -120,9 +120,9 @@ class ProductoController extends Controller
     
     /** 
 	 * ==================================================================== 
-	 * Función para verificar que se tenga seleccionado el producto al inicio de la edición
+	 * FunciÃ³n para verificar que se tenga seleccionado el producto al inicio de la ediciÃ³n
 	 * 
-	 * @author Jaime Vázquez
+	 * @author Jaime VÃ¡zquez
 	 * ====================================================================
 	*/
 	public function editarInicio(Request $request)
@@ -145,7 +145,7 @@ class ProductoController extends Controller
     
     /** 
 	 * ==============================================================
-	 * Función para regresar el primer formato de jExcel, columnas, 
+	 * FunciÃ³n para regresar el primer formato de jExcel, columnas, 
 	 * cabeceras y formato de filas.
 	 * ==============================================================
 	*/
@@ -180,6 +180,7 @@ class ProductoController extends Controller
         
                     
             $res = DB::select($sql, ['id_usuario'=>$idUser,'id_producto'=>$id_producto]);
+            
             //Pasarlo a forma de array de puros valores [[][]...]
             $data=json_decode($res[0]->data);
             
@@ -254,8 +255,8 @@ class ProductoController extends Controller
             $d=$request->datos;
             $pi["totalproduccion"]=0;$pi["grantotal"]=0; 
             for($i=0;$i<count($d);$i++){
-                $pi["totalproduccion"]+=str_replace("$","",$d[$i][10]);
-                $pi["grantotal"]+=str_replace("$","",$d[$i][14]);
+                $pi["totalproduccion"]+=preg_replace('/[^0-9.]+/', '', $d[$i][10]);
+                $pi["grantotal"]+=preg_replace('/[^0-9.]+/', '', $d[$i][14]);
             }
             $pi -> save();	
             /* Se agregan los valores enviados por el usuario y se guarda en la BD */
@@ -264,10 +265,10 @@ class ProductoController extends Controller
 
 		
 
-		/* Regreso la respuesta exitosa con el total para actualizar el número en la vista  */
+		/* Regreso la respuesta exitosa con el total para actualizar el nÃºmero en la vista  */
 		return response() -> json([
 			'status'  => 'success',
-			'msg'     => 'Información guardada con exito.',
+			'msg'     => 'Información guardada con éxito.',
 		]);
 	}
 }

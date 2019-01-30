@@ -3,10 +3,10 @@
 /**
  * Este archivo forma parte del Simulador de Negocios.
  *
- * (c) Emmanuel Hernández <emmanuelhd@gmail.com>
+ * (c) Emmanuel HernÃ¡ndez <emmanuelhd@gmail.com>
  *
- *  Prohibida su reproducción parcial o total sin 
- *  consentimiento explícito de Integra Ideas Consultores.
+ *  Prohibida su reproducciÃ³n parcial o total sin 
+ *  consentimiento explÃ­cito de Integra Ideas Consultores.
  *
  *  Noviembre - 2018
  */
@@ -28,9 +28,9 @@ class NominaController extends Controller
     
     /** 
 	 * ==================================================================== 
-	 * Función para verificar que se tenga seleccionado el producto al inicio de la edición
+	 * FunciÃ³n para verificar que se tenga seleccionado el producto al inicio de la ediciÃ³n
 	 * 
-	 * @author Jaime Vázquez
+	 * @author Jaime VÃ¡zquez
 	 * ====================================================================
 	*/
 	public function editarInicio(Request $request)
@@ -53,7 +53,7 @@ class NominaController extends Controller
     
     /** 
 	 * ==============================================================
-	 * Función para regresar el primer formato de jExcel, columnas, 
+	 * FunciÃ³n para regresar el primer formato de jExcel, columnas, 
 	 * cabeceras y formato de filas.
 	 * ==============================================================
 	*/
@@ -63,7 +63,7 @@ class NominaController extends Controller
         /* Obtengo el id del usuario */
 		$idUser    = Auth::user() -> id;
         
-        /* Formulación */
+        /* FormulaciÃ³n */
         $sql='SELECT t.`datos`,t.sumanomina
             FROM nominas AS t
             WHERE t.`id_user`=:id_usuario';
@@ -71,42 +71,39 @@ class NominaController extends Controller
         $res = DB::select($sql, ['id_usuario'=>$idUser]);
         
         //Pasarlo a forma de array de puros valores [[][]...]
-        if(count($res)>0 && $res[0]->sueldode!=null){
+        if(count($res)>0 ){
             $datanomina=json_decode($res[0]->datos);
             $sumanomina=$res[0]->sumanomina;
         }
         else{
             $datanomina=Array();
             array_push($datanomina,
-                Array("Director comercial","10000","160000"),
-                Array("Ejecutivo comercial/gestor de cuentas","10000","54000"),
-                Array("Gerente de producción","15500","140000"),
-                Array("Ingeniero de producción","8700","50000"),
-                Array("Operario cualificado","2200","17500"),
-                Array("Operario no cualificado","1200","13000"),
-                Array("Secretaria bilingüe","4000","26000"),
-                Array("Administrativo contable","6700","46000"),
-                Array("Salario mínimo mensual zona","3080.40","3080.40")
+                Array("Director comercial","10000","160000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Ejecutivo comercial/gestor de cuentas","10000","54000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Gerente de producción","15500","140000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Ingeniero de producción","8700","50000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Operario cualificado","2200","17500","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Operario no cualificado","1200","13000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Secretaria bilingüe","4000","26000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Administrativo contable","6700","46000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Salario mínimo mensual zona","3080.40","3080.40","0","0","0","0","0","0","0","0","0","0","0","0")
                 );    
             $sumanomina=0;
         }
         
         //Actualizar el array con las formulas
         for($i=0;$i<count($datanomina);$i++){
-            array_push($datanomina[$i],
-                        0,0 //valores por default
-                        ,"=D".($i+1)."*E".($i+1)
-                        ,"=F".($i+1)."*12"
-                        ,"=F".($i+1)."/30.4*6*0.25"
-                        ,"=F".($i+1)."/30.4*15"
-                        ,"=G".($i+1)."+H".($i+1)."+I".($i+1).""
-                        ,"=J".($i+1)."*0.25"
-                        ,"=J".($i+1)."*0.05"
-                        ,"=J".($i+1)."*0.02"
-                        ,"=K".($i+1)."+L".($i+1)."+M".($i+1).""
-                        ,"=J".($i+1)."+N".($i+1)
+                $datanomina[$i][5]="=D".($i+1)."*E".($i+1);
+                $datanomina[$i][6]="=F".($i+1)."*12";
+                $datanomina[$i][7]="=F".($i+1)."/30.4*6*0.25";
+                $datanomina[$i][8]="=F".($i+1)."/30.4*15";
+                $datanomina[$i][9]="=G".($i+1)."+H".($i+1)."+I".($i+1)."";
+                $datanomina[$i][10]="=J".($i+1)."*0.25";
+                $datanomina[$i][11]="=J".($i+1)."*0.05";
+                $datanomina[$i][12]="=J".($i+1)."*0.02";
+                $datanomina[$i][13]="=K".($i+1)."+L".($i+1)."+M".($i+1)."";
+                $datanomina[$i][14]="=J".($i+1)."+N".($i+1);
                         
-            );
         }
         
         
@@ -119,7 +116,7 @@ class NominaController extends Controller
 	}
     
     /** ==============================================================
-	 * Función para duardar los datos.
+	 * FunciÃ³n para duardar los datos.
 	 * ==============================================================
      */
 	public function set_nomina(Request $request)
@@ -128,18 +125,19 @@ class NominaController extends Controller
 		
 		/* Obtiene el id del usuario */
 		$idUser = Auth::user() -> id;
-        
+
         try{
 			$existe = Nomina::where('id_user', $idUser)
 				->first();
 			if ( $existe == null ){
 			     /* Se agregan los valores enviados por el usuario y se guarda en la BD */
-        		$tktformula   = new Nomina();
+        		$nomina   = new Nomina();
                 
-                $tktformula["id_user"]=$idUser;
-                $tktformula["datos"]=json_encode($request["datos"]);
-                $tktformula["sumanomina"]=preg_replace('/[^0-9.]+/', '', $request["sumanomina"]);
-        		$tktformula -> save();
+                $nomina["id_user"]=$idUser;
+                $nomina["datos"]=json_encode($request["datos"]);
+                $nomina["sumanomina"]=preg_replace('/[^0-9.]+/', '', $request["sumanomina"]);
+                
+        		$nomina -> save();
 			} else {
 				/* Si encuentra coincidencia solo actualiza el valor de realizado */
 				$existe["datos"]=json_encode($request["datos"]);
@@ -151,10 +149,10 @@ class NominaController extends Controller
 
 		
 
-		/* Regreso la respuesta exitosa con el total para actualizar el número en la vista  */
+		/* Regreso la respuesta exitosa con el total para actualizar el nÃºmero en la vista  */
 		return response() -> json([
 			'status'  => 'success',
-			'msg'     => 'Información guardada con exito.',
+			'msg'     => 'Información guardada con éxito.',
 		]);
 	}
 }

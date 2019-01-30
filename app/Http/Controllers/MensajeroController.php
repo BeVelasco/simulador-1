@@ -18,10 +18,10 @@ class MensajeroController extends Controller
     
     /** 
 	 * ==================================================================== 
-	 * Función para mostrar el inicio del simulador, el usuario debe estar
+	 * FunciÃ³n para mostrar el inicio del simulador, el usuario debe estar
 	 * logeado y haber seleccionado un producto para iniciar el simulador
 	 * 
-	 * @author Emmanuel Hernández Díaz
+	 * @author Emmanuel HernÃ¡ndez DÃ­az
 	 * ====================================================================
 	*/
 	public function inicio(Request $request)
@@ -39,7 +39,7 @@ class MensajeroController extends Controller
 	 * ==============================================================
 	 * Regreesar los mensajes de acuerdo al tipo
 	 * 
-	 * @author Emmanuel Hernández Díaz
+	 * @author Emmanuel HernÃ¡ndez DÃ­az
 	 * ==============================================================
 	*/
 	public function get_datos(Request $request)
@@ -86,10 +86,10 @@ class MensajeroController extends Controller
             $mensaje[$key]=$input[$key];
 		$mensaje -> save();
 
-		/* Regreso la respuesta exitosa con el total para actualizar el número en la vista  */
+		/* Regreso la respuesta exitosa con el total para actualizar el nÃºmero en la vista  */
 		return response() -> json([
 			'status'  => 'success',
-			'msg'     => 'Mensaje enviado con exito.',
+			'msg'     => 'Mensaje enviado con éxito.',
 		]);
 	}
 }

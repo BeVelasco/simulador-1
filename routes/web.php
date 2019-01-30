@@ -18,10 +18,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function() {
-    /*Panel de control*/
-    Route::get('/inicio', function () {
-		return view('/simulador/dashboard/inicio');//return view('/noticias');
-	});
+    //Tablero
+	Route::get('/inicio', 'TableroController@inicio') -> name('inicio');
+    Route::post('/tablero/get_productos', 'TableroController@get_productos') -> name('get_productos');    
+    
+    /* usuario */
+    Route::get('/usuario/editarInicio', 'PerfilController@editarInicio') -> name('editarInicio');
+    Route::post('/usuario/get_perfil', 'PerfilController@get_perfil') -> name('get_perfil');
+    Route::post('/usuario/set_perfil', 'PerfilController@set_perfil') -> name('set_perfil');
+    
     /* Rutas de noticias */
     Route::get('/noticias1', function () {
 		return view('/noticias');
@@ -31,10 +36,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/dashboard', 'DashboardController@dashboard') -> name('dashboard');
 	Route::post('addUnidadMedida', 'DashboardController@addUnidadMedida') -> name('addUnidadMedida');
 	Route::post('addProducto', 'DashboardController@addProducto') -> name('addProducto');
+    Route::post('addProyecto', 'DashboardController@addProyecto') -> name('addProyecto');
 	Route::post('iniciarSimulador', 'DashboardController@iniciarSimulador') -> name('iniciarSimulador');
 	/* Rutas del simulador */
-    //Tablero
-	Route::get('/simulador/inicio', 'SimuladorController@inicio') -> name('inicioSimulador');
+    
     //Tutoriales
     Route::get('/simulador/tutoriales', function () {
 		return view('/simulador/tutoriales/inicio');
@@ -86,10 +91,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/inicial/editarInicio', 'InversioninicialController@editarInicio') -> name('editarInicio');
     Route::post('/inicial/get_inversion', 'InversioninicialController@get_inversion') -> name('get_inversion');
     Route::post('/inicial/set_inversion', 'InversioninicialController@set_inversion') -> name('set_inversion');
-
+    
+    /* Rutas de situación inicial*/
+    Route::get('/inicial/editarInicioSituacion', 'SituacioninicialController@editarInicioSituacion') -> name('editarInicioSituacion');
+    Route::post('/inicial/get_situacion', 'SituacioninicialController@get_situacion') -> name('get_situacion');
+    Route::post('/inicial/set_situacion', 'SituacioninicialController@set_situacion') -> name('set_situacion');
+    
     /* Reportes*/
     Route::get('/reportes/perdidasganancias', 'ReportesController@perdidasganancias');
     Route::post('/reportes/get_perdidasganancias', 'ReportesController@get_perdidasganancias') -> name('get_perdidasganancias');
+    
+    
 
 });
 Route::group(['middleware' => ['web']], function ()

@@ -16,11 +16,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Tktformula;
 use Auth, View, Session, Lang, Route;
 
 
-class TktController extends Controller
+class TableroController extends Controller
 {
 	/* =================================================
 	 *                Variables globales 
@@ -33,19 +32,12 @@ class TktController extends Controller
 	 * @author Jaime VÃ¡zquez
 	 * ====================================================================
 	*/
-	public function editarInicio(Request $request)
+	public function inicio(Request $request)
 	{
 		/* El usuario debe estar loggeado */
 		if ( Auth::check() )
 		{
-			
-			/* El usuario debe tener un producto seleccionado */
-			if ( Session::get('prodSeleccionado') == null )
-			{
-				return redirect('/productomenu');
-			} else {
-			     return view('/simulador/tkt/tkt');
-			}
+            return view('/simulador/dashboard/inicio');//return view('/noticias');
 		} else {
 			return view('auth.login');
 		}
@@ -56,58 +48,33 @@ class TktController extends Controller
 	 * FunciÃ³n para regresar los datos.
 	 * ==============================================================
 	*/
-	public function get_formulacion(Request $request)
+	public function get_productos(Request $request)
 	{
-		/* Inserto la variable en la sesion, puede ser true o false*/
-		$id_producto=Session::get('prodSeleccionado');
         
         /* Obtengo el id del usuario */
 		$idUser    = Auth::user() -> id;
         
         
         /* FormulaciÃ³n */
-        $sql='SELECT t.procesos,t.sumatakttime
-            FROM productos AS p
-            	LEFT JOIN `tktformulas` AS t ON p.`id`=t.id_productos
-            WHERE p.`id_user_r`=:id_usuario AND p.`id`=:id_producto';
+        $sql='
+            SELECT 0 AS id,"General" AS idesc
+            	,valpos_char(@d:=avance_total(:id_usuario,0),1,";") AS porcentaje
+            	,valpos_char(@d,2,";") AS jsontext
+            UNION ALL
+            SELECT p.`id`,p.`idesc`
+                ,valpos_char(@d:=avance_total(:id_usuario,p.id),1,";") AS porcentaje
+	           ,valpos_char(@d,2,";") AS jsontext
+            FROM `productos` AS p
+            WHERE p.`deleted_at` IS NULL
+            	AND p.`id_user_r`=:id_usuario';
     
                 
-        $res = DB::select($sql, ['id_usuario'=>$idUser,'id_producto'=>$id_producto]);
-        //Pasarlo a forma de array de puros valores [[][]...]
-        $dataformulacion=Array();
-        //dd($res);
-        if(count($res)>0 && $res[0]->procesos!=null){
-            $dataformulacion=json_decode($res[0]->procesos);
-            $sumatakttime=$res[0]->sumatakttime;
-            
-            for($i=0;$i<count($dataformulacion);$i++){
-                $dataformulacion[$i][12]="=AVG(H".($i+1).":L".($i+1).")";
-            }
-        }
-        else{
-            $sumatakttime=0;
-            $dataformulacion=Array(Array("","","","","","","","","","","","","=AVG(H1:L1)"));    
-        }
-        
-            
-        /*for($i=0;$i<count($res);$i++){
-            $row=Array();
-            foreach ($res[$i] as $key => $value){
-                if(in_array($key, ["promedio"]))
-                    $value=str_replace("[x]",$i+1,$value);
-                $row[]=$value;
-            }
-            $dataformulacion[]=$row;
-        }*/
-        
-        
-        
+        $res = DB::select($sql, ['id_usuario'=>$idUser]);
         
 		/* Regreso la respuesta con los datos para el jExcel */
 		return response() -> json([
 			'status'         => 'success',
-			'formulacion'    => $dataformulacion,
-            'sumatakttime'   => $sumatakttime
+			'data'           => $res,
 		]);
 	}
     

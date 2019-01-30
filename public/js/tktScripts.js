@@ -111,21 +111,7 @@ function AVG(v)
     return avg;
 }
 
-/**======================================================================
- * Función que actualiza los datos en el texto de la página web
- * @author Emmanuel Hernández Díaz
- * ======================================================================
- */
-function actualizaDatos(data)
-{
-	console.log('precioVenta: ');
-	console.log(data.precioVenta);
-	document.getElementById('sumCI').innerHTML         = data.sumCI;
-	document.getElementById('recetaPara').innerHTML    = data.porcionpersona;
-	document.getElementById('costounitario').innerHTML = data.costoUnitario;
-	document.getElementById('costoUni').innerHTML      = data.costoUnitario;
-	document.getElementById('precioVen').innerHTML     = data.precioVenta;
-}
+
 
 
 /**=========================================================================
@@ -216,7 +202,8 @@ function Guardar(){
     			{
     				swal({
     					type : 'success',
-    					title: data.msg,
+                        title: 'Mensaje',
+					    text : data.msg,
     					//text : data.msg,
     				});
                     
@@ -239,7 +226,8 @@ function Guardar(){
     else{
         swal({
 			type : 'error',
-			title: 'Existen celdas vacías (marcadas en amarillo) en una o más tablas del formulario, si desea continuar aún con las celdas vacías, marque la casilla "Guardar con celdas vacías" ubicada a la izquierda del botón "Guardar"',
+			title: 'Mensaje',
+            text : 'Existen celdas vacías (marcadas en amarillo) en una o más tablas del formulario, si desea continuar aún con las celdas vacías, marque la casilla "Guardar con celdas vacías" ubicada a la izquierda del botón "Guardar"',
 			onClose: () => {
 				
 			}
@@ -259,14 +247,14 @@ function Guardar(){
     var data=$('#excelformula').jexcel('getData');
     for(i=0;i<data.length;i++){
         cantidadceldasrenglon=0;
-        for(j=1;j<data[i].length;j++){//J=1 para saltar el ID que está oculto
+        for(j=0;j<data[i].length;j++){//J=1 para saltar el ID que está oculto
             //Poner en blanco las celdas, por si anteriormente ya se habian marcado como vacias (amarillo)
             $('td#'+j+'-'+i).css("background-color","#fff");
             
             if(data[i][j].indexOf("=")==0)
                 data[i][j]=$('#excelformula input[value="'+data[i][j]+'"]').parent("td").text();
             else{
-                data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
+                data[i][j]=data[i][j].replace(/[\$]/g, "");
                 if(data[i][j]=="" 
                     //&& data.length>1 
                     && (!($("#chkGuardarvacias").is(":checked"))) 

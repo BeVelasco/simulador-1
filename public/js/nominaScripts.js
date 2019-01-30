@@ -14,9 +14,6 @@ $.ajaxSetup({
 	}
 });
 
-//Array de formulas
-var formulas=[];
-
 $(document).ready(function(){
     
 	$.ajax({
@@ -135,8 +132,6 @@ function actualizaDatos(data)
  */
 function pintaJexcel(data)
 {
-    //recibir las formulas de las celdas para aplicarlas en los renglones nuevos
-    formulas=data.formulas;
     
 	$('#excelnomina').jexcel({
 		data             : data.datanomina,
@@ -235,10 +230,10 @@ function Guardar(){
 	
     if(renglonconceldasvacias.length==0){
     	$.ajax({
-    		url     : '/nomina/set_formulacion',
+    		url     : '/nomina/set_nomina',
             data    :{
                         datos:datos,
-                        sumatakttime:$("#sumatakttime").val(),
+                        sumanomina:$("#total").val(),
                     },
     		type    : 'POST',
     		dataType: 'JSON',
@@ -250,7 +245,8 @@ function Guardar(){
     			{
     				swal({
     					type : 'success',
-    					title: data.msg,
+                        title: 'Mensaje',
+			             text:  data.msg,
     					//text : data.msg,
     				});
                     
@@ -273,7 +269,8 @@ function Guardar(){
     else{
         swal({
 			type : 'error',
-			title: 'Existen celdas vacías (marcadas en amarillo) en una o más tablas del formulario, si desea continuar aún con las celdas vacías, marque la casilla "Guardar con celdas vacías" ubicada a la izquierda del botón "Guardar"',
+            title: 'Mensaje',
+			text:  'Existen celdas vacías (marcadas en amarillo) en una o más tablas del formulario, si desea continuar aún con las celdas vacías, marque la casilla "Guardar con celdas vacías" ubicada a la izquierda del botón "Guardar"',
 			onClose: () => {
 				
 			}
@@ -291,25 +288,34 @@ function Guardar(){
     renglonconceldasvacias=[];
     
     var data=$('#excelnomina').jexcel('getData');
+    var datos=Array();//El JExcel al poner dos filas mete columnas duplicadas y en null, por eso se crea otro array para ir copiando los valores validos
+    
     for(i=0;i<data.length;i++){
         cantidadceldasrenglon=0;
-        for(j=1;j<data[i].length;j++){//J=1 para saltar el ID que está oculto
+        var row=Array();
+        for(k=0;k<data[i].length;k++){//J=1 para saltar el ID que está oculto
             //Poner en blanco las celdas, por si anteriormente ya se habian marcado como vacias (amarillo)
-            $('td#'+j+'-'+i).css("background-color","#fff");
+            $('td#'+k+'-'+i).css("background-color","#fff");
             
-            if(data[i][j].indexOf("=")==0)
-                data[i][j]=$('#excelnomina input[value="'+data[i][j]+'"]').parent("td").text();
-            else{
-                data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
-                if(data[i][j]=="" 
-                    //&& data.length>1 
-                    && (!($("#chkGuardarvacias").is(":checked"))) 
-                    ){
-                    //Poner en amarillo si no tiene contenido
-                    $('td#'+j+'-'+i).css("background-color","#ff0");
-                    celdasvacias=true;
-                    cantidadceldasrenglon++;
+            if(data[i][k]!=null){
+                if(data[i][k].indexOf("=")==0)
+                    data[i][k]=$('#excelnomina input[value="'+data[i][k]+'"]').parent("td").text().replace(/[\$,]/g, "");
+                else{
+                    if(data[i][k].indexOf("$")>=0)
+                        data[i][k]=data[i][k].replace(/[\$,]/g, "");
+                    else
+                        data[i][k]=data[i][k];
+                    /*if(data[i][j]=="" 
+                        //&& data.length>1 
+                        && (!($("#chkGuardarvacias").is(":checked"))) 
+                        ){
+                        //Poner en amarillo si no tiene contenido
+                        $('td#'+j+'-'+i).css("background-color","#ff0");
+                        celdasvacias=true;
+                        cantidadceldasrenglon++;
+                    }*/
                 }
+                row.push(data[i][k]);
             }
         }    
         if(celdasvacias){
@@ -323,9 +329,10 @@ function Guardar(){
             else
                 renglonconceldasvacias.push(i)
         }
+        datos.push(row);
     }
         
-    return data;
+    return datos;
 }
 
 /**=========================================================================

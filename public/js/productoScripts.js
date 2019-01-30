@@ -55,11 +55,11 @@ $(document).ready(function(){
  */
 function Guardar(){
     
-    //datos=LeerExcel()
+    datos=LeerExcel()
     
 	$.ajax({
 		url     : '/producto/set_producto',
-        data    :{datos:$('#mytable').jexcel('getData')},
+        data    :{datos:datos},
 		type    : 'POST',
 		dataType: 'JSON',
 		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
@@ -127,18 +127,7 @@ function formateaCeldas(){
 	});
 }
 
-/**======================================================================
- * Función que actualiza los datos en el texto de la página web
- * @author Emmanuel Hernández Díaz
- * ====================================================================*/
-function actualizaDatos(data)
-{
-	$('#sumCI').html(data.sumCI);
-	$('#recetaPara').html(data.porcionpersona);
-	$('#costounitario').html(data.costoUnitario);
-	$('#costoUni').html(data.costoUnitario);
-	$('#precioVen').html(data.precioVenta);
-}
+
 
 /**=========================================================================
  * Función que pinta el jExcel con los datos recibidos desde el controlador
@@ -213,13 +202,13 @@ function pintaJexcel(data){
             if(data[i][j].indexOf("=")==0)
                 data[i][j]=$('#mytable input[value="'+data[i][j]+'"]').parent("td").text();
             else{
-                data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
+                data[i][j]=data[i][j].replace(/[\$]/g, "");
 
-                if(j>0 && data[i][j]=="" && data.length>1 && (!($("#chkGuardarvacias").is(":checked")))){
+                /*if(j>0 && data[i][j]=="" && data.length>1 && (!($("#chkGuardarvacias").is(":checked")))){
                     //Poner en amarillo si no tiene contenido
                     $('td#'+j+'-'+i).css("background-color","#ff0");
                     celdasvacias=true;
-                }
+                }*/
             }
         }
     }

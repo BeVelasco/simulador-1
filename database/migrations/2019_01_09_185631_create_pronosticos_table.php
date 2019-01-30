@@ -20,7 +20,9 @@ class CreatePronosticosTable extends Migration
             $table -> integer('id_producto') -> unsigned(11) -> nullable();
             $table -> foreign('id_producto') -> references('id')->on('productos');
             
-            $table -> double('regionObjetivo');
+            $table -> string('mesInicio');
+            
+            $table -> double('regionObjetivo',11,2);
             $table -> text('regionObjetivo');
             $table -> text('totalPersonas');
             $table -> text('segmentacion');
@@ -34,7 +36,7 @@ class CreatePronosticosTable extends Migration
             $table -> text('consumoAnual');
             $table -> text('proyeccionVentas');
             $table -> double('totalUnidades');
-            $table -> double('tasaCreVen',10,2);
+            $table -> double('tasaCreVen',11,2);
 
             $table -> softDeletes();
             $table -> timestamps();

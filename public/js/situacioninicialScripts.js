@@ -21,7 +21,7 @@ var formulas=[];
 $(document).ready(function(){
     
 	$.ajax({
-		url     : '/inicial/get_inversion',
+		url     : '/inicial/get_situacion',
 		type    : 'POST',
 		dataType: 'JSON',
 		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
@@ -30,7 +30,7 @@ $(document).ready(function(){
 			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
 			if (data['status'] == 'success')
 			{
-                $("#total").val(' $ ' + numeral(data["totalinversion"]).format('0,0.00'));
+                //$("#total").val(' $ ' + numeral(data["totalsituacion"]).format('0,0.00'));
 				/* Muestra jExcel con los datos recibidos */
 				pintaJexcel(data);
 				/* Formatea las celdas */
@@ -70,31 +70,40 @@ function labelFormatter(label, series) {
  * ======================================================================
  */
 function formateaCeldas(){
-	$('#excelcapital').jexcel('updateSettings',{
+	$('#excelsituacion').jexcel('updateSettings',{
 	   cells: function (cell, col, row) {
             //Renglones con solo texto (titulos)
-            if (row == 0 || row == 6 || row == 7 || row == 8 || row == 6 || row == 15 || row == 14) {
-                $(cell).addClass('readonly');
-                $(cell).css("color","#fff");
-                $(cell).css("background","#333");
+            if ($('#excelsituacion td#4-'+row)[0].innerText.indexOf("ne-")>=0) {
+                cols=$('#excelsituacion td#4-'+row)[0].innerText.substr(3).split(",")
+                for(i=0;i<cols.length;i++){
+                    celda=$('#excelsituacion td#'+cols[i]+'-'+row)[0]
+                    $(celda).addClass('readonly');
+                    $(celda).css("color","#fff");
+                    $(celda).css("background","#333");
+                }
             }
-            if (row == 2 && col==1) {
+            /*if (row == 2 && col==1) {
                 $(cell).addClass('readonly');
             }
-            
-			if (col ==1 && row!=0 && row!=7 && row!=8 && row!=14 && row!=15) {
-				$(cell).html(' $ ' + numeral($(cell).text()).format('0,0.00'));
-			}
+            */
+			if (col ==1 || col==3) {
+                if($(cell)[0].innerText!="")
+				    $(cell).html(' $ ' + numeral($(cell).text()).format('0,0.00'));
+			}/*
             if ((row == 6 || (row>=9 && row<=13) || (row>=16)) && col ==2) {
 				$(cell).html(numeral($(cell).text()).format('0.00'));
-			}
-			if (col==0 || col ==2 || col ==3){
-				$(cell).addClass('readonly');
-			}
+			}*/
 		}
 	});
     
-
+    $('#excelventas').jexcel('updateSettings',{
+	   cells: function (cell, col, row) {
+			if (col ==1 || col==3) {
+                if($(cell)[0].innerText!="")
+				    $(cell).html(' $ ' + numeral($(cell).text()).format('0,0.00'));
+			}
+		}
+	});
     
 }
 
@@ -120,10 +129,10 @@ function AVG(v)
  */
 function pintaJexcel(data)
 {
-	$('#excelcapital').jexcel({
-		data             : data.datainversion,
-		colHeaders       : ["Concepto","Importe","%","",""],
-		colWidths        : [450, 90, 90, 90],
+	$('#excelsituacion').jexcel({
+		data             : data.datasituacion,
+		colHeaders       : ["","","","",""],
+		colWidths        : [450, 90, 450, 90],
 		allowInsertRow   : false,
         allowManualInsertRow: false,
 		allowInsertColumn: false,
@@ -134,21 +143,33 @@ function pintaJexcel(data)
 		columns          :[
             { "type": "text"},
 			{ "type": "numeric"},
+			{ "type": "text"},
 			{ "type": "numeric"},
-			{ "type": "hidden"},
             { "type": "hidden"},
 		],
-        onchange:function (obj, cel, val) {
-            
-            // Get the cell position x, y
-            var id = $(cel).prop('id').split('-');
-            
-            if(id[0]!=2 && id[0]!=3)
-                CalcularTotal();                                                                                
-        }
+        
 	});
     
-   
+   $('#excelventas').jexcel({
+		data             : data.dataventas,
+		colHeaders       : ["","","","",""],
+		colWidths        : [450, 90, 450, 90],
+		allowInsertRow   : false,
+        allowManualInsertRow: false,
+		allowInsertColumn: false,
+		allowDeleteRow   : false,
+		allowDeleteColumn: false,
+        contextMenu      : false,
+		/* Tipos de columnas enviados desde el controlador */
+		columns          :[
+            { "type": "text"},
+			{ "type": "numeric"},
+			{ "type": "text"},
+			{ "type": "numeric"},
+            { "type": "hidden"},
+		],
+        
+	});
     
 }
 
@@ -162,10 +183,10 @@ function Guardar(){
 	
     if(renglonconceldasvacias.length==0){
     	$.ajax({
-    		url     : '/inicial/set_inversion',
+    		url     : '/inicial/set_situacion',
             data    :{
                         datos:datos,
-                        totalinversion:$("#total").val(),
+                        totalsituacion:$("#total").val(),
                     },
     		type    : 'POST',
     		dataType: 'JSON',
@@ -177,8 +198,8 @@ function Guardar(){
     			{
     				swal({
     					type : 'success',
-    					title: 'Mensaje',
-    					text : data.msg,
+    					title: data.msg,
+    					//text : data.msg,
     				});
                     
     			/* Si hubo algún error se muestra al usuario para su correción */
@@ -209,45 +230,6 @@ function Guardar(){
 }
 
 /**=========================================================================
- * Calcular el total
- * =========================================================================
- */
-function CalcularTotal(){
-    var suma=0;
-    
-    value=$("#excelcapital td#1-6")[0].innerText.replace(/[^0-9.]/g, "");
-    suma+=parseFloat((value!=""?value:0));
-    
-    for(i=9;i<=13;i++){
-        value=$("#excelcapital td#1-" + i)[0].innerText.replace(/[^0-9.]/g, "");
-        suma+=parseFloat((value!=""?value:0));
-    }
-    
-    for(i=16;i<=23;i++){
-        value=$("#excelcapital td#1-" + i)[0].innerText.replace(/[^0-9.]/g, "");
-        suma+=parseFloat((value!=""?value:0));
-    }
-         
-    $('#excelcapital td#3-6').removeClass("readonly");
-    $('#excelcapital').jexcel('setValue', 'D7', suma);
-    
-    for(i=9;i<=13;i++){
-        $('#excelcapital td#3-' + i).removeClass("readonly");
-        $('#excelcapital').jexcel('setValue', 'D'+(i+1), suma);
-        
-        /*$('#excelactivos td#2-' + i).removeClass("readonly");
-        $('#excelactivos').jexcel('setValue', 'C'+(i+1), "=IF(OR(B"+(i+1)+"<=0,D"+(i+1)+"<=0),0,B"+(i+1)+"/D"+(i+1)+"*100)");*/
-    }    
-    for(i=16;i<=23;i++){
-        $('#excelcapital td#3-' + i).removeClass("readonly");
-        $('#excelcapital').jexcel('setValue', 'D'+(i+1), suma);
-    }
-            
-    
-    $("#total").val(' $ ' + numeral(suma).format('0,0.00'));
-    
-}
-/**=========================================================================
  * Leer excel
  * =========================================================================
  */
@@ -256,7 +238,7 @@ function CalcularTotal(){
     var celdasvacias=false;
     renglonconceldasvacias=[];
     
-    var data=$('#excelcapital').jexcel('getData');
+    var data=$('#excelsituacion').jexcel('getData');
         
     return data;
 }

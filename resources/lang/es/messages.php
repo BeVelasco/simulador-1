@@ -10,6 +10,7 @@
 	'registrado'         => 'Registrado|Registrados',
 	'unidad'             => 'Unidad|Unidades',
 	'deMedida'           => 'de Medida',
+    'nombrarProyecto'    => 'Nombrar proyecto',
 	'agregarProducto'    => 'Agregar producto',
 	'agregarUM'          => 'Agregar unidad de medida',
 	'hola'               => 'Hola',
@@ -263,5 +264,7 @@
   'productoproduccion_boton'=>'Insumos producción',
   'tkt_boton'=>'Takt time',
   'nomina_boton'=>'Nómina',
-  'producto_acumuladoboton'=>'Acumulado inicial'
+  'producto_acumuladoboton'=>'Acumulado inicial',
+  'inversion_inicialboton'=>'Inversión inicial',
+  'perdidas_gananciasboton'=>'Estado de Resultados',
 ];

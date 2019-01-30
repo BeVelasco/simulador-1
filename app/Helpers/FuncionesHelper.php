@@ -32,7 +32,8 @@ function obtenPrecioVenta($idProducto){
 
 /* Función que obtiene el total de productos del ide del usuario enviado */
     function obtenTotalProductos($idUser){
-        try{
+        try
+        {
             $totalProductos = User::find($idUser) -> productos -> count();
             return $totalProductos;
         } catch (Exception $e) { return response() -> json(['message' => $e -> getMessage()], 401); }

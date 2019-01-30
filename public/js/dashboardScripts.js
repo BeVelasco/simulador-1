@@ -8,93 +8,93 @@
 =========================================================
 */
 $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
-/*Funcion para agregar unidad de medida*/
+/**
+ * Funcion para agregar unidad de medida
+ */
 function addUnidadMedida() {
-	/* Espero a que el documento esté completamente cargado */
-	$(document).ready(function(){
-		if($("#formUnidadMedida")[0].checkValidity()) {
-			/* Paso mediante ajax la descripcion insertada por el usuario */
-			$.ajax({
-				url: 'addUnidadMedida',
-				type: 'POST',
-				data: { descripcion :$("#descripcionUM").val() },
-				dataType: 'JSON',
-				/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
-				success: function (data) {
-					/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
-					if (data.status == 'success'){
-						swal({
-							type : 'success',
-							title: data.option + ' agregada con éxito',
-							onClose: () => {
-								/* Cierra el modal de crear categoría y limpia los inputs*/
-								$("#cerrarUM").click();
-								$("#descripcionUM").val('');
-								/* Actualiza el valor de las categorías en el dashboard */
-								document.getElementById("numCatums").innerHTML = data.val;
-								/* Se agrega al select el nuevo produco*/
-								$("#uMedida")
-									.append('<option value="'+data.val+'">'+data.option+'</option>')
-									.selectpicker('refresh');
-							}
-						});
-					/* Si hubo algún error se muestra al usuario para su correción */
-					} else {
-						swal({
-							type : 'error',
-							title: 'Oops...',
-							text : data.msg,
-						});
+	if($("#formUnidadMedida")[0].checkValidity()) {
+		$.ajax({
+			url     : 'addUnidadMedida',
+			type    : 'POST',
+			data    : { descripcion :$("#descripcionUM").val() },
+			dataType: 'JSON',
+			success : function (data) { 
+				swal({
+					type : 'success',
+					title: data.message,
+					onClose: () => {
+						$("#cerrarUM").click();
+						$("#descripcionUM").val('');
+						document.getElementById("numCatums").innerHTML = data.val;
+						/* Se agrega al select el nuevo produco*/
+						$("#uMedida")
+							.append('<option value="'+data.val+'">'+data.option+'</option>')
+							.selectpicker('refresh');
 					}
-
-				},
-				error: function(data) {	console.log(data); }
-			});
-		} else { $("#formUnidadMedida")[0].reportValidity(); }
-	}
-)};
-
-/*Funcion para agregar un producto nuevo*/
-function addProducto() {
-		/* Espero a que el docuemnto esté completamente cargado */
-		$(document).ready(function(){
-			if($("#form-producto")[0].checkValidity()) {
-				/* Mando los datos introducidos por el usuario */
-				$.ajax({
-					url: 'addProducto',
-					type: 'POST',
-					data: {
-						descripcion :$("#descProd").val(),
-						porcion     :$("#porcion").val(),
-						unidadMedida:$("#uMedida").val(),
-					},
-					dataType: 'JSON',
-					/* Si no hay errores regresa SUCCESS, inclusi si existen errores de validación y/o de BD */
-					success: function (data) {
-						/* Informa al usuario que el nuevo producto ha sido creado */
-						if (data.status == 'success'){
-							swal({
-								type : 'success',
-								title: data.message,
-								/* Cuando se cierra el modal limpia los campos y seleccion la primer opcion del select */
-								onClose: () => {
-									$("#cerrarProd").click();
-									$("#descProd").val('');
-									$("#porcion").val('');
-									$("#noProd").html(data.totProd);
-									/* Llamo a la función que agrega el producto nuevo a la tabla*/
-									agregarProductoTable(data.totProd, data.desc, data.porcion, data.boton);
-								}
-							});
-						/* Si hubo algún error se muestra al usuario para su correción */
-						} else { muestraAlerta('error', data.message); }
-					},
-					error: function (data) { muestraAlerta('error', data.message); }
 				});
+			},
+			error: function(error)
+			{	
+				if (error.responseJSON.errors.descripcion){
+					muestraAlerta('error', error.responseJSON.errors.descripcion[0]
+					.toString()
+					.replace("%um%", $("#descripcionUM").val()));
 				}
-			else { $("#form-producto")[0].reportValidity(); }
-		}
-	)}
+			}
+		}); 
+	} else { $("#formUnidadMedida")[0].reportValidity(); }
+}
+
+/**
+ * Funcion para agregar un producto nuevo
+ */
+function addProducto() {
+	if($("#form-producto")[0].checkValidity()) {
+		$.ajax({
+			url : 'addProducto',
+			type: 'POST',
+			data: {
+				descripcion : $("#descProd").val(),
+				porcion     : $("#porcion").val(),
+				unidadMedida: $("#uMedida").val(),
+			},
+			dataType: 'JSON',
+			success: function (data) { 
+				swal({
+					type : 'success',
+					title: data.message,
+					onClose: () => {
+						$("#cerrarProd").click();
+						$("#descProd").val('');
+						$("#porcion").val('');
+						$("#noProd").html(data.totProd);
+						/* Llamo a la función que agrega el producto nuevo a la tabla*/
+						agregarProductoTable(data.totProd, data.desc, data.porcion, data.boton);
+					}
+				});
+			},
+			error: function (error) {
+				if (error.responseJSON.message) {
+					muestraAlerta('error', error.responseJSON.message);
+					return;
+				}
+				if (error.responseJSON.errors.descripcion) {
+					muestraAlerta('error', error.responseJSON.errors.descripcion[0]);
+					return;
+				}
+				if (error.responseJSON.errors.unidadMedida) {
+					muestraAlerta('error', error.responseJSON.errors.unidadMedida[0]);
+					location.reload();
+					return;
+				}
+				if (error.responseJSON.errors.porcion) {
+					muestraAlerta('error', error.responseJSON.errors.porcion[0]);
+					return;
+				}
+			}
+		}); 
+	} else { $("#form-producto")[0].reportValidity(); }
+}
 
 /*Funcion para agregar un producto nuevo*/
 function addProyecto() {
@@ -242,18 +242,25 @@ function agregarProductoTable($num, $desc, $porcion, $url){
  * Atiende al menu de botones
  * ============================================================= */
 function linkmenu($id,$url,$href){
-    if($id!=0){
-    	$.ajax({
-    		url     : $url,
-    		type    : 'POST',
-    		data    : { iP: $id },
-    		dataType: 'JSON',
-    		success : function (data) {window.location.href = $href;},
-    		error: function (data){ muestraAlerta('error', data.mensaje); }
-    	});
-     }
-     else{
-        /* Redirijo al usuario a la página principal del simulador */
-        window.location.href = $href;
-     }
+	$.ajax({
+		url     : $url,
+		type    : 'POST',
+		data    : { iP: $id },
+		dataType: 'JSON',
+		success : function (){ 
+			window.location.href = $href; 
+		},
+		error: function (data) {
+			if (data.responseJSON.message)
+			{
+				muestraAlerta('error', data.responseJSON.message);
+				location.reload();
+				return;
+			}
+			if (data.responseJSON.errors.iP){
+				muestraAlerta('error', data.responseJSON.errors.iP[0]);
+				return;
+			}
+		}
+	});
 }

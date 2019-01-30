@@ -28,5 +28,15 @@ class Catum extends Model
 	public function producto()
     {
         return $this->belongsTo('App\Producto', 'idcatnum1');
-    }
+	}
+	
+	public function scopeGetCatumSortBy($query, $col)
+	{
+		return $query->get()->sortBy($col);
+	}
+
+	public function scopeGetCatumCount($query)
+	{
+		return $query->get()->count();
+	}
 }

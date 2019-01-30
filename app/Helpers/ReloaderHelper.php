@@ -1,5 +1,4 @@
-<?php
-    namespace App\Helpers;
+<?php namespace App\Helpers;
 
     use App\Producto, App\Etapa, App\Pronostico, App\Costeo, Auth, Lang, Session;
 

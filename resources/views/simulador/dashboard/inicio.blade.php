@@ -38,11 +38,11 @@
 							<div role="tabpanel" class="tab-pane fade active in" id="simulador">
 								<!-- Nav tabs simulador -->
 								<ul class="nav nav-tabs tab-nav-right" role="tablist">
-									
+
 								</ul>
 								<div class="tab-content" id="tab-content">
 								</div>
-								
+
 							</div>
 						</div>
 						<div role="tabpanel" class="tab-pane fade" id="asesorias">

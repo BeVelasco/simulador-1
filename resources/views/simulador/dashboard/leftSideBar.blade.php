@@ -37,7 +37,7 @@
 		<ul class="list">
 			<li class="header" style="text-transform: uppercase !important;">{{ __('messages.navPrincipal') }}</li><!--messages.navPrincipal-->
 			<li class="active">
-				<a href="{{ url('/home')}}">
+				<a href="{{ route('home') }}">
 					<i class="material-icons">home</i>
 					<span>{{ __('messages.inicio') }}</span><!--messages.inicio-->
 				</a>

@@ -408,14 +408,6 @@ function guardaPronosticoVenta() {
     return $status;
 }
 
-/* Ontiene el costo unitario de un producto mediante su id   */
-function obtenCostoUnitario($idProd){
-    $costoUnitario = Costeo::where("id_producto", $idProd)->pluck("dataPrecioVenta")->first();
-    $e             = json_decode($costoUnitario, true);
-    $costoUnitario = substr($e["costoUnitario"],2);
-    return $costoUnitario;
-}
-
 /*===================================================================================================
 FUNCIONES PARA INVENTARIO
 ====================================================================================================*/
@@ -431,7 +423,7 @@ function guardaInventario($request){
     $atributos = [
         'uniVenAnu'    => Lang::get('messages.ventasAnuales'),
         'venPromMen'   => Lang::get('messages.ventasPromMensual'),
-        'porFinDes;'    => Lang::get('messages.porcInvDeseado'),
+        'porFinDes;'   => Lang::get('messages.porcInvDeseado'),
         'uniDesInvFin' => Lang::get('messages.uniDesInvFin'),
         'valInvFinDes' => Lang::get('messages.valInvFinDes'),
     ];

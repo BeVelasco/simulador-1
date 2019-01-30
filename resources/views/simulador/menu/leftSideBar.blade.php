@@ -86,9 +86,9 @@
 		  <li class="simulador">
 			<a href="#">Simulación</a>
 			<ul>
-                <li class="devices"><a href="/inicio">Tablero</a></li>
-			  <li><a href="/home">Inicio</a></li>
-			  <li><a href="/mercadotecnia">Mercadotecnia</a></li>
+                <li class="devices"><a href="{{ route('inicio') }}">Tablero</a></li>
+			  <li><a href="{{ route('inicio') }}">Inicio</a></li>
+			  <li><a href="{{ route('mercadotecnia') }}">Mercadotecnia</a></li>
 			  <li><a href="#">Producción</a></li>
 			  <li><a href="#">Takt time</a></li>
 			  <li><a href="#"><span style="font-weight:bold;">Escenarios</span></a></li>

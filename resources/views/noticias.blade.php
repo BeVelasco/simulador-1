@@ -96,7 +96,7 @@
                 </div>
                 <ul class="nav">
                     <li class="active">
-                        <a class="nav-link active" aria-current="page" href="#/admin/dashboard">
+                        <a class="nav-link active" aria-current="page" href="{{ route('dashboard') }}">
                         <i class="fa fa-running"></i>
                         <span>Emprendedores</span></a>
                     </li>
@@ -116,7 +116,7 @@
                 </div>
                 <ul class="nav">
                     <li>
-                        <a class="nav-link" href="/home">
+                        <a class="nav-link" href="{{route('home')}}">
                         <i class="fa fa-edit"></i>
                         <span>Simulador</span></a>
                     </li>

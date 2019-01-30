@@ -1,7 +1,6 @@
 <div class="container-fluid">
 	<h2 class="align-center col-pink">{{ __('messages.regionObj') }}</h2>
 	<div class="col-lg-2 col-md-2"></div>
-
 	<div class="col-lg-8 col-md-8">
 		<div class="card">
 			<div class="body" style="padding-bottom: 0px !important;">

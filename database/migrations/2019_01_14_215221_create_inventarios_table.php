@@ -21,10 +21,10 @@ class CreateInventariosTable extends Migration
             $table -> integer('id_producto') -> unsigned(11) -> nullable();
             $table -> foreign('id_producto') -> references('id')->on('productos');
             $table -> integer('ventasAnuales');
-            $table -> double('venPromMen',8,2);
-            $table -> double('porInvFinDes',8,2);
-            $table -> double('uniInvFinDes',8,2);
-            $table -> double('valInvFinDes',8,2);
+            $table -> double('venPromMen',11,2);
+            $table -> double('porInvFinDes',11,2);
+            $table -> double('uniInvFinDes',11,2);
+            $table -> double('valInvFinDes',11,2);
 
             $table -> softDeletes();
             $table -> timestamps();

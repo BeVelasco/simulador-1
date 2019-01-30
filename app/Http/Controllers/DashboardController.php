@@ -29,6 +29,7 @@ class DashboardController extends Controller
 	 */
 	public function index()
 	{
+    Reloader::deleteSessionVariables();
 		return view('home',[
 			'unidadMedidas' => Catum::getCatumSortBy('idesc'),
 			'noProductos'   => Producto::getTotalProducts(Auth::user()->id),
@@ -108,6 +109,50 @@ class DashboardController extends Controller
 			'boton'   => $boton
 		], 200);
 	}
+
+ /**
+ * [Editar nombre del proyecto]
+ * @param Request $request [Datos enviados por Ajax]
+ * Jaime vázquez
+ */
+	public function addProyecto(Request $request){
+		 /* Mensajes personalizados cuando hay errores en la validaciÃ³n */
+		$messages = [
+			'required' => 'El campo :attribute es obligatorio.'
+		];
+
+		/* Reglas de validacion */
+		$rules = [
+			'descripcion'  => ['required','max:100','regex:/^[0-9\pL\s\-]+$/u'],
+		];
+		/* Se validan los datos con las reglas y mensajes especificados */
+		$data = \Validator::make($request -> all(), $rules, $messages);
+		/* Si la validaciÃ³n falla, regreso solamente el primer error. */
+		if ($data -> fails()){ return response() -> json(['status' => 'error','msg' => $data -> errors() -> first()], 401); }
+		/* Sanitiza los datos y pone el primer caracter en mayuscula */
+		$proyecto    = ucfirst(strip_tags($request -> descripcion));
+
+				/* Obtiene el id del usuario */
+				$idUser    = Auth::user() -> id;
+
+		/* Se agregan los valores enviados por el usuario y se guarda en la BD */
+		try {
+						$user               = User::find($idUser);
+			$user -> proyecto   = $proyecto;
+			$user -> save();
+		} catch (Exception $e) { return response() -> json(['message' => $e -> getMessage()], 401);	}
+		/* Regreso la respuesta exitosa con el total para actualizar el nÃºmero en la vista  */
+		return response() -> json([
+			'status'  => 'success',
+			'message' => 'Proyecto nombrado con éxito.',
+			'desc'    => $proyecto,
+		], 200);
+	}
+
+	public function iniciarSimulador(Request $request){
+		$respuesta = Reloader::setProdSession(Auth::user() -> id, $request -> iP);
+		if ($respuesta != "true"){ return response() -> json(['message' => $respuesta] ,401);}
+		return response() -> json(['message' => 'Correcto'],200);
 	/**
 	 * Inicia el simulador dependiendo de la etapa en la que el usario se quedó la última vez
 	 *

@@ -3,10 +3,10 @@
 /**
  * Este archivo forma parte del Simulador de Negocios.
  *
- * (c) Emmanuel Hernández <emmanuelhd@gmail.com>
+ * (c) Emmanuel HernÃ¡ndez <emmanuelhd@gmail.com>
  *
- *  Prohibida su reproducción parcial o total sin 
- *  consentimiento explícito de Integra Ideas Consultores.
+ *  Prohibida su reproducciÃ³n parcial o total sin 
+ *  consentimiento explÃ­cito de Integra Ideas Consultores.
  *
  *  Noviembre - 2018
  */
@@ -27,11 +27,10 @@ class ProductoController extends Controller
 	 * =================================================*/
 
 	/* Ancho de las columnas */
-	protected $colWidths = [ 1,220, 50, 50, 150, 90, 90, 90, 1, 1, 1, 90, 90, 90, 90, 90, 90 ];
+	protected $colWidths = [ 220, 50, 50, 150, 90, 90, 90, 1, 1, 1, 90, 90, 90, 90, 90, 90 ];
 
 	/* Cabeceras de las columnas */
 	protected $colHeaders =[
-                'ID',
 				'Insumos',
 				'Unidad',
 				'Piezas',
@@ -51,7 +50,6 @@ class ProductoController extends Controller
 			 ];
 	/* Tipo de datos y formato de columnas */
 	protected $columns = '[
-            { "type": "hidden"},
 			{ "type": "text"},
 			{ "type": "text"},
 			{ "type": "text"},
@@ -96,65 +94,35 @@ class ProductoController extends Controller
     
     /** 
 	 * ==================================================================== 
-	 * Función para seleccionar el producto y ponerlo en la sesión
+	 * FunciÃ³n para seleccionar el producto y ponerlo en la sesiÃ³n
      * $request->id=>producto
 	 * 
-	 * @author Jaime Vázquez
+	 * @author Jaime VÃ¡zquez
 	 * ====================================================================
 	*/
 	public function editarProducto(Request $request)
 	{
-		/* Mensajes personalizados cuando hay errores en la validación */
-		$messages = [
-			'exists'   => 'El :attribute no existe.',
-			'required' => 'El campo :attribute es obligatorio.',
-		];
-
-		/* Reglas de validacion */
-		$rules = [
-			'id' => ['required','exists:productos,id'],
-		];
-
-		/* Se validan los datos con las reglas y mensajes especificados */
-		$validate = \Validator::make($request->all(), $rules, $messages);
-
-		/* Si la validación falla, regreso solamente el primer error. */
-		if ($validate -> fails())
-		{
-			return response()->json([
-				'status' => 'error',
-				'msg'    => $validate->errors()->first()]);
-		}
-
-		/* Verifica que el usuario esté logeado y coincida con el id que envió*/
-		$idProd   = $request -> id;
-		$error    = ['status' => 'error','msg' => 'Datos no coinciden.'];
-		$producto = Producto::find($idProd);
-
+	   /* El usuario debe estar loggeado */
 		if ( Auth::check() )
 		{
-			if (  $producto -> id_user_r == Auth::user() -> id )
+			
+			/* El usuario debe tener un producto seleccionado */
+			if ( Session::get('prodSeleccionado') == null )
 			{
-				/* Agrego a la sesión los datos del producto seleccionado */
-				Session::put('prodSeleccionado', $producto);
-				return response()->json([
-					'status' => 'success',
-					'msg'    => 'Correcto']);
+				return redirect('/home');
 			} else {
-				/* El producto no es de el*/
-				return response()->json([$error]);
+			     return view('/simulador/producto/producto');
 			}
-		} else { 
-			/* Usuario no está logeado o los datos no coinciden*/
-			return response()->json([$error]);
+		} else {
+			return view('auth.login');
 		}
 	}
     
     /** 
 	 * ==================================================================== 
-	 * Función para verificar que se tenga seleccionado el producto al inicio de la edición
+	 * FunciÃ³n para verificar que se tenga seleccionado el producto al inicio de la ediciÃ³n
 	 * 
-	 * @author Jaime Vázquez
+	 * @author Jaime VÃ¡zquez
 	 * ====================================================================
 	*/
 	public function editarInicio(Request $request)
@@ -177,52 +145,65 @@ class ProductoController extends Controller
     
     /** 
 	 * ==============================================================
-	 * Función para regresar el primer formato de jExcel, columnas, 
+	 * FunciÃ³n para regresar el primer formato de jExcel, columnas, 
 	 * cabeceras y formato de filas.
 	 * ==============================================================
 	*/
 	public function get_producto(Request $request)
 	{
 		/* Inserto la variable en la sesion, puede ser true o false*/
-		$id_producto=Session::get('prodSeleccionado')->id;
+		$id_producto=Session::get('prodSeleccionado');
         
         /* Obtengo el id del usuario */
 		$idUser    = Auth::user() -> id;
         
-        
-        /* Obtener los datos de la BD */
-        $sql='SELECT pin.`id`,pin.`insumo`,pin.`unidad`,pin.`piezas`,pin.`um`,pin.`costo`
-                ,"=IF(H[x]>0,D[x]/H[x],D[x])" AS `piezasxunidad`
-                ,pin.`unidadesconesapieza`
-                ,"=IF(AND(H[x]<=0.9,M[x]<=1),F[x]*H[x],0)" AS `prodx1`
-                ,"=IF(AND(H[x]>=1,M[x]<=1),F[x]/H[x],0)" AS `prodx2`
-                ,"=IF(AND(H[x]<=0,M[x]<=0),D[x]*F[x],0)" AS `prodx3`
-            	,"=IF(M[x]<=0,(I[x]+J[x]+K[x]),0)" AS `totalproduccion`
-                ,pin.`piezaser`
-                ,pin.`costoser`
-                ,"=IF(M[x]>=1,M[x]*O[x],0)" AS `totalser`
-                ,"=(L[x]+O[x])*C[x]" AS `total`
+        /* Productos */
+        $sql='SELECT datos,totalproduccion,grantotal
+            FROM `productosinsumos`
+            WHERE `id_user`=:id_usuario AND `id_productos`=:id_producto';
+    
                 
-            FROM `productos` AS p
-            	LEFT JOIN `productosinsumos` AS pin ON p.`id`=pin.`id_productos`
-            WHERE p.`id_user_r`=:id_usuario AND p.`id`=:id_producto';
-
         $res = DB::select($sql, ['id_usuario'=>$idUser,'id_producto'=>$id_producto]);
         //Pasarlo a forma de array de puros valores [[][]...]
         $data=Array();
-        if(count($res)>0){
-            for($i=0;$i<count($res);$i++){
-                $row=Array();
-                foreach ($res[$i] as $key => $value){
-                    if(in_array($key, ["piezasxunidad","prodx1","prodx2","prodx3","totalproduccion","totalser","total"]))
-                        $value=str_replace("[x]",$i+1,$value);
-                    $row[]=$value;
-                }
-                $data[]=$row;
+        //dd($res);
+        if(count($res)>0 && $res[0]->datos!=null){
+            $data=json_decode($res[0]->datos);
+            $totalproduccion=$res[0]->totalproduccion;
+            $grantotal=$res[0]->grantotal;
+        }
+        else{
+            /* Productos */
+            $sql='SELECT REPLACE(data,"$","") as data
+                FROM `costeoproductos`
+                WHERE `id_user`=:id_usuario AND `id_producto`=:id_producto';
+        
+                    
+            $res = DB::select($sql, ['id_usuario'=>$idUser,'id_producto'=>$id_producto]);
+            
+            //Pasarlo a forma de array de puros valores [[][]...]
+            $data=json_decode($res[0]->data);
+            
+            $totalproduccion=0;$grantotal=0;
+            for($i=0;$i<count($data);$i++){
+                $grantotal+=preg_replace('/[^0-9.]+/', '', $data[$i][5]);
             }
-            //Totales
-            $row=Array("TOTALES","TOTALES","","","","","","","","","","=SUM(L1:L".count($res).")","","","","=SUM(P1:P".count($res).")","");
-            $data[]=$row;
+        }
+        
+        //Colocar las fformulas
+        for($i=0;$i<count($data);$i++){
+            //Intercambiar posiciones
+            $tmp=$data[$i][2];
+            $data[$i][2]=$data[$i][1];
+            $data[$i][1]=$tmp;
+            
+            $data[$i][5]="=IF(G".($i+1).">0,C".($i+1)."/G".($i+1).",C".($i+1).")";
+            $data[$i][7]="=IF(AND(G".($i+1)."<=0.9,L".($i+1)."<=1),(E".($i+1)."*G".($i+1)."),0)";
+            $data[$i][8]="=IF(AND(G".($i+1).">=1,L".($i+1)."<=1),E".($i+1)."/G".($i+1).",0)";
+            $data[$i][9]="=IF(AND(G".($i+1)."<=0,L".($i+1)."<=0),C".($i+1)."*E".($i+1).",0)";
+        	$data[$i][10]="=IF(L".($i+1)."<=0,(H".($i+1)."+I".($i+1)."+J".($i+1)."),0)";
+            $data[$i][13]="=IF(L".($i+1).">=1,E".($i+1)."*L".($i+1).",0)";
+            $data[$i][14]="=(K".($i+1)."+N".($i+1).")*B".($i+1)."";
         }
         
 		/* Regreso la respuesta con los datos para el jExcel */
@@ -236,6 +217,8 @@ class ProductoController extends Controller
 			'allowInsertColumn'    => false,
 			'allowDeleteColumn'    => false,
 			'allowDeleteRow'       => false,
+            'totalproduccion'      =>$totalproduccion,
+            'grantotal'            =>$grantotal,
 
 		]);
 	}
@@ -251,37 +234,41 @@ class ProductoController extends Controller
 		$idUser    = Auth::user() -> id;
 
         /* Inserto la variable en la sesion, puede ser true o false*/
-		$id_producto=Session::get('prodSeleccionado')->id;
-        
-        /* Se agregan los valores enviados por el usuario y se guarda en la BD */
-        $d=$request->datos; 
-        for($i=0;$i<count($d);$i++){
-            if($d[$i][0]!="TOTALES"){
-                $pi = Productosinsumo::find($d[$i][0]);
-                $pi["id"]=$d[$i][0];    
-                $pi["id_productos"]=$id_producto;
-                $pi["insumo"]=$d[$i][1];
-                $pi["unidad"]=$d[$i][2];
-                $pi["piezas"]=$d[$i][3];
-                $pi["um"]=$d[$i][4];
-                $pi["costo"]=$d[$i][5];
-                $pi["piezasxunidad"]=$d[$i][6];
-                $pi["unidadesconesapieza"]=$d[$i][7];
-                $pi["prodx1"]=$d[$i][8];
-                $pi["prodx2"]=$d[$i][9];
-                $pi["prodx3"]=$d[$i][10];
-                $pi["totalproduccion"]=$d[$i][11];
-                $pi["piezaser"]=$d[$i][12];
-                //$pi["ventaser"]=$d[$i][13];
-                $pi["costoser"]=$d[$i][13];
-                $pi["totalser"]=$d[$i][14];
-                $pi["total"]=$d[$i][15];
-                $pi["tiempoensurtir"]=($d[$i][16]==null?0:$d[$i][16]);
+		$id_producto=Session::get('prodSeleccionado');
+        try{
+			$pi = Productosinsumo::where('id_user', $idUser)
+				->where('id_productos', $id_producto)
+				->first();
+			if ( $pi == null ){
+			     /* Se agregan los valores enviados por el usuario y se guarda en la BD */
+        		$pi   = new Productosinsumo();
                 
-                $pi -> save();
+                $pi["id_user"]=$idUser;
+                $pi["id_productos"]=$id_producto;
+                $pi["datos"]=json_encode($request["datos"]);
+                
+			} else {
+				/* Si encuentra coincidencia solo actualiza el valor de realizado */
+				$pi["datos"]=json_encode($request["datos"]);
+			}
+            
+            $d=$request->datos;
+            $pi["totalproduccion"]=0;$pi["grantotal"]=0; 
+            for($i=0;$i<count($d);$i++){
+                $pi["totalproduccion"]+=preg_replace('/[^0-9.]+/', '', $d[$i][10]);
+                $pi["grantotal"]+=preg_replace('/[^0-9.]+/', '', $d[$i][14]);
             }
+            $pi -> save();	
+            /* Se agregan los valores enviados por el usuario y se guarda en la BD */
         }
+		catch (Exception $e) { return $e->getMessage();	}
 
-        
+		
+
+		/* Regreso la respuesta exitosa con el total para actualizar el nÃºmero en la vista  */
+		return response() -> json([
+			'status'  => 'success',
+			'msg'     => 'Información guardada con éxito.',
+		]);
 	}
 }

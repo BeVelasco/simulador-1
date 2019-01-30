@@ -5,7 +5,7 @@
  *
  * (c) Emmanuel Hernández <emmanuelhd@gmail.com>
  *
- *  Prohibida su reproducción parcial o total sin 
+ *  Prohibida su reproducción parcial o total sin
  *  consentimiento explícito de Integra Ideas Consultores.
  *
  *  Noviembre - 2018
@@ -18,10 +18,26 @@ use Illuminate\Http\Request, App\Producto, App\Catum, App\User, App\Etapa, App\P
 
 class SimuladorController extends Controller
 {
-	protected $colWidths = [ 220, 200, 80, 100, 200, 150 ];
-	protected $colHeaders =['Ingredientes','Cantidad (según tu receta <br>para elaborar el producto)','Unidad','Precio <br> por unidad','Precio unitario (precio de lista <br>del proveedor)','Costo por ingrediente',];
-	protected $columns = '[{ "type": "text"},{ "type": "numeric" },{ "type": "numeric" },{ "type": "text", "mask": "0,000,000.00", "options":{"reverse": true } },{ "type": "text", "mask": "0,000,000.00", "options":{"reverse": true } },{ "type": "text", "mask": "0,000,000.00", "options":{"reverse": true } }]';
+	/* =================================================
+	 *                Variables globales
+	 * =================================================*/
 
+	/* Ancho de las columnas */
+	protected $colWidths = '';
+
+	/* Cabeceras de las columnas */
+	protected $colHeaders ='';
+	/* Tipo de datos y formato de columnas */
+	protected $columns = '';
+
+	/**
+	 * ====================================================================
+	 * Función para mostrar el inicio del simulador, el usuario debe estar
+	 * logeado y haber seleccionado un producto para iniciar el simulador
+	 *
+	 * @author Emmanuel Hernández Díaz
+	 * ====================================================================
+	*/
 	public function inicio(Request $request){
 		$idProducto = Session::get('prodSeleccionado');
 		if ($idProducto == null){ Session::flash('error', Lang::get('messages.debeSelProd'));return redirect('/home');
@@ -51,9 +67,21 @@ class SimuladorController extends Controller
 			$graphicData     = $this -> getGraphicData(Session::get('PBBD'));
 			$datosCalculados = true;
 		} else {
-			$data = [[ "Ingredientes por platillo para 5 comidas", 5, 1, 53,52.80],[ "Mano de Obra", 6, 1, 53,52.80],[ "Empaque/Presentación", 7, 1, 53,52.80],];
+			/* Data por deafult, mientras el simulador está en pruebas*/
+			$data = [
+				/*[ "Ingredientes por platillo para 5 comidas", 5, 1, 53,52.80],
+				[ "Mano de Obra", 6, 1, 53,52.80],
+				[ "Empaque/Presentación", 7, 1, 53,52.80],*/
+			];
+            // añadir las formulas
+            for($i=0;$i<count($data);$i++){
+                $data[$i][5]="=B".($i+1)."/C".($i+1)."*E".($i+1)."";
+            }
+
+			/* Al ser la primer vista aún no se muestra la columna costo por ingrediente y se elimina del arrelo */
 			$cols            = $this -> colHeaders;
-			unset($cols[count($cols)-1]);
+			//unset($cols[count($cols)-1]);
+
 			$graphicData     = null;
 			$datosCalculados = false;
 		}
@@ -74,8 +102,18 @@ class SimuladorController extends Controller
 		$PBBD   = $request -> PBBD;
 		$largo = count($jExcel);
 		$sumCI = 0;
-		for ($i=0;$i<$largo;$i++){$costoIng=$jExcel[$i][1]*substr($jExcel[$i][4],2);$sumCI+=$costoIng;$jExcel[$i][5]='$ '. number_format($costoIng, 2, '.', ',');}
+		/* Calculo el costo del ingrediente (Cantidad/Unidad * Precio Unitario) */
+		for ($i=0;$i<$largo;$i++){
+			$costoIng      = substr($jExcel[$i][5],2); //$jExcel[$i][1] * substr($jExcel[$i][4],2);
+			/* Guardo la suma de todos los costos por ingredientes */
+			$sumCI += $costoIng;
+			/* Guardo en la posición 5 el nuevo valor */
+			//$jExcel[$i][5] = '$ '. number_format($costoIng, 2, '.', ',');
+		}
+		/* Agrego una variable a la sesión para saber que ya se hizo el calculo */
 		Session::put('PBBDData', $jExcel);
+
+		/* Variable para conservar el valor de Beneficio Bruto Deseado y mostrarlo en la vista */
 		Session::put('PBBD', $PBBD);
 		$porcionPersona  = producto(Session::get('prodSeleccionado'),'porcionpersona');
 		$unidadMedida    = catum(producto(Session::get('prodSeleccionado'),'idcatnum1'), 'idesc');
@@ -92,10 +130,10 @@ class SimuladorController extends Controller
 		return response() -> json([
 			'status'               => 'success',
 			'msg'                  => Lang::get('messages.calculoExitoso'),
-			'columns'              => $this -> columns,
+			/*'columns'              => $this -> columns,
 			'colWidths'            => $this -> colWidths,
 			'colHeaders'           => $this -> colHeaders,
-			'data'                 => $jExcel,
+			'data'                 => $jExcel,*/
 			'sumCI'                => $sumCI,
 			'porcionpersona'       => $porcionPersona.' '.$unidadMedida,
 			'costoUnitario'        => $costoUnitario,
@@ -121,10 +159,10 @@ class SimuladorController extends Controller
 				$dataPrecioVenta = json_encode($dataPrecioVenta);
 				$PBBD            = Session::get('PBBD');
 				$datosGuardados = guardarCosteo($id_user, $id_producto, $data, $PBBD, $dataPrecioVenta);
-				if ( $datosGuardados == "true"){$etapa = terminarEtapa($id_user, $id_producto, 1);} 
+				if ( $datosGuardados == "true"){$etapa = terminarEtapa($id_user, $id_producto, 1);}
 				else { return response() -> json(['status' => 'error', 'message' => $datosGuardados], 500); }
-				return response() -> json(["message" => "ok"],200); 
-			} else { return $view; } 
+				return response() -> json(["message" => "ok"],200);
+			} else { return $view; }
 		}
 	}
 }

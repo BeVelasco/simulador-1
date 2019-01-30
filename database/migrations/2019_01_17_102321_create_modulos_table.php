@@ -17,6 +17,7 @@ class CreateModulosTable extends Migration
             $table -> increments('id');
             
             $table -> string('idesc');
+            $table -> string('icode')->default('');
             $table -> integer('orden');
             $table -> string('dependientes');
             $table -> tinyinteger('particular')->comment('El campo es particular o general para todos los productos');

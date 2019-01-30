@@ -3,10 +3,10 @@
 /**
  * Este archivo forma parte del Simulador de Negocios.
  *
- * (c) Emmanuel Hernández <emmanuelhd@gmail.com>
+ * (c) Emmanuel HernÃ¡ndez <emmanuelhd@gmail.com>
  *
- *  Prohibida su reproducción parcial o total sin 
- *  consentimiento explícito de Integra Ideas Consultores.
+ *  Prohibida su reproducciÃ³n parcial o total sin 
+ *  consentimiento explÃ­cito de Integra Ideas Consultores.
  *
  *  Noviembre - 2018
  */
@@ -16,7 +16,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Producto, App\Catum, App\User, App\Etapa;
+use App\Producto, App\Catum, App\User, App\Etapa, App\Nomina;
 use Auth, View, Session, Lang, Route;
 
 
@@ -28,9 +28,9 @@ class NominaController extends Controller
     
     /** 
 	 * ==================================================================== 
-	 * Función para verificar que se tenga seleccionado el producto al inicio de la edición
+	 * FunciÃ³n para verificar que se tenga seleccionado el producto al inicio de la ediciÃ³n
 	 * 
-	 * @author Jaime Vázquez
+	 * @author Jaime VÃ¡zquez
 	 * ====================================================================
 	*/
 	public function editarInicio(Request $request)
@@ -44,7 +44,7 @@ class NominaController extends Controller
 			{
 				return redirect('/productomenu');
 			} else {*/
-			     return view('/simulador/nomina/inicio');
+			     return view('/simulador/nomina/nomina');
 			/*}*/
 		} else {
 			return view('auth.login');
@@ -53,7 +53,7 @@ class NominaController extends Controller
     
     /** 
 	 * ==============================================================
-	 * Función para regresar el primer formato de jExcel, columnas, 
+	 * FunciÃ³n para regresar el primer formato de jExcel, columnas, 
 	 * cabeceras y formato de filas.
 	 * ==============================================================
 	*/
@@ -63,56 +63,96 @@ class NominaController extends Controller
         /* Obtengo el id del usuario */
 		$idUser    = Auth::user() -> id;
         
-        $formulas=Array(
-                ["=D[x]*E[x]","F"],
-            	["=F[x]*12","G"],
-            	["=F[x]/30.4*6*0.25","H"],
-            	["=F[x]/30.4*15","I"],
-            	["=G[x]+H[x]+I[x]","J"],
-            	["=J[x]*0.25","K"],
-            	["=J[x]*0.05","L"],
-            	["=J[x]*0.02","M"],
-            	["=K[x]+L[x]+M[x]","N"],
-            	["=J[x]+N[x]","O"]);
-        /* Formulación */
-        $sql='SELECT t.id,t.`sueldode`,t.`sueldoa`,t.`salariopagar`,t.`numerotrabajadores`
-            	            	,"=D[x]*E[x]" AS `salariototalmes`
-            	,"=F[x]*12" AS `salariototalantes`
-            	,"=F[x]/30.4*6*0.25" AS `primavacacional`
-            	,"=F[x]/30.4*15" AS `aguinaldoanual`
-            	,"=G[x]+H[x]+I[x]" AS `salariototaldesp`
-            	,"=J[x]*0.25" AS `seguridadsocial`
-            	,"=J[x]*0.05" AS `fondonacional`
-            	,"=J[x]*0.02" AS `ahorroretiro`
-            	,"=K[x]+L[x]+M[x]" AS `totalimpuestos`
-            	,"=J[x]+N[x]" AS `totalimporte`
+        /* FormulaciÃ³n */
+        $sql='SELECT t.`datos`,t.sumanomina
             FROM nominas AS t
             WHERE t.`id_user`=:id_usuario';
 
         $res = DB::select($sql, ['id_usuario'=>$idUser]);
+        
         //Pasarlo a forma de array de puros valores [[][]...]
-        $datanomina=Array();
-        if(count($res)>0){
-            for($i=0;$i<count($res);$i++){
-                $row=Array();
-                foreach ($res[$i] as $key => $value){
-                    if(in_array($key, ["salariototalmes","salariototalanual","primavacacional"
-                            ,"aguinaldoanual","salariototaldesp","seguridadsocial","fondonacional","ahorroretiro"
-                            ,"totalimpuestos","totalimporte"]))
-                        $value=str_replace("[x]",$i+1,$value);
-                    $row[]=$value;
-                }
-                $datanomina[]=$row;
-            }
+        if(count($res)>0 ){
+            $datanomina=json_decode($res[0]->datos);
+            $sumanomina=$res[0]->sumanomina;
+        }
+        else{
+            $datanomina=Array();
+            array_push($datanomina,
+                Array("Director comercial","10000","160000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Ejecutivo comercial/gestor de cuentas","10000","54000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Gerente de producción","15500","140000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Ingeniero de producción","8700","50000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Operario cualificado","2200","17500","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Operario no cualificado","1200","13000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Secretaria bilingüe","4000","26000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Administrativo contable","6700","46000","0","0","0","0","0","0","0","0","0","0","0","0"),
+                Array("Salario mínimo mensual zona","3080.40","3080.40","0","0","0","0","0","0","0","0","0","0","0","0")
+                );    
+            $sumanomina=0;
         }
         
-
+        //Actualizar el array con las formulas
+        for($i=0;$i<count($datanomina);$i++){
+                $datanomina[$i][5]="=D".($i+1)."*E".($i+1);
+                $datanomina[$i][6]="=F".($i+1)."*12";
+                $datanomina[$i][7]="=F".($i+1)."/30.4*6*0.25";
+                $datanomina[$i][8]="=F".($i+1)."/30.4*15";
+                $datanomina[$i][9]="=G".($i+1)."+H".($i+1)."+I".($i+1)."";
+                $datanomina[$i][10]="=J".($i+1)."*0.25";
+                $datanomina[$i][11]="=J".($i+1)."*0.05";
+                $datanomina[$i][12]="=J".($i+1)."*0.02";
+                $datanomina[$i][13]="=K".($i+1)."+L".($i+1)."+M".($i+1)."";
+                $datanomina[$i][14]="=J".($i+1)."+N".($i+1);
+                        
+        }
+        
+        
 		/* Regreso la respuesta con los datos para el jExcel */
 		return response() -> json([
 			'status'        => 'success',
 			'datanomina'    => $datanomina,
-            'formulas'      => $formulas
+            'sumanomina'    => $sumanomina
+		]);
+	}
+    
+    /** ==============================================================
+	 * FunciÃ³n para duardar los datos.
+	 * ==============================================================
+     */
+	public function set_nomina(Request $request)
+	{
+        $input = $request->except(['_token']);
+		
+		/* Obtiene el id del usuario */
+		$idUser = Auth::user() -> id;
 
+        try{
+			$existe = Nomina::where('id_user', $idUser)
+				->first();
+			if ( $existe == null ){
+			     /* Se agregan los valores enviados por el usuario y se guarda en la BD */
+        		$nomina   = new Nomina();
+                
+                $nomina["id_user"]=$idUser;
+                $nomina["datos"]=json_encode($request["datos"]);
+                $nomina["sumanomina"]=preg_replace('/[^0-9.]+/', '', $request["sumanomina"]);
+                
+        		$nomina -> save();
+			} else {
+				/* Si encuentra coincidencia solo actualiza el valor de realizado */
+				$existe["datos"]=json_encode($request["datos"]);
+                $existe["sumanomina"]=preg_replace('/[^0-9.]+/', '', $request["sumanomina"]);
+				$existe -> save();
+			}			
+		}
+		catch (Exception $e) { return $e->getMessage();	}
+
+		
+
+		/* Regreso la respuesta exitosa con el total para actualizar el nÃºmero en la vista  */
+		return response() -> json([
+			'status'  => 'success',
+			'msg'     => 'Información guardada con éxito.',
 		]);
 	}
 }

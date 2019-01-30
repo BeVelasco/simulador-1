@@ -18,7 +18,11 @@ class CreateProductosinsumosTable extends Migration
 
             $table -> integer('id_user') -> unsigned(11);
             $table -> integer('id_productos') -> unsigned(11) -> nullable();
-            $table -> string('insumo')->comment('id_productos');
+            $table -> text('datos')->nulleable();
+            $table -> double('totalproduccion', 11, 2)->default(0);
+            $table -> double('grantotal', 11, 2)->default(0);
+            
+            /*$table -> string('insumo')->comment('id_productos');
             $table -> string('unidad')->comment('id_productos');
             $table -> string('piezas')->comment('id_productos');
             $table -> string('um')->comment('id_productos');
@@ -34,7 +38,7 @@ class CreateProductosinsumosTable extends Migration
             $table -> double('costoser', 10, 2)->comment('id_productos');
             $table -> double('totalser', 10, 2)->comment('id_productos');
             $table -> double('total', 10, 2)->comment('id_productos');
-            $table -> double('tiempoensurtir', 10, 2)->comment('id_productos');
+            $table -> double('tiempoensurtir', 10, 2)->comment('id_productos');*/
             
             $table -> softDeletes();
             $table->timestamps();

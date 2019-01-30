@@ -1,7 +1,13 @@
 @extends('base')
-
+@section('assets')
+    <style>
+        .card .header h2{
+            width:50%;
+        }
+    </style>
+@endsection
 @section('content')
-home
+
 <div class="container-fluid">
 	@include('simulador.dashboard.widgets')
 	<div class="row clearfix">
@@ -9,9 +15,20 @@ home
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="card" id="divPrueba">
 				<div class="header" style="padding-bottom: 0px;">
-					<h2 style="text-transform: uppercase;">{{ trans_choice('messages.productos', 2) }}</h2><!-- messages.productos -->
+					<h2 style="text-transform: uppercase;" id="tituloProyecto">{{ trans_choice('messages.productos', 2).' de: '. $proyecto }}</h2><!-- messages.productos -->
     	               <div class="sm-8 align-right">
 							<ul class="toolbar-form" style="top: -20px;position: relative;">
+                                <li>
+									<button class="btn bg-blue waves-effect"	
+                                        type          = "button"
+										data-toggle   = "modal"
+										data-target   = "#addProyecto"
+										data-backdrop = "static"
+										data-keyboard = "false"
+									>
+										{{ __('messages.nombrarProyecto')}} 
+									</button>
+								</li>
 								<li>
 									<button class="btn bg-blue waves-effect"	
 										id            = "paso1Guia"
@@ -40,8 +57,22 @@ home
                         </div>
 				</div>
 				<div class="body">
-                    
-					<div class="table-responsive">
+                    <div class="col-sm-8 align-right"></div>
+    				<div class="col-sm-2 "><b>Información general</b></div>
+                    <div class="col-sm-2 ">
+                        <div class="dropdown">
+                            <a href="#" data-toggle="dropdown" class="btn bg-black waves-effect waves-light dropdown-toggle">Ir a ...<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:linkmenu('{{ 0 }}','/iniciarSimulador','/nomina/editarInicio');">{{ __('messages.nomina_boton') }}</a></li>
+                                <li><a href="javascript:linkmenu('{{ 0 }}','/iniciarSimulador','/inicial/editarInicio');">{{ __('messages.inversion_inicialboton') }}</a></li>
+                                <li><a href="javascript:linkmenu('{{ 0 }}','/iniciarSimulador','/reportes/perdidasganancias');">{{ __('messages.perdidas_gananciasboton') }}</a></li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row clearfix">
+                    </div>
+					<div class="table-responsive" style="height: 10000px;">
 						<table class="table table-hover dashboard-task-infos">
 							<thead>
 								<tr>
@@ -70,9 +101,8 @@ home
                                                 <a href="#" data-toggle="dropdown" class="btn bg-black waves-effect waves-light dropdown-toggle">Ir a ...<b class="caret"></b></a>
                                                 <ul class="dropdown-menu">
                                                     <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/simulador/inicio');">{{ __('messages.iniSimulador') }}</a></li>
-                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/tkt/editarInicio');">{{ __('messages.producto_tktboton') }}</a></li>
-                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/nomina/editarInicio');">{{ __('messages.nomina_boton') }}</a></li>
-                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/acumulado/editarInicio');">{{ __('messages.producto_acumuladoboton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/producto/editarInicio');">{{ __('messages.productoproduccion_boton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/tkt/editarInicio');">{{ __('messages.tkt_boton') }}</a></li>
                                                 </ul>
                                             </div>
 										</td>
@@ -87,6 +117,7 @@ home
 			</div>
 		</div>
 		<!-- #END# Task Info -->
+@include('simulador.modals.addProyecto')        
 @include('simulador.modals.addProduct')
 @include('simulador.modals.addUnidadMedida')
 @endsection

@@ -96,6 +96,45 @@ function addProducto() {
 	} else { $("#form-producto")[0].reportValidity(); }
 }
 
+/*Funcion para agregar un producto nuevo*/
+function addProyecto() {
+		/* Espero a que el docuemnto esté completamente cargado */
+		$(document).ready(function(){
+			if($("#form-proyecto")[0].checkValidity()) {
+				/* Mando los datos introducidos por el usuario */
+				$.ajax({
+					url: 'addProyecto',
+					type: 'POST',
+					data: {
+						descripcion :$("#descProyecto").val(),
+					},
+					dataType: 'JSON',
+					/* Si no hay errores regresa SUCCESS, inclusi si existen errores de validación y/o de BD */
+					success: function (data) {
+						/* Informa al usuario que el nuevo producto ha sido creado */
+						if (data.status == 'success'){
+							swal({
+								type : 'success',
+								title: data.message,
+								/* Cuando se cierra el modal limpia los campos y seleccion la primer opcion del select */
+								onClose: () => {
+									/* Llamo a la función que agrega el producto nuevo a la tabla*/
+									$("#tituloProyecto").text("Productos de: " + $("#descProyecto").val());
+
+								    $("#cerrarProyecto").click();
+									$("#descProyecto").val('');
+								}
+							});
+						/* Si hubo algún error se muestra al usuario para su correción */
+						} else { muestraAlerta('error', data.message); }
+					},
+					error: function (data) { muestraAlerta('error', data.message); }
+				});
+			}
+			else { $("#form-proyecto")[0].reportValidity(); }
+		}
+	)}
+
 /* =============================================================
  * Funcion para mostar alertas referentes a la guia (tutorial)
  * $tipo    String [success, error, warning, info]
@@ -103,14 +142,14 @@ function addProducto() {
  * $mensaje String [Mensaje de la alerta]
  *
  * ============================================================= */
- 
+
 function mostrarAlertaPopUp($tipo, $titulo, $mensaje, $msj) {
 	$(document).ready(function(){
 		/* Si falta algúna variable no hace nada */
 		if( ($tipo === undefined) || ($mensaje === undefined) || ($titulo === undefined) ){
 			return;
 		} else {
-			/* Si las variables están completas muestra una alerta con los 
+			/* Si las variables están completas muestra una alerta con los
 			 * datos recibidos, la guia siempre regresará un popover para mostrar
 			 * al usuario el siguiente paso que debe realizar, se debe mandar el
 			 * nombre del objeto que contendrá el popover.
@@ -129,12 +168,12 @@ function mostrarAlertaPopUp($tipo, $titulo, $mensaje, $msj) {
 
 /* =============================================================
  * Funcion para mostar popover referentes a la guía
- * 
+ *
  * $elemento String [Nombre del elemento HTML que contendrá el popover]
  * $paso     Integer [Número de paso, el mensaje se obtiene de la BD]
  *
  * ============================================================= */
- 
+
 function mostrarPopoverGuia($elemento, $paso) {
 	$.ajax({
 		url : 'guia',
@@ -145,16 +184,16 @@ function mostrarPopoverGuia($elemento, $paso) {
 		dataType: 'JSON',
 		/* Si no hay errores regresa SUCCESS, inclusive si existen errores de validación y/o de BD */
 		success: function (data) {
-			if (data.status == 'success'){ 
+			if (data.status == 'success'){
 				/* Agrego el popover al elemento recibido junto con la descripcion del paso */
-				
+
 				$($elemento).popover({
 					placement: 'auto',
 					trigger  : 'manual',
 					container: 'body',
 					html     : true,
 					title    : $('meta[name="app-name"]').attr('content'),
-					content  : '<center><span class="font-bold col-pink font-15">'+data.msg+'</span></center>', 
+					content  : '<center><span class="font-bold col-pink font-15">'+data.msg+'</span></center>',
 				});
 				$($elemento).popover('show');
 				return;
@@ -184,7 +223,7 @@ function quitarPopover($paso){ $($paso).popover('hide'); }
  * $porcion String  [Para cuantos - UM Ej. 100 - Personas]
  * $idProd  Integer [id del producto creado]
  * $idUSer  Integer [id del usuario]
- * 
+ *
  * ============================================================= */
 function agregarProductoTable($num, $desc, $porcion, $url){
 	/* Obtengo la tabla */

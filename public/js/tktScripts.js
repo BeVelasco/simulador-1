@@ -26,6 +26,7 @@ $(document).ready(function(){
 			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
 			if (data['status'] == 'success')
 			{
+                $("#sumatakttime").val(data["sumatakttime"]);
 				/* Muestra jExcel con los datos recibidos */
 				pintaJexcel(data);
 				/* Formatea las celdas */
@@ -110,21 +111,7 @@ function AVG(v)
     return avg;
 }
 
-/**======================================================================
- * Función que actualiza los datos en el texto de la página web
- * @author Emmanuel Hernández Díaz
- * ======================================================================
- */
-function actualizaDatos(data)
-{
-	console.log('precioVenta: ');
-	console.log(data.precioVenta);
-	document.getElementById('sumCI').innerHTML         = data.sumCI;
-	document.getElementById('recetaPara').innerHTML    = data.porcionpersona;
-	document.getElementById('costounitario').innerHTML = data.costoUnitario;
-	document.getElementById('costoUni').innerHTML      = data.costoUnitario;
-	document.getElementById('precioVen').innerHTML     = data.precioVenta;
-}
+
 
 
 /**=========================================================================
@@ -136,11 +123,11 @@ function pintaJexcel(data)
         
 	$('#excelformula').jexcel({
 		data             : data.formulacion,
-		colHeaders       : ["ID","Procesos para la elaboración<br>del producto estandarización"
+		colHeaders       : ["Procesos para la elaboración<br>del producto estandarización"
                             ,"Tiempo<br>realización","Cantidad","Insumos<br>relacionados"
                             ,"Personas<br>involucradas","Maquinaria","Herramientas"
                             ,"Check 1","Check 2","Check 3","Check 4","Check 5","Promedio"],
-		colWidths        : [5,220, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90,90],
+		colWidths        : [220, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90,90],
 		allowInsertRow   : true,
         allowManualInsertRow: true,
 		allowInsertColumn: true,
@@ -149,7 +136,6 @@ function pintaJexcel(data)
         contextMenu      : true,
 		/* Tipos de columnas enviados desde el controlador */
 		columns          :[
-            { "type": "hidden"},
 			{ "type": "text"},
 			{ "type": "numeric"},
 			{ "type": "numeric"},
@@ -168,18 +154,17 @@ function pintaJexcel(data)
             
             // Get the cell position x, y
             var id = $(cel).prop('id').split('-');
-            if(id[0]!=13){
-                //$('td#13-'+id[1]).html('<input type="hidden" value="=AVG(I' + (parseInt(id[1])+1) + ':M' + (parseInt(id[1])+1) +')">');
-                $('td#13-'+id[1]).removeClass("readonly");
-                $('#excelformula').jexcel('setValue', 'N' + (parseInt(id[1])+1), "=AVG(I" + (parseInt(id[1])+1) + ":M" + (parseInt(id[1])+1) +")");
-                $('td#13-'+id[1]).addClass("readonly");
+            if(id[0]!=12){
+                $('td#12-'+id[1]).removeClass("readonly");
+                $('#excelformula').jexcel('setValue', 'M' + (parseInt(id[1])+1), "=AVG(H" + (parseInt(id[1])+1) + ":L" + (parseInt(id[1])+1) +")");
+                $('td#12-'+id[1]).addClass("readonly");
             }
             else{
                 var suma=0;
-                $(".c13").each(function(index, value){
+                $(".c12").each(function(index, value){
                     suma+=parseFloat((value.innerText!=""?value.innerText:0));
                 });
-                $("#total").val(Math.round(suma * 100) / 100);
+                $("#sumatakttime").val(Math.round(suma * 100) / 100);
             }
                 
             //Obtener el valor de la celda con formula
@@ -187,64 +172,7 @@ function pintaJexcel(data)
         }
 	});
     
-    /* tiempo de elaboración */
-    $("#exceltiempo").jexcel({
-		data             : data.tiempo,
-		colHeaders       : ["MEDICIÓN DE TIEMPOS","TOTAL AL 100%"],
-		colWidths        : [220, 220],
-		allowInsertRow   : false,
-        allowManualInsertRow: false,
-		allowInsertColumn: false,
-		allowDeleteRow   : false,
-		allowDeleteColumn: false,
-        contextMenu      : false,
-		/* Tipos de columnas enviados desde el controlador */
-		columns          :[
-			{ "type": "text",readOnly:true},
-			{ "type": "numeric"},
-		],
-    });
     
-    /* tiempos agregados */
-    $("#excelagregados").jexcel({
-		data             : data.agregados,
-		colHeaders       : ["Producto DOS","Almacén<br>de M.P.","Líneas de<br>producción","Almacén","Canal de<br>distribución","Venta final"],
-		colWidths        : [220, 100, 100, 100, 100, 100],
-		allowInsertRow   : true,
-        allowManualInsertRow: true,
-		allowInsertColumn: true,
-		allowDeleteRow   : true,
-		allowDeleteColumn: true,
-        contextMenu      : true,
-		/* Tipos de columnas enviados desde el controlador */
-		columns          :[
-			{ "type": "text"},
-			{ "type": "text"},
-            { "type": "text"},
-            { "type": "text"},
-            { "type": "text"},
-            { "type": "text"},
-		],
-    });
-    
-    /* tiempos agregados */
-    $("#excelgastos").jexcel({
-		data             : data.gastos,
-		colHeaders       : ["Descripción","Gasto<br>mensual","Gasto<br>por lote"],
-		colWidths        : [220, 100, 100],
-		allowInsertRow   : true,
-        allowManualInsertRow: true,
-		allowInsertColumn: true,
-		allowDeleteRow   : true,
-		allowDeleteColumn: true,
-        contextMenu      : true,
-		/* Tipos de columnas enviados desde el controlador */
-		columns          :[
-			{ "type": "text"},
-			{ "type": "text"},
-            { "type": "text"},
-		],
-    });
     
     
 }
@@ -258,43 +186,48 @@ function Guardar(){
     datos=LeerExcel()
     
     if(renglonconceldasvacias.length==0){
-	/*$.ajax({
-		url     : '/producto/set_producto',
-        data    :{datos:datos},
-		type    : 'POST',
-		dataType: 'JSON',
-		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD *
-		success : function (data) { 
-		  
-			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  *
-			if (data['status'] == 'success')
-			{
-				swal({
-					type : 'success',
-					title: 'Mensaje',
-					text : data.msg,
-				});
-                
-			/* Si hubo algún error se muestra al usuario para su correción *
-			} else {
-				swal({
-					type : 'error',
-					title: 'Oops...',
-					text : data.msg,
-				});
-			}	
-		},
-		error: function(data) {
-			/* Si existió algún otro tipo de error se muestra en la consola *
-			console.log(data)
-		}
-	});
-    */
+    	$.ajax({
+    		url     : '/tkt/set_formulacion',
+            data    :{
+                        datos:datos,
+                        sumatakttime:$("#sumatakttime").val(),
+                    },
+    		type    : 'POST',
+    		dataType: 'JSON',
+    		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
+    		success : function (data) { 
+    		  
+    			/* Si la nueva UM se guardó sin problemas se le notifica al usuario  */
+    			if (data['status'] == 'success')
+    			{
+    				swal({
+    					type : 'success',
+                        title: 'Mensaje',
+					    text : data.msg,
+    					//text : data.msg,
+    				});
+                    
+    			/* Si hubo algún error se muestra al usuario para su correción */
+    			} else {
+    				swal({
+    					type : 'error',
+    					title: 'Oops...',
+    					text : data.msg,
+    				});
+    			}	
+    		},
+    		error: function(data) {
+    			/* Si existió algún otro tipo de error se muestra en la consola */
+    			console.log(data)
+    		}
+    	});
+    
     }
     else{
         swal({
 			type : 'error',
-			title: 'Existen celdas vacías (marcadas en amarillo) en una o más tablas del formulario, si desea continuar aún con las celdas vacías, marque la casilla "Guardar con celdas vacías" ubicada a la izquierda del botón "Guardar"',
+			title: 'Mensaje',
+            text : 'Existen celdas vacías (marcadas en amarillo) en una o más tablas del formulario, si desea continuar aún con las celdas vacías, marque la casilla "Guardar con celdas vacías" ubicada a la izquierda del botón "Guardar"',
 			onClose: () => {
 				
 			}
@@ -314,15 +247,18 @@ function Guardar(){
     var data=$('#excelformula').jexcel('getData');
     for(i=0;i<data.length;i++){
         cantidadceldasrenglon=0;
-        for(j=1;j<data[i].length;j++){//J=1 para saltar el ID que está oculto
+        for(j=0;j<data[i].length;j++){//J=1 para saltar el ID que está oculto
             //Poner en blanco las celdas, por si anteriormente ya se habian marcado como vacias (amarillo)
             $('td#'+j+'-'+i).css("background-color","#fff");
             
             if(data[i][j].indexOf("=")==0)
                 data[i][j]=$('#excelformula input[value="'+data[i][j]+'"]').parent("td").text();
             else{
-                data[i][j]=data[i][j].replace(/[^A-Za-zÑñ0-9.\s]/g, "");
-                if(data[i][j]=="" && data.length>1 && (!($("#chkGuardarvacias").is(":checked"))) ){
+                data[i][j]=data[i][j].replace(/[\$]/g, "");
+                if(data[i][j]=="" 
+                    //&& data.length>1 
+                    && (!($("#chkGuardarvacias").is(":checked"))) 
+                    ){
                     //Poner en amarillo si no tiene contenido
                     $('td#'+j+'-'+i).css("background-color","#ff0");
                     celdasvacias=true;

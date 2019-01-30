@@ -1,6 +1,7 @@
 @extends('base')
 
 @section('assets')
+@php $idProducto = Session::get('prodSeleccionado'); @endphp
 	<link href="{{ asset('css/jExcel/jquery.jcalendar.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jdropdown.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.bootstrap.css') }}" rel="stylesheet">
@@ -12,9 +13,9 @@
 	<div class="card">
 		<div class="header bg-pink">
 			<h2>
-				{{ Session::get('prodSeleccionado') -> idesc }}
+				{{ producto($idProducto,'idesc') }}
 				<small>
-					Para: {{ Session::get('prodSeleccionado') -> porcionpersona }} {{ Session::get('prodSeleccionado') -> catum -> idesc }}
+					{{ producto($idProducto,'idesc') }} para: {{ producto($idProducto,'porcionpersona') }} {{ catum(producto($idProducto,'idcatnum1'),'idesc') }}
 				</small>
 			</h2>
 		</div>
@@ -24,7 +25,7 @@
 					<ul class="toolbar-form">
                         <li>
             				    <input type="checkbox" id="chkGuardarvacias" class="filled-in"  />
-                                <label for="basic_checkbox_2">Guardar con celdas vacías</label>
+                                <label for="chkGuardarvacias">Guardar con celdas vacías</label>
             			</li>
                         <li>
             				<button type="button" class="btn bg-blue waves-effect" onclick="javascript:Guardar();">
@@ -49,14 +50,14 @@
             </div>
 			<div class="row clearfix">
 				<div class="col-sm-6 align-right">
-					<label class="form-label">TOTAL TAKT TIME POR PRODUCTO POR MINUTOS:</label>
+					<label class="form-label">TOTAL TAKT TIME POR PRODUCTO EN MINUTOS:</label>
 				</div>
-                <div  class="col-sm-2 align-left">
+                <div  class="col-sm-1 align-right">
                     <div class="form-group form-float">
 						<div class="form-line">
 							<input 
-								id          = "total"
-								name        = "total"
+								id          = "sumatakttime"
+								name        = "sumatakttime"
 								class       = "form-control input-md" 
 								type        = "text"
                                 readonly
@@ -65,7 +66,7 @@
 					</div>
                 </div>
             </div>
-            <div class="row clearfix">
+            <!--<div class="row clearfix">
 				<div class="col-sm-12">
 					<label class="form-label">Análisis por empleados en término de producción:</label>
                     <div class="form-group form-float">
@@ -187,7 +188,7 @@
 						</div>
 					</div>
                 </div>
-            </div>
+            </div>-->
             
 		</div>
 	</div>

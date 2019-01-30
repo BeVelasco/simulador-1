@@ -20,9 +20,9 @@ class CreateCosteoPruductos extends Migration
             $table -> foreign('id_user') -> references('id')->on('users') -> onDelete('cascade');
             $table -> integer('id_producto') -> unsigned(11) -> nullable();
             $table -> foreign('id_producto') -> references('id')->on('productos') -> onDelete('cascade');
-            $table -> longText('data');
-            $table -> longText('dataPrecioVenta');
-            $table -> double('PBBD', 8, 2);
+            $table -> text('data');
+            $table -> text('dataPrecioVenta');
+            $table -> double('PBBD', 11, 2);
             $table -> softDeletes();
             $table->timestamps();
         });

@@ -1,6 +1,7 @@
 @extends('base')
 
 @section('assets')
+@php $idProducto = Session::get('prodSeleccionado'); @endphp
 	<link href="{{ asset('css/jExcel/jquery.jcalendar.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jdropdown.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.bootstrap.css') }}" rel="stylesheet">
@@ -12,9 +13,9 @@
 	<div class="card">
 		<div class="header bg-pink">
 			<h2>
-				{{ Session::get('prodSeleccionado') -> idesc }}
+				{{ producto($idProducto,'idesc') }}
 				<small>
-					Para: {{ Session::get('prodSeleccionado') -> porcionpersona }} {{ Session::get('prodSeleccionado') -> catum -> idesc }}
+					{{ producto($idProducto,'idesc') }} para: {{ producto($idProducto,'porcionpersona') }} {{ catum(producto($idProducto,'idcatnum1'),'idesc') }}
 				</small>
 			</h2>
 		</div>
@@ -48,6 +49,41 @@
                 <div class="sm-12">            
 			         <div id="mytable"></div>
                 </div>                     
+            </div>
+            <br /><br />
+            <div class="row clearfix">
+				<div class="col-sm-4 align-right">
+					<label class="form-label">TOTAL PRODUCCIÓN:</label>
+				</div>
+                <div  class="col-sm-1 align-right">
+                    <div class="form-group form-float">
+						<div class="form-line">
+							<input 
+								id          = "totalproduccion"
+								name        = "totalproduccion"
+								class       = "form-control input-md" 
+								type        = "text"
+                                readonly
+							>
+						</div>
+					</div>
+                </div>
+                <div class="col-sm-5 align-right">
+					<label class="form-label">GRAN TOTAL:</label>
+				</div>
+                <div  class="col-sm-1 align-right">
+                    <div class="form-group form-float">
+						<div class="form-line">
+							<input 
+								id          = "grantotal"
+								name        = "grantotal"
+								class       = "form-control input-md" 
+								type        = "text"
+                                readonly
+							>
+						</div>
+					</div>
+                </div>
             </div>
 		</div>
 	</div>

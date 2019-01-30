@@ -36,7 +36,7 @@ class DashboardController extends Controller
 
 	public function addUnidadMedida(Request $request)
 	{
-		/* Mensajes personalizados cuando hay errores en la validación */
+		/* Mensajes personalizados cuando hay errores en la validaciÃ³n */
 		$messages = [
 			'unique'   => 'La unidad de medida ya existe.',
 			'required' => 'Debe ingresar el nombre de la unidad de medida.',
@@ -51,7 +51,7 @@ class DashboardController extends Controller
 		/* Se validan los datos con las reglas y mensajes especificados */
 		$validate = \Validator::make($request->all(), $rules, $messages);
 
-		/* Si la validación falla, regreso solamente el primer error. */
+		/* Si la validaciÃ³n falla, regreso solamente el primer error. */
 		if ($validate -> fails())
 		{
 			return response()->json([
@@ -59,7 +59,7 @@ class DashboardController extends Controller
 				'msg'    => $validate->errors()->first()]);
 		}
 
-		/* Si la validación es correcta agrego la nueva UM a la BD */
+		/* Si la validaciÃ³n es correcta agrego la nueva UM a la BD */
 		/* Sanitiza los datos y pone el primer caracter en mayuscula */
 		$um    = ucfirst(strip_tags($request->descripcion));
 		$catum = new Catum();
@@ -71,7 +71,7 @@ class DashboardController extends Controller
 		/* Obtengo el total de unidades de medida existentes */
 		$id = Catum::count();
 
-		/* Regreso la respuesta exitosa con los datos para agregar al select la nueva opción */
+		/* Regreso la respuesta exitosa con los datos para agregar al select la nueva opciÃ³n */
 		return response()->json([
 			'status' => 'success',
 			'msg'    => 'Unidad '.$um.' guardada con éxito',
@@ -86,7 +86,7 @@ class DashboardController extends Controller
 	 */
 	public function addProducto(Request $request)
 	{
-		/* Mensajes personalizados cuando hay errores en la validación */
+		/* Mensajes personalizados cuando hay errores en la validaciÃ³n */
 		$messages = [
 			'numeric'  => 'El valor de :attribute no corresponde a un número',
 			'unique'   => 'El producto ya existe.',
@@ -104,7 +104,7 @@ class DashboardController extends Controller
 		/* Se validan los datos con las reglas y mensajes especificados */
 		$data = \Validator::make($request->all(), $rules, $messages);
 
-		/* Si la validación falla, regreso solamente el primer error. */
+		/* Si la validaciÃ³n falla, regreso solamente el primer error. */
 		if ($data->fails())
 		{
 			return response()->json([
@@ -117,8 +117,8 @@ class DashboardController extends Controller
 		$um      = strip_tags($request->unidadMedida);
 		$porcion = $request->porcion;
 
-		/* Se verifica si la categoría existe en la BD, si no se encuentra
-		   se manda un mensaje de error solicitando el refresco de la página */
+		/* Se verifica si la categorÃ­a existe en la BD, si no se encuentra
+		   se manda un mensaje de error solicitando el refresco de la pÃ¡gina */
 		$res = Catum::find($um);
 		if (!$res)
 		{
@@ -145,10 +145,10 @@ class DashboardController extends Controller
 		/* Obtengo el total de productos que tiene registrado el usuario */
 		$totProd = User::find($idUser) -> productos -> count();
 		
-		/* Regreso la respuesta exitosa con el total para actualizar el número en la vista  */
+		/* Regreso la respuesta exitosa con el total para actualizar el nÃºmero en la vista  */
 		return response() -> json([
 			'status'  => 'success',
-			'msg'     => 'Producto '.$desc.' agregado con exito.',
+			'msg'     => 'Producto '.$desc.' agregado con éxito.',
 			'totProd' => $totProd,
 			'desc'    => $desc,
 			'porcion' => $porcion,
@@ -156,11 +156,11 @@ class DashboardController extends Controller
 		]);
 	}
 	/**
-	 * Función para comenzar el simulador dependiendo de la etapa en la que
-	 * el usario se quedó la última vez que utilizó el simulador
+	 * FunciÃ³n para comenzar el simulador dependiendo de la etapa en la que
+	 * el usario se quedÃ³ la Ãºltima vez que utilizÃ³ el simulador
 	 */
 	public function iniciarSimulador(Request $request){
-		/* Mensajes personalizados cuando hay errores en la validación */
+		/* Mensajes personalizados cuando hay errores en la validaciÃ³n */
 		$messages = [
 			'exists'   => 'El :attribute no existe.',
 			'required' => 'El campo :attribute es obligatorio.',
@@ -169,18 +169,18 @@ class DashboardController extends Controller
 		$rules = ['iP' => ['required','exists:productos,id'],];
 		/* Se validan los datos con las reglas y mensajes especificados */
 		$validate = \Validator::make($request->all(), $rules, $messages);
-		/* Si la validación falla, regreso solamente el primer error. */
+		/* Si la validaciÃ³n falla, regreso solamente el primer error. */
 		if ($validate -> fails()){
 			return response()->json([
 				'status' => 'error',
 				'msg'    => $validate->errors()->first()]);
 		}
-		/* Verifica que el usuario esté logeado y coincida con el id que envió*/
+		/* Verifica que el usuario estÃ© logeado y coincida con el id que enviÃ³*/
 		$idProd   = $request -> iP;
 		$error    = ['status' => 'error','msg' => 'Datos no coinciden.'];
 		$producto = Producto::find($idProd);
 		if (  $producto -> id_user_r == Auth::user() -> id ){
-			/* Agrego a la sesión los datos del producto seleccionado */
+			/* Agrego a la sesiÃ³n los datos del producto seleccionado */
 			Session::put('prodSeleccionado', $producto);
 			return response()->json([
 				'status' => 'success',

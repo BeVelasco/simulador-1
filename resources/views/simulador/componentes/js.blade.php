@@ -1,3 +1,11 @@
+    <script>
+		{{-- Javascript Global Routes --}}
+		var routes = {
+                guradarInventario  : "{{ route('guardarInventario') }}",
+                getData            : "{{ route('getDataSimulador') }}",
+                calcularPrecioVenta: "{{ route('calcularPrecioVenta') }}",
+        };
+	</script>
     {{-- Jquery Core Js --}}
     <script src="{{ asset('plugins/jquery/jquery-2.2.4.min.js') }}"></script>
 	{{-- timeline --}}

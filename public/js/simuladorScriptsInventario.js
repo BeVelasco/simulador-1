@@ -39,7 +39,7 @@ function calcularInventario(a) {
 /* Guardo el inventario */
 function guardarInventario(){
     $.ajax({
-        url     : '/simulador/guardarInventario',
+        url     : routes.guradarInventario,
         type    : 'POST',
         dataType: 'JSON',
         data    : {

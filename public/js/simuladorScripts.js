@@ -11,7 +11,7 @@
 
 $(document).ready(function(){
 	$.ajax({
-		url     : '/simulador/getData',
+		url     : routes.getData,
 		type    : 'POST',
 		dataType: 'JSON',
 		/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
@@ -57,7 +57,7 @@ function calcularPrecioVenta()
 	$(document).ready(function(){
 		if($("#formPrecioVenta")[0].checkValidity()) {
 			$.ajax({
-				url : '/simulador/calcularPrecioVenta',
+				url : routes.calcularPrecioVenta,
 				type: 'POST',
 				data: {
 					jExcel: $('#mytable').jexcel('getData'),
@@ -184,8 +184,6 @@ function formateaCeldas(){
  */
 function actualizaDatos(data)
 {
-	console.log('precioVenta: ');
-	console.log(data.precioVenta);
 	document.getElementById('sumCI').innerHTML         = data.sumCI;
 	document.getElementById('recetaPara').innerHTML    = data.porcionpersona;
 	document.getElementById('costounitario').innerHTML = data.costoUnitario;

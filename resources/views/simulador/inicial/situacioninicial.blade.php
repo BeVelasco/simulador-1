@@ -170,7 +170,26 @@
                     </div>
                     
                     <div class="row clearfix"></div>
-                    <div id="excelgastos"></div>
+                        <div id="excelgastos"></div>
+                        
+                    <div class="row clearfix">
+        				<div class="col-sm-6 align-right">
+        					<label class="form-label">TOTAL DE GASTOS:</label>
+        				</div>
+                        <div  class="col-sm-2 align-left">
+                            <div class="form-group form-float">
+        						<div class="form-line">
+        							<input 
+        								id          = "totalgastos"
+        								name        = "totalgastos"
+        								class       = "form-control input-md" 
+        								type        = "text"
+                                        readonly
+        							>
+        						</div>
+        					</div>
+                        </div>
+                    </div>
                     
 				</div>
 				<div role="tabpanel" class="tab-pane fade" id="tasadescuento">

@@ -242,25 +242,30 @@ function agregarProductoTable($num, $desc, $porcion, $url){
  * Atiende al menu de botones
  * ============================================================= */
 function linkmenu($id,$url,$href){
-	$.ajax({
-		url     : $url,
-		type    : 'POST',
-		data    : { iP: $id },
-		dataType: 'JSON',
-		success : function (){ 
-			window.location.href = $href; 
-		},
-		error: function (data) {
-			if (data.responseJSON.message)
-			{
-				muestraAlerta('error', data.responseJSON.message);
-				location.reload();
-				return;
-			}
-			if (data.responseJSON.errors.iP){
-				muestraAlerta('error', data.responseJSON.errors.iP[0]);
-				return;
-			}
-		}
-	});
+    if($id>0){
+    	$.ajax({
+    		url     : $url,
+    		type    : 'POST',
+    		data    : { iP: $id },
+    		dataType: 'JSON',
+    		success : function (){ 
+    			window.location.href = $href; 
+    		},
+    		error: function (data) {
+    			if (data.responseJSON.message)
+    			{
+    				muestraAlerta('error', data.responseJSON.message);
+    				location.reload();
+    				return;
+    			}
+    			if (data.responseJSON.errors.iP){
+    				muestraAlerta('error', data.responseJSON.errors.iP[0]);
+    				return;
+    			}
+    		}
+    	});
+     }
+     else{
+        window.location.href = $href; 
+     }
 }

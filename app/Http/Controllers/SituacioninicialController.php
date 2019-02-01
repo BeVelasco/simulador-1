@@ -127,6 +127,7 @@ class SituacioninicialController extends Controller
             SELECT `oficinas`,`servpublicos`,`telefonos`,`seguros`,`papeleria`,`rentaequipo`
             	,`costoweb`,`costoconta`,`honorariolegal`,`viajesysubsistencia`,`gastosautos`
             	,`gastosgenerales`,`cargosbancarios`,`otrosservicios`,`gastosinvestigacion`,`gastosdiversos`
+                ,totalgastos
             FROM `situacioninicials`
             WHERE `id_user`=:id_usuario';
 
@@ -146,8 +147,8 @@ class SituacioninicialController extends Controller
         
         /* mercadotecnia */
         $sqlmerca='
-            SELECT sumanomina
-            FROM `nominas`
+            SELECT total
+            FROM `mercadotecnias`
             WHERE `id_user`=:id_usuario';
 
         $resmerca = DB::select($sqlmerca, ['id_usuario'=>$idUser]);
@@ -155,23 +156,23 @@ class SituacioninicialController extends Controller
         $cuentamerca=count($resmerca);
         
         array_push($datasituacion,Array("GASTOS ANUALES","AñO 1","GASTOS ANUALES","AñO 1","ne-0,1,2,3"));
-        array_push($datasituacion,Array("Oficinas y rentas",($cuentagas>0?$resgas[0]->efectivo:0),"Honorarios legales",($cuentagas>0?$resii[0]->cuentasxpagar:0),"ne-0,1,2,3"));
-        array_push($datasituacion,Array("Salarios y obligaciones",($cuentasal>0?$ressal[0]->valInvFinDes:0),"Viajes y subsistencia",($cuentagas>0?$resii[0]->impuestosxpagar:0),"ne-0,1,2,3"));
-        array_push($datasituacion,Array("Servs. Públicos (agua, luz, etc)",($cuentagas>0?$resgas[0]->cuentasxcobrar:0),"Gastos de autos","","ne-0,1,2,3"));
-        array_push($datasituacion,Array("Teléfonos",($cuentagas>0?$resgas[0]->equipooficina:0),"Gastos generales","","ne-0,1,2,3"));
-        array_push($datasituacion,Array("Seguros",($cuentagas>0?($resgas[0]->plantamaquinaria):0),"Cargos bancarios",($cuentares>0?$res[0]->prestamoaccionistas:0),"ne-0,1,2"));
-        array_push($datasituacion,Array("Papelería y envíos","","Otros servicios",($cuentagas>0?$resgas[0]->prestamolargoplazo:0),"ne-0,1,2"));
-        array_push($datasituacion,Array("Renta de equipo de oficina",($cuentagas>0?$resgas[0]->intangibles:0),"Gastos de mercadotecnia","","ne-0,1,2,3"));
-        array_push($datasituacion,Array("Costos de sitio web",($cuentagas>0?$resgas[0]->totalotrosactivos:0),"Gastos de investigación",($cuentares>0?$res[0]->inversionaccionistas:0),"ne-0,1,2"));
-        array_push($datasituacion,Array("Costos de contabilidad","","Gastos diversos","=B15-D13-D10-D9-D3-D2","ne-0,1,2,3"));
-        array_push($datasituacion,Array("Sumas iguales","=B2+B3+B4+B7+B9+B11+B13","Sumas iguales","=D2+D3+D9+D10+D13+D14","ne-0,1,2,3"));
+        array_push($datasituacion,Array("Oficinas y rentas",($cuentagas>0?$resgas[0]->oficinas:0),"Honorarios legales",($cuentagas>0?$resgas[0]->honorariolegal:0),"ne-0,2"));
+        array_push($datasituacion,Array("Salarios y obligaciones",($cuentasal>0?$ressal[0]->sumanomina:0),"Viajes y subsistencia",($cuentagas>0?$resgas[0]->viajesysubsistencia:0),"ne-0,1,2,3"));
+        array_push($datasituacion,Array("Servs. Públicos (agua, luz, etc)",($cuentagas>0?$resgas[0]->servpublicos:0),"Gastos de autos",($cuentagas>0?$resgas[0]->gastosautos:0),"ne-0,1,2,3"));
+        array_push($datasituacion,Array("Teléfonos",($cuentagas>0?$resgas[0]->telefonos:0),"Gastos generales",($cuentagas>0?$resgas[0]->gastosgenerales:0),"ne-0,1,2,3"));
+        array_push($datasituacion,Array("Seguros",($cuentagas>0?($resgas[0]->seguros):0),"Cargos bancarios",($cuentagas>0?$resgas[0]->cargosbancarios:0),"ne-0,1,2"));
+        array_push($datasituacion,Array("Papelería y envíos",($cuentagas>0?($resgas[0]->papeleria):0),"Otros servicios",($cuentagas>0?$resgas[0]->otrosservicios:0),"ne-0,1,2"));
+        array_push($datasituacion,Array("Renta de equipo de oficina",($cuentagas>0?$resgas[0]->rentaequipo:0),"Gastos de mercadotecnia",($cuentamerca>0?$resmerca[0]->prestamolargoplazo:0),"ne-0,1,2,3"));
+        array_push($datasituacion,Array("Costos de sitio web",($cuentagas>0?$resgas[0]->costoweb:0),"Gastos de investigación",($cuentagas>0?$resgas[0]->gastosinvestigacion:0),"ne-0,1,2"));
+        array_push($datasituacion,Array("Costos de contabilidad",($cuentagas>0?($resgas[0]->costoconta):0),"Gastos diversos",($cuentagas>0?($resgas[0]->gastosdiversos):0),"ne-0,2"));
         
         
 		/* Regreso la respuesta con los datos para el jExcel */
 		return response() -> json([
-			'status'        => 'success',
-			'datasituacion'   => $datasituacion,
-            'dataventas'    => $dataventas
+			'status'         => 'success',
+            'totalsituacion' => ($cuentagas>0?$resgas[0]->totalsituacion:0),
+			'datasituacion'  => $datasituacion,
+            'dataventas'     => $dataventas
 		]);
 	}
     

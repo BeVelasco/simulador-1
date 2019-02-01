@@ -16,7 +16,7 @@ class PronosticoVentasController extends Controller
 		$regionObjetivo = ["estado"=>$request->estado,"personas"=>$request->personas,"ciudadObjetivo"=>$request->ciudadObjetivo,"porcentaje"=>$request->porcentaje,"totalPersonas"=>$totalPersonas,];
 		Session::put('regionObjetivo', $regionObjetivo);
 		return response()->json(['message'=>Lang::get('messages.numTotalPersonas'),
-			'text'=> Lang::get('messages.metodoUsa'),'pea'=>Lang::get('messages.pea'),'spg'=>Lang::get('messages.spg'),'spe'=>Lang::get('messages.spe'),'seleccioneMetodo'=>Lang::get('messages.seleccioneMetodo'),'tieneSelVal'=>Lang::get('messgaes.tieneSelVal'),'totalPersonas'=>$totalPersonas],200);
+			'text'=> Lang::get('messages.metodoUsa'),'pea'=>Lang::get('messages.pea'),'spg'=>Lang::get('messages.spg'),'spe'=>Lang::get('messages.spe'),'seleccioneMetodo'=>Lang::get('messages.seleccioneMetodo'),'tieneSelVal'=>Lang::get('messages.tieneSelVal'),'totalPersonas'=>$totalPersonas],200);
 	}
 
 	public function getSegmentacion(Request $request){	

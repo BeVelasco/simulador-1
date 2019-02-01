@@ -43,10 +43,10 @@
                             @include('simulador.mercadotecnia.estrategiaAmbiciosaVista')
                         </div>
                         <div role="tabpanel" class="divTab tab-pane fade active in" id="estrategiaBaja">
-                             @include('simulador.mercadotecnia.estrategiaBajavista')
+                             @include('simulador.mercadotecnia.estrategiaBajavVista')
                         </div>
                         <div role="tabpanel" class="divTab tab-pane fade active in" id="estrategiaSelect">
-                            @include('simulador.mercadotecnia.estrategiaSelectivavista')
+                            @include('simulador.mercadotecnia.estrategiaSelectivaVista')
                         </div>
                     </div>
                 </div>

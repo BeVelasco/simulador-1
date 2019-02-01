@@ -4,6 +4,12 @@
                 guradarInventario  : "{{ route('guardarInventario') }}",
                 getData            : "{{ route('getDataSimulador') }}",
                 calcularPrecioVenta: "{{ route('calcularPrecioVenta') }}",
+                regionObjetivo     : "{{ route('regionObjetivo') }}",
+                getSegmentacion    : "{{ route('getSegmentacion') }}",
+                getVista           : "{{ route('getVista') }}",
+                getProyeccion      : "{{ route('getProyeccion') }}",
+                getMeses           : "{{ route('getMeses') }}",
+                home               : "{{ route('home') }}",
         };
 	</script>
     {{-- Jquery Core Js --}}

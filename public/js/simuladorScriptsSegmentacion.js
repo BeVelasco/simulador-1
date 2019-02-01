@@ -68,10 +68,10 @@ function calcularRegionObjetivo(){
 		if (personas > 0 && porcentaje > 0)
 		{
 			$.ajax({
-				url     : '/simulador/regionObjetivo',
+				url     : routes.regionObjetivo,
 				type    : 'POST',
 				dataType: 'JSON',
-				data    :{
+				data    : {
 					estado        : $('#txtEstado').val(),
 					ciudadObjetivo: $('#txtCiudadObjetivo').val(),
 					personas      : personas,
@@ -103,10 +103,10 @@ function calcularRegionObjetivo(){
 						if (segmentacion) {
 							/* Mando a pedir la vista de la segmentación renderizada para pintarla en el HTML */
 							$.ajax({
-								url     : '/simulador/getSegmentacion',
+								url     : routes.getSegmentacion,
 								type    : 'POST',
 								dataType: 'JSON',
-								data:{ segmentacion: segmentacion },
+								data    : { segmentacion: segmentacion },
 								success : function (data1){
 									$('#contenidoSegmentacion').html(data1.segmentacion); /////////////////////////////////
 									document.getElementById("liSegementacion").setAttribute("data-toggle", "tab");
@@ -285,7 +285,7 @@ function showVista(vista) {
 		default: return;
 	}
 	$.ajax({
-		url     : '/simulador/getVista',
+		url     : routes.getVista,
 		type    : 'POST',
 		dataType: 'JSON',
 		data    : { 
@@ -345,7 +345,7 @@ function validarInput(input){
 function hacerProyeccion()
 {
 	$.ajax({
-		url     : '/simulador/getProyeccion',
+		url     : routes.getProyeccion,
 		type    : 'POST',
 		dataType: 'JSON',
 		data    : {
@@ -396,7 +396,7 @@ async function calcVentasAn1 () {
 		}
 	});
 	$.ajax({
-		url     : '/simulador/getMeses',
+		url     : routes.getMeses,
 		type    : 'POST',
 		dataType: 'JSON',
 		data    : {mesInicio: mes},
@@ -523,6 +523,6 @@ function calcularMercados(){
 		}
 	}
 }
-function regresar(){ window.location.href = "/home"; }
+function regresar(){ window.location.href = routes.home; }
 
 

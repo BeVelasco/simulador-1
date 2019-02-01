@@ -1,15 +1,17 @@
     <script>
 		{{-- Javascript Global Routes --}}
 		var routes = {
-                guradarInventario  : "{{ route('guardarInventario') }}",
-                getData            : "{{ route('getDataSimulador') }}",
-                calcularPrecioVenta: "{{ route('calcularPrecioVenta') }}",
-                regionObjetivo     : "{{ route('regionObjetivo') }}",
-                getSegmentacion    : "{{ route('getSegmentacion') }}",
-                getVista           : "{{ route('getVista') }}",
-                getProyeccion      : "{{ route('getProyeccion') }}",
-                getMeses           : "{{ route('getMeses') }}",
-                home               : "{{ route('home') }}",
+                guradarInventario   : "{{ route('guardarInventario') }}",
+                getData             : "{{ route('getDataSimulador') }}",
+                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}",
+                regionObjetivo      : "{{ route('regionObjetivo') }}",
+                getSegmentacion     : "{{ route('getSegmentacion') }}",
+                getVista            : "{{ route('getVista') }}",
+                getProyeccion       : "{{ route('getProyeccion') }}",
+                getMeses            : "{{ route('getMeses') }}",
+                home                : "{{ route('home') }}",
+                guardarMercadotecnia: "{{ route('guardarMercadotecnia') }}",
+                inicioSimulador     : "{{ route('inicioSimulador') }}",
         };
 	</script>
     {{-- Jquery Core Js --}}

@@ -74,23 +74,25 @@ function addProducto() {
 				});
 			},
 			error: function (error) {
+				console.log(error);
+				if (error.responseJSON.errors.descripcion) {
+				    muestraAlerta('error', error.responseJSON.errors.descripcion[0]);
+				    return;
+				}
+				if (error.responseJSON.errors.unidadMedida) {
+				    muestraAlerta('error', error.responseJSON.errors.unidadMedida[0]);
+				    location.reload();
+				    return;
+				}
+				if (error.responseJSON.errors.porcion) {
+				    muestraAlerta('error', error.responseJSON.errors.porcion[0]);
+				    return;
+				}
 				if (error.responseJSON.message) {
 					muestraAlerta('error', error.responseJSON.message);
 					return;
 				}
-				if (error.responseJSON.errors.descripcion) {
-					muestraAlerta('error', error.responseJSON.errors.descripcion[0]);
-					return;
-				}
-				if (error.responseJSON.errors.unidadMedida) {
-					muestraAlerta('error', error.responseJSON.errors.unidadMedida[0]);
-					location.reload();
-					return;
-				}
-				if (error.responseJSON.errors.porcion) {
-					muestraAlerta('error', error.responseJSON.errors.porcion[0]);
-					return;
-				}
+				
 			}
 		}); 
 	} else { $("#form-producto")[0].reportValidity(); }
@@ -242,30 +244,32 @@ function agregarProductoTable($num, $desc, $porcion, $url){
  * Atiende al menu de botones
  * ============================================================= */
 function linkmenu($id,$url,$href){
-    if($id>0){
-    	$.ajax({
-    		url     : $url,
-    		type    : 'POST',
-    		data    : { iP: $id },
-    		dataType: 'JSON',
-    		success : function (){ 
-    			window.location.href = $href; 
-    		},
-    		error: function (data) {
-    			if (data.responseJSON.message)
-    			{
-    				muestraAlerta('error', data.responseJSON.message);
-    				location.reload();
-    				return;
-    			}
-    			if (data.responseJSON.errors.iP){
-    				muestraAlerta('error', data.responseJSON.errors.iP[0]);
-    				return;
-    			}
-    		}
-    	});
-     }
-     else{
-        window.location.href = $href; 
-     }
+	if ($id>0)
+	{
+		$.ajax({
+		    url: $url,
+		    type: 'POST',
+		    data: {
+		        iP: $id
+		    },
+		    dataType: 'JSON',
+		    success: function () {
+		        window.location.href = $href;
+		    },
+		    error: function (data) {
+		        if (data.responseJSON.message) {
+		            muestraAlerta('error', data.responseJSON.message);
+		            location.reload();
+		            return;
+		        }
+		        if (data.responseJSON.errors.iP) {
+		            muestraAlerta('error', data.responseJSON.errors.iP[0]);
+		            return;
+		        }
+		    }
+		});
+	}
+	else{
+		window.location.href = $href;
+	}
 }

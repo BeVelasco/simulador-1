@@ -63,16 +63,16 @@
                         <div class="dropdown">
                             <a href="#" data-toggle="dropdown" class="btn bg-black waves-effect waves-light dropdown-toggle">Ir a ...<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="javascript:linkmenu('{{ 0 }}','/iniciarSimulador','/nomina/editarInicio');">{{ __('messages.nomina_boton') }}</a></li>
-                                <li><a href="javascript:linkmenu('{{ 0 }}','/iniciarSimulador','/inicial/editarInicio');">{{ __('messages.inversion_inicialboton') }}</a></li>
-                                <li><a href="javascript:linkmenu('{{ 0 }}','/iniciarSimulador','/reportes/perdidasganancias');">{{ __('messages.perdidas_gananciasboton') }}</a></li>
+                                <li><a href="javascript:linkmenu('{{ 0 }}','{{ route('iniciarSimulador') }}','{{ route('editarInicioNomina') }}');">{{ __('messages.nomina_boton') }}</a></li>
+                                <li><a href="javascript:linkmenu('{{ 0 }}','{{ route('iniciarSimulador') }}','{{ route('editarInicioInversion') }}');">{{ __('messages.inversion_inicialboton') }}</a></li>
+                                <li><a href="javascript:linkmenu('{{ 0 }}','{{ route('iniciarSimulador') }}','{{ route('perdidasGanancias') }}');">{{ __('messages.perdidas_gananciasboton') }}</a></li>
                                 
                             </ul>
                         </div>
                     </div>
                     <div class="row clearfix">
                     </div>
-					<div class="table-responsive" style="height: 10000px;">
+					<div class="table-responsive">
 						<table class="table table-hover dashboard-task-infos">
 							<thead>
 								<tr>
@@ -100,9 +100,9 @@
                                             <div class="dropdown">
                                                 <a href="#" data-toggle="dropdown" class="btn bg-black waves-effect waves-light dropdown-toggle">Ir a ...<b class="caret"></b></a>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/simulador/inicio');">{{ __('messages.iniSimulador') }}</a></li>
-                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/producto/editarInicio');">{{ __('messages.productoproduccion_boton') }}</a></li>
-                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','/iniciarSimulador','/tkt/editarInicio');">{{ __('messages.tkt_boton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','{{ route('iniciarSimulador') }}','{{ route('inicioSimulador') }}');">{{ __('messages.iniSimulador') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','{{ route('iniciarSimulador') }}','{{ route('editarInicioProducto') }}');">{{ __('messages.productoproduccion_boton') }}</a></li>
+                                                    <li><a href="javascript:linkmenu('{{ $producto->id }}','{{ route('iniciarSimulador') }}','{{ route('editarInicioTkt') }}');">{{ __('messages.tkt_boton') }}</a></li>
                                                 </ul>
                                             </div>
 										</td>
@@ -110,8 +110,9 @@
 								@endforeach
 							</tbody>
 						</table>
-						<br><br><br><br><br><br>
-						{{ $productos->links() }}
+						<center>{{ $productos->links() }}</center>
+						<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;
+						
 					</div>
 				</div>
 			</div>

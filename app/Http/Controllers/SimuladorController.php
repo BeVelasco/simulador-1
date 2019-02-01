@@ -104,7 +104,8 @@ class SimuladorController extends Controller
 		$sumCI = 0;
 		/* Calculo el costo del ingrediente (Cantidad/Unidad * Precio Unitario) */
 		for ($i=0;$i<$largo;$i++){
-			$costoIng      = substr($jExcel[$i][5],2); //$jExcel[$i][1] * substr($jExcel[$i][4],2);
+			$costoIng = substr($jExcel[$i][5],2);           //$jExcel[$i][1] * substr($jExcel[$i][4],2);
+			$costoIng = str_replace(',', '', $costoIng );
 			/* Guardo la suma de todos los costos por ingredientes */
 			$sumCI += $costoIng;
 			/* Guardo en la posición 5 el nuevo valor */

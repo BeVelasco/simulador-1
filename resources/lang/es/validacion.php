@@ -23,5 +23,11 @@
         'iniSimIpRequired' => 'El id del producto es necesario para iniciar el simulador',
         'iniSimIpExists'   => 'El id del producto no existe, la página se actualizará.',
         'iniSimProdMal'    => 'Este producto no le pertenece, la página se actualizará',
+        /* Precio Venta */
+        'pvJExcelRequired' => 'Los datos de la tabla de ingredientes son necesarios',
+        'pvJPBBDRequired'  => 'El porcentaje de beneficio bruto deseado es obligatorio',
+        'pvJPBBDNumeric'   => 'El porcentaje de beneficio bruto deseado debe ser numérico',
+        'pvJPBBDBetween'   => 'El porcentaje de beneficio bruto deseado debe estar entre 1 y 99',
+        'jExcelConCeros'   => 'El producto # %num% tiene un costo de 0, edite o elimine.',
     ];
 ?>

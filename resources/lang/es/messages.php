@@ -315,6 +315,7 @@
 	 'msgambi2'         => 'El consumidor en general es más sensible a los precios.',
 	 'msgambi3'         => 'Hay fuerte competencia potencial.',
 	 'msgambi4'         => 'Los costos de elaboración por unidad disminuyen con la escala de producción y la experiencia de producción acumulada.',
+	 'jExcelSinDatos'   => 'Debe introducir al menos un ingrediente',
 	
 	
   'guardar'          => 'Guardar',

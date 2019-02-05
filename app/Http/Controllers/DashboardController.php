@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Session;
 use Lang;
-use Reloader;
+use Simulador;
 use App\Http\Requests\UnidadDeMedidaRequest;
 use App\Http\Requests\ProductoNuevoRequest;
 use App\Http\Requests\IniciarSimuladorRequest;
@@ -30,7 +30,7 @@ class DashboardController extends Controller
 	 */
 	public function index()
 	{
-    	Reloader::deleteSessionVariables();
+    	Simulador::deleteSessionVariables();
 		return view('home',[
 			'unidadMedidas' => Catum::getCatumSortBy('idesc'),
 			'noProductos'   => Producto::getTotalProducts(Auth::user()->id),

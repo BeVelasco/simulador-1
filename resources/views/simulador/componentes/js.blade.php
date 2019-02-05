@@ -3,7 +3,7 @@
 		var routes = {
                 guradarInventario   : "{{ route('guardarInventario') }}",
                 getData             : "{{ route('getDataSimulador') }}",
-                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}",
+                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}", {{-- -SimuladorController@calcularPrecioVenta --}}
                 regionObjetivo      : "{{ route('regionObjetivo') }}",
                 getSegmentacion     : "{{ route('getSegmentacion') }}",
                 getVista            : "{{ route('getVista') }}",

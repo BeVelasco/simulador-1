@@ -64,7 +64,7 @@ class InversioninicialController extends Controller
 		$idUser    = Auth::user() -> id;
         
         /* inventarios */
-        $sqlinv='SELECT SUM(i.`valInvFinDes`) AS valInvFinDes
+        $sqlinv='SELECT COALESCE(SUM(i.`valInvFinDes`),0) AS valInvFinDes
                 FROM `inventarios` AS i
                 WHERE i.`id_user`=:id_usuario';
         $resinv = DB::select($sqlinv, ['id_usuario'=>$idUser]);
@@ -105,14 +105,14 @@ class InversioninicialController extends Controller
         array_push($datainversion,Array("","","",""));$i++;
         array_push($datainversion,Array("OTROS ACTIVOS","","",""));$i++;
                 //16
-        array_push($datainversion,Array("Gastos de ConstituciÃ³n",(count($res)>0?$res[0]->gastosconstitucion:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"gastosconstitucion"));$i++;
-        array_push($datainversion,Array("Gastos de AsesorÃ­a",(count($res)>0?$res[0]->gastosasesoria:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"gastosasesoria"));$i++;
+        array_push($datainversion,Array("Gastos de Constitución",(count($res)>0?$res[0]->gastosconstitucion:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"gastosconstitucion"));$i++;
+        array_push($datainversion,Array("Gastos de Asesoría",(count($res)>0?$res[0]->gastosasesoria:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"gastosasesoria"));$i++;
         array_push($datainversion,Array("Gastos de puesta a punto inmuebles",(count($res)>0?$res[0]->gastospuesta:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"gastospuesta"));$i++;
         array_push($datainversion,Array("Reclutamiento",(count($res)>0?$res[0]->reclutamiento:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"reclutamiento"));$i++;
         array_push($datainversion,Array("Seguros pagados por anticipado",(count($res)>0?$res[0]->segurospagados:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"segurospagados"));$i++;
-        array_push($datainversion,Array("PromociÃ³n",(count($res)>0?$res[0]->promocion:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B21/D21*100)",(count($res)>0?$res[0]->totalinversion:0),"promocion"));$i++;
-        array_push($datainversion,Array("Gastos de instalaciÃ³n",(count($res)>0?$res[0]->gastosinstalacion:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"gastosinstalacion"));$i++;
-        array_push($datainversion,Array("PapelerÃ­a y consumibles",(count($res)>0?$res[0]->papeleria:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"papeleria"));
+        array_push($datainversion,Array("Promoción",(count($res)>0?$res[0]->promocion:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B21/D21*100)",(count($res)>0?$res[0]->totalinversion:0),"promocion"));$i++;
+        array_push($datainversion,Array("Gastos de instalación",(count($res)>0?$res[0]->gastosinstalacion:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"gastosinstalacion"));$i++;
+        array_push($datainversion,Array("Papelería y consumibles",(count($res)>0?$res[0]->papeleria:0),"=IF(OR(B".$i."<=0,D".$i."<=0),0,B".$i."/D".$i."*100)",(count($res)>0?$res[0]->totalinversion:0),"papeleria"));
                 
         
 		/* Regreso la respuesta con los datos para el jExcel */

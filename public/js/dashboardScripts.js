@@ -21,7 +21,8 @@ function addUnidadMedida() {
 			success : function (data) { 
 				swal({
 					type : 'success',
-					title: data.message,
+                    title: 'Mensaje',
+                    text : data.message,
 					onClose: () => {
 						$("#cerrarUM").click();
 						$("#descripcionUM").val('');
@@ -62,7 +63,8 @@ function addProducto() {
 			success: function (data) { 
 				swal({
 					type : 'success',
-					title: data.message,
+					title: 'Mensaje',
+                    text : data.message,
 					onClose: () => {
 						$("#cerrarProd").click();
 						$("#descProd").val('');
@@ -117,7 +119,8 @@ function addProyecto() {
 						if (data.status == 'success'){
 							swal({
 								type : 'success',
-								title: data.message,
+								title: 'Mensaje',
+                                text : data.message,
 								/* Cuando se cierra el modal limpia los campos y seleccion la primer opcion del select */
 								onClose: () => {
 									/* Llamo a la función que agrega el producto nuevo a la tabla*/
@@ -272,5 +275,4 @@ function linkmenu($id,$url,$href){
 	else{
 		window.location.href = $href;
 	}
-	
 }

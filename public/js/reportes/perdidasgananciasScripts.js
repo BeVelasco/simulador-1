@@ -67,12 +67,26 @@ function pintaReporte(data){
     
     tabla +="<tbody>";
     for(i=0;i<datos.length;i++){
+        var clase="";
         tabla+="<tr>";
         for(j=0;j<headers.length;j++){
-            if(headers[j]["concepto"]=='concepto')
-                tabla+="<td>"+datos[i][headers[j]["concepto"]]+"</td>"
-            else
-                tabla+="<td>"+numeral(datos[i][headers[j]["concepto"]]).format('0,0.00')+"</td>"
+            if(headers[j]["concepto"]=='concepto'){
+                
+                posstyle=datos[i][headers[j]["concepto"]].indexOf("<class>");
+                if(posstyle>=0){
+                    posstyle+=7;
+                    clase=datos[i][headers[j]["concepto"]].substring(posstyle);
+                    datos[i][headers[j]["concepto"]]=datos[i][headers[j]["concepto"]].substring(0,posstyle-7)
+                }
+                
+                tabla+="<td class='"+clase+"'>"+datos[i][headers[j]["concepto"]]+"</td>"
+            }
+            else{
+                if(clase.indexOf("vacia")>=0)
+                    tabla+="<td>&nbsp;</td>"
+                else
+                    tabla+="<td class='"+clase+"'>"+numeral(datos[i][headers[j]["concepto"]]).format('0,0.00')+"</td>"
+            }
         }
         tabla+="</tr>";
     }

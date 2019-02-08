@@ -324,5 +324,6 @@
   'nomina_boton'=>'Nómina',
   'producto_acumuladoboton'=>'Acumulado inicial',
   'inversion_inicialboton'=>'Inversión inicial',
+  'situacion_inicialboton'=>'Situación inicial',
   'perdidas_gananciasboton'=>'Estado de Resultados',
 ];

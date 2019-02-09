@@ -66,43 +66,32 @@ function calcularPrecioVenta()
 				dataType: 'JSON',
 				/* Si no hay errores de comunicación retorna success, aun cuando existan errores de validacion o de BD */
 				success: function (data) { 
-					/* Si se hizo el cálculo sin problemas se le notifica al usuario  */
-					if (data['status'] == 'success')
-					{
 						swal({
 							type : 'success',
 							title: 'Ok',
 							text : '¡'+data.msg+'!'
 						});
 						/* Muestro el jExcel con los datos recibido */
-						//pintaJexcel(data);
-
 						/* Actualizo los datos contenidos en el texto de la página web */
 						actualizaDatos(data);
-
 						/* Muestro los divs ocultos */
 						$('#divResultados2').show();
 						$('#divBtnSiguiente').show();
-						$('#divResultados').show();	
-
+						$('#divResultados').show();
 						/* Pinta el gráfico con los datos recibidos */
 						muestraGrafico(data.graphicData);
-						
 						/* Formatea las celdas */
 						formateaCeldas();
-
-					/* Si hubo algún error se muestra al usuario para su correción */
-					} else {
-						swal({
-							type : 'error',
-							title: 'Oops...',
-							text : data.msg,
-						});
-					}
 				},
-				/* Si existió algún otro tipo de error se muestra en la consola */
-				error: function(data) {
-					console.log(data)
+				error: function(error) {
+					if(error.responseJSON.errors.jExcel){
+						muestraAlerta('error', error.responseJSON.errors.jExcel);
+						return;
+					}
+					if (error.responseJSON.errors.PBBD) {
+					    muestraAlerta('error', error.responseJSON.errors.PBBD[0]);
+					    return;
+					}
 				}
 			}); 
 		} else {

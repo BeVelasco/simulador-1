@@ -64,68 +64,90 @@ function calcularRegionObjetivo(){
 	$('.contenidosPronostico').each(function(){ $(this).empty(); });
 	/* Verifico que la forma sea válida */
 	if($("#formPV1")[0].checkValidity()) {
-		var personas = $('#txtPersonas').val(), porcentaje = $('#txtPorcentaje').val();
-		if (personas > 0 && porcentaje > 0)
-		{
-			$.ajax({
-				url     : routes.regionObjetivo,
-				type    : 'POST',
-				dataType: 'JSON',
-				data    : {
-					estado        : $('#txtEstado').val(),
-					ciudadObjetivo: $('#txtCiudadObjetivo').val(),
-					personas      : personas,
-					porcentaje    : porcentaje,
-				},
-				success : function (data) { 
-					$('#txtPerCiuObj').val(data.totalPersonas);
-					/* Si todo es correcto pregutno que segementación usará */
-					(async function f() {
-						const {value: segmentacion} = await Swal({
-							title            : data.message + ' ' + data.totalPersonas.toLocaleString('en'),
-							text             : data.text,
-							input            : 'select',
-							allowOutsideClick: false,
-							allowEscapeKey   : false,
-							inputOptions     : {
-								'pea': data.pea,
-								'spg': data.spg,
-								'spe': data.spe,
-							},
-							inputPlaceholder: data.seleccioneMetodo,
-							showCancelButton: false,
-							inputValidator  : (value) => {
-								return new Promise((resolve) => {
-									if (value === '') { resolve(data.tieneSelVal); } else { resolve(); }
-								});
-							}
-						});
-						if (segmentacion) {
-							/* Mando a pedir la vista de la segmentación renderizada para pintarla en el HTML */
-							$.ajax({
-								url     : routes.getSegmentacion,
-								type    : 'POST',
-								dataType: 'JSON',
-								data    : { segmentacion: segmentacion },
-								success : function (data1){
-									$('#contenidoSegmentacion').html(data1.segmentacion); /////////////////////////////////
-									document.getElementById("liSegementacion").setAttribute("data-toggle", "tab");
-									document.getElementById("liSegementacion").click();
-									window.scrollTo(0, 0);
-									if (segmentacion == "pea") { setfocus($("#txtPorcPobEcoAct")); }
-									if (segmentacion == "spg") { setfocus($("#txtHombresEcoAct")); }
-									if (segmentacion == "spe") { setfocus($("#txtSpeHombres1")); }
-									window.scrollTo(0, 0);
-									globales.segmentacion = segmentacion;
-								},
-								error: function(data1){ muestraAlerta('error',data1.responseJSONresponseJSON.message); }
+		var personas = Number($('#txtPersonas').val()), porcentaje = $('#txtPorcentaje').val();
+		$.ajax({
+			url     : routes.regionObjetivo,
+			type    : 'POST',
+			dataType: 'JSON',
+			data    : {
+				estado        : $('#txtEstado').val(),
+				ciudadObjetivo: $('#txtCiudadObjetivo').val(),
+				personas      : personas,
+				porcentaje    : porcentaje,
+			},
+			success : function (data) { 
+				$('#txtPerCiuObj').val(data.totalPersonas);
+				/* Si todo es correcto pregutno que segementación usará */
+				(async function f() {
+					const {value: segmentacion} = await Swal({
+						title            : data.message + ' ' + data.totalPersonas.toLocaleString('en'),
+						text             : data.text,
+						input            : 'select',
+						allowOutsideClick: false,
+						allowEscapeKey   : false,
+						inputOptions     : {
+							'pea': data.pea,
+							'spg': data.spg,
+							'spe': data.spe,
+						},
+						inputPlaceholder: data.seleccioneMetodo,
+						showCancelButton: false,
+						inputValidator  : (value) => {
+							return new Promise((resolve) => {
+								if (value === '') { resolve(data.tieneSelVal); } else { resolve(); }
 							});
 						}
-					})()
-				},
-				error : function (data) { muestraAlerta('error',data.responseJSON.message); },
-			});
-		}
+					});
+					if (segmentacion) {
+						/* Mando a pedir la vista de la segmentación renderizada para pintarla en el HTML */
+						$.ajax({
+							url     : routes.getSegmentacion,
+							type    : 'POST',
+							dataType: 'JSON',
+							data    : { segmentacion: segmentacion },
+							success : function (data1){
+								$('#contenidoSegmentacion').html(data1.segmentacion); /////////////////////////////////
+								document.getElementById("liSegementacion").setAttribute("data-toggle", "tab");
+								document.getElementById("liSegementacion").click();
+								window.scrollTo(0, 0);
+								if (segmentacion == "pea") { setfocus($("#txtPorcPobEcoAct")); }
+								if (segmentacion == "spg") { setfocus($("#txtHombresEcoAct")); }
+								if (segmentacion == "spe") { setfocus($("#txtSpeHombres1")); }
+								window.scrollTo(0, 0);
+								globales.segmentacion = segmentacion;
+							},
+							error: function(error){
+								if (error.responseJSON.errors.segmentacion)
+								{
+									muestraAlerta('error', error.responseJSON.errors.segmentacion[0]);
+									return;
+								}
+								muestraAlerta('error', error.responseJSON.message);	
+							}
+						});
+					}
+				})()
+			},
+			error : function (error) {
+				console.log(error);
+				if (error.responseJSON.errors.estado){
+					muestraAlerta('error', error.responseJSON.errors.estado[0]);
+					return;
+				}
+				if (error.responseJSON.errors.personas) {
+					muestraAlerta('error', error.responseJSON.errors.personas[0]);
+					return;
+				}
+				if (error.responseJSON.errors.ciudadObjetivo) {
+					muestraAlerta('error', error.responseJSON.errors.ciudadObjetivo[0]);
+					return;
+				}
+				if (error.responseJSON.errors.porcentaje) {
+					muestraAlerta('error', error.responseJSON.errors.porcentaje[0]);
+					return;
+				}
+			},
+		});
 	} else {
 		$("#formPV1")[0].reportValidity();
 	}

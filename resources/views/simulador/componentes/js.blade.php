@@ -3,9 +3,9 @@
 		var routes = {
                 guradarInventario   : "{{ route('guardarInventario') }}",
                 getData             : "{{ route('getDataSimulador') }}",
-                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}",
+                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}", {{-- -SimuladorController@calcularPrecioVenta --}}
                 regionObjetivo      : "{{ route('regionObjetivo') }}",
-                getSegmentacion     : "{{ route('getSegmentacion') }}",
+                getSegmentacion     : "{{ route('getSegmentacion') }}", {{-- PronosticoVentasController@getSegmentacion --}}
                 getVista            : "{{ route('getVista') }}",
                 getProyeccion       : "{{ route('getProyeccion') }}",
                 getMeses            : "{{ route('getMeses') }}",

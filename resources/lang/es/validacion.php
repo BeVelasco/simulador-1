@@ -23,5 +23,8 @@
         'iniSimIpRequired' => 'El id del producto es necesario para iniciar el simulador',
         'iniSimIpExists'   => 'El id del producto no existe, la página se actualizará.',
         'iniSimProdMal'    => 'Este producto no le pertenece, la página se actualizará',
+        /* Obten Avance */
+        'oaProdRequired' => 'El id del producto es obligatorio.',
+        'oaProdExits'    => 'El producto no existe.',
     ];
 ?>

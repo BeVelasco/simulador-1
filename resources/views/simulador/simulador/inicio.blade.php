@@ -110,7 +110,7 @@
 											{{ __('messages.costoUnitario') }}:
 										</th>
 										<td>
-											<span id="costounitario">
+											$ <span id="costounitario">
 												{{ Session::get('costoUnitario') }}
 											</span>
 										</td>
@@ -126,7 +126,7 @@
 											{{ __('messages.costoPV') }}:
 										</th>
 										<td>
-											<span id="costoUni">
+											$ <span id="costoUni">
 												@if ( !Session::get('costoUnitario') == null ) {{ Session::get('costoUnitario') }}@endif
 											</span>
 										</td>

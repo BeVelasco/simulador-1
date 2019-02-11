@@ -105,6 +105,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/reportes/perdidasganancias', 'ReportesController@perdidasganancias')->name('perdidasGanancias');
     Route::post('/reportes/get_perdidasganancias', 'ReportesController@get_perdidasganancias')->name('get_perdidasganancias');
 
+    /* Avances de simulador */
+    Route::post('/obtenAvanace', 'AvanceEtapasController@obtenAvance')->name('obtenAvanace');
+    Route::post('/mostrarEtapa', 'AvanceEtapasController@mostrarEtapa')->name('mostrarEtapa');
 
 
 });

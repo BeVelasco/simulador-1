@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Ingreso') }}</div>
+                <div class="card-header">Entrar</div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
@@ -38,7 +38,7 @@
                                 @endif
                             </div>
                         </div>
-
+                        {{--  
                         <div class="form-group row">
                             <div class="col-md-6 offset-md-4">
                                 <div class="form-check">
@@ -49,7 +49,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div>--}}
 
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
@@ -57,8 +57,8 @@
                                     {{ __('Ingresar') }}
                                 </button>
 
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                    {{ __('¿Olvidaste tu contraseña?') }}
+                                {{--  <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    {{ __('¿Olvidaste tu contraseña?') }}--}}
                                 </a>
                             </div>
                         </div>

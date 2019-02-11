@@ -3,15 +3,19 @@
 		var routes = {
                 guradarInventario   : "{{ route('guardarInventario') }}",
                 getData             : "{{ route('getDataSimulador') }}",
-                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}",
+                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}", {{-- -SimuladorController@calcularPrecioVenta --}}
                 regionObjetivo      : "{{ route('regionObjetivo') }}",
-                getSegmentacion     : "{{ route('getSegmentacion') }}",
+                getSegmentacion     : "{{ route('getSegmentacion') }}", {{-- PronosticoVentasController@getSegmentacion --}}
                 getVista            : "{{ route('getVista') }}",
                 getProyeccion       : "{{ route('getProyeccion') }}",
                 getMeses            : "{{ route('getMeses') }}",
                 home                : "{{ route('home') }}",
                 guardarMercadotecnia: "{{ route('guardarMercadotecnia') }}",
                 inicioSimulador     : "{{ route('inicioSimulador') }}",
+                mostrarEtapa        : "{{ route('mostrarEtapa') }}",
+        };
+        var MENSAJES = {
+            tieneSelVal :"{{ __('messages.tieneSelVal') }}"
         };
 	</script>
     {{-- Jquery Core Js --}}

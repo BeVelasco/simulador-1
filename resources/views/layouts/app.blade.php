@@ -41,11 +41,19 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Ingresar') }}</a>
+                                @if (Route::currentRouteName() != 'login')
+                                    <a class="nav-link" href="{{ route('login') }}">Entrar</a>
+                                @else
+                                    <a class="nav-link">Entrar</a>
+                                @endif
                             </li>
                             <li class="nav-item">
-                                @if (Route::has('register'))
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Registro') }}</a>
+                                @if (Route::currentRouteName() != 'register')
+                                    @if (Route::has('register'))
+                                        <a class="nav-link" href="{{ route('register') }}">{{ __('Registro') }}</a>
+                                    @endif
+                                @else
+                                     <a class="nav-link">{{ __('Registro') }}</a>
                                 @endif
                             </li>
                         @else

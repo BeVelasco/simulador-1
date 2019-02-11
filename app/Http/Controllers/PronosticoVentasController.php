@@ -1,34 +1,77 @@
-<?php
-
-namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\RegionObjetivoRequest;
+use App\Http\Requests\SegmentacionRequest;
+use Auth;
+use View;
+use Lang;
+use Session;
+use URL;
 
-use Auth, View, Lang, Session, URL;
 class PronosticoVentasController extends Controller
 {
-	private $messages = ['required'=>'El campo :attribute es obligatorio','numeric'=>'El valor de :attribute debe ser numérico','between'=>'El valor de :attribute debe estar entre 1 y 99',];
+	private $messages = [
+		'required' => 'El campo :attribute es obligatorio',
+		'numeric'  => 'El valor de :attribute debe ser numérico',
+		'between'  => 'El valor de :attribute debe estar entre 1 y 99'
+	];
 	private $meses = [1  => 'Enero',2  => 'Febrero',3  => 'Marzo',4  => 'Abril',5  => 'Mayo',6  => 'Junio',
 		7  => 'Julio',8  => 'Agosto',9  => 'Septiembre',10 => 'Octubre',11 => 'Noviembre',12 => 'Diciembre',
 	];
-	public function regionObjetivo(Request $request){
-		$totalPersonas = ($request -> personas * $request -> porcentaje)/100;
-		$regionObjetivo = ["estado"=>$request->estado,"personas"=>$request->personas,"ciudadObjetivo"=>$request->ciudadObjetivo,"porcentaje"=>$request->porcentaje,"totalPersonas"=>$totalPersonas,];
+
+	/**
+	 * Captura y guarda la region objetivo en la sesión.
+	 *
+	 * @param RegionObjetivoRequest $request
+	 * @return Response
+	 */
+	public function regionObjetivo(RegionObjetivoRequest $request)
+	{
+		$totalPersonas  = ($request->personas * $request->porcentaje)/100;
+		$regionObjetivo = [
+			"estado"         => $request->estado,
+			"personas"       => $request->personas,
+			"ciudadObjetivo" => $request->ciudadObjetivo,
+			"porcentaje"     => $request->porcentaje,
+			"totalPersonas"  => $totalPersonas
+		];
 		Session::put('regionObjetivo', $regionObjetivo);
-		return response()->json(['message'=>Lang::get('messages.numTotalPersonas'),
-			'text'=> Lang::get('messages.metodoUsa'),'pea'=>Lang::get('messages.pea'),'spg'=>Lang::get('messages.spg'),'spe'=>Lang::get('messages.spe'),'seleccioneMetodo'=>Lang::get('messages.seleccioneMetodo'),'tieneSelVal'=>Lang::get('messages.tieneSelVal'),'totalPersonas'=>$totalPersonas],200);
+		return response()->json([
+			'message'          => Lang::get('messages.numTotalPersonas'),
+			'text'             => Lang::get('messages.metodoUsa'),
+			'pea'              => Lang::get('messages.pea'),
+			'spg'              => Lang::get('messages.spg'),
+			'spe'              => Lang::get('messages.spe'),
+			'seleccioneMetodo' => Lang::get('messages.seleccioneMetodo'),
+			'tieneSelVal'      => Lang::get('messages.tieneSelVal'),
+			'totalPersonas'    => $totalPersonas
+		],200);
 	}
 
-	public function getSegmentacion(Request $request){	
-		$cfsghg = $request -> segmentacion;
-		switch ($cfsghg) {
+	/**
+	 * Obtiene la vista de la segmentacion solicitada
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function getSegmentacion(SegmentacionRequest $request){	
+		$seg = $request -> segmentacion;
+		switch ($seg) {
 			case 'pea':$ndfgt='simulador.segmentaciones.pea';break;				
 			case 'spg':$ndfgt='simulador.segmentaciones.spg';break;				
 			case 'spe':$ndfgt='simulador.segmentaciones.spe';break;
-			default:return response()->json(['message' => Lang::get('messages.segmNoExiste')],400);break;
+			default:
+				return response()->json([
+					'errors' => [
+						'segmentacion' => [
+							0 => Lang::get('messages.segmNoExiste')
+						]
+					]
+				],400);break;
 		}
-		$cfsghg = obtenVista($ndfgt);
-		return response() -> json(['segmentacion' => $cfsghg],200);
+		$seg = obtenVista($ndfgt);
+		return response() -> json(['segmentacion' => $seg],200);
 	}
 	
 	public function getVista(Request $request) {
@@ -77,13 +120,13 @@ class PronosticoVentasController extends Controller
 	}
 
 	public function getProyeccion(Request $request){
-		$idProducto = Session::get('prodSeleccionado');
-		$variables = $request['variables'];
-		$creVen    = $request -> creVen;
-		$crePob    = $request -> crePob;
-		$year      = obtenYear();
-		$year      = $year['actual'];
-		$proy[0]   = ['1'=>$variables['mercadoPotencial']*1,'2'=>$variables['mercadoDisponible']*1,'3'=>$variables['mercadoEfectivo']*1,'4'=>$variables['mercadoObjetivo']*1,'5'=>$variables['consumoAnual']*1,];
+		$idProducto  = Session::get('prodSeleccionado');
+		$variables   = $request['variables'];
+		$creVen      = $request -> creVen;
+		$crePob      = $request -> crePob;
+		$year        = obtenYear();
+		$year        = $year['actual'];
+		$proy[0]     = ['1'=>$variables['mercadoPotencial']*1,'2'=>$variables['mercadoDisponible']*1,'3'=>$variables['mercadoEfectivo']*1,'4'=>$variables['mercadoObjetivo']*1,'5'=>$variables['consumoAnual']*1,];
 		$precioVenta = obtenPrecioVenta($idProducto);
 		for ( $i=1;$i<4;$i++ ){
 			$proy[$i] = [

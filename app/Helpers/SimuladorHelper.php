@@ -37,6 +37,7 @@
             }
             /* Si todo es correcto se agrega el id del producto a la sesión */
             if ($producto->id_user_r == Auth::user()->id)
+
             {
                 $this->deleteSessionVariables();
                 Session::put('prodSeleccionado', $producto->id);
@@ -62,11 +63,13 @@
         }
 
         /* Elimina las variables de la sesión. */
+
         function deleteSessionVariables(){
             Session::forget([
                 'prodSeleccionado','datosCalculados','PBBDData','PBBD','precioVenta','sumCI','costoUnitario','mesInicio',
                 'ventasMensuales','pronostico','segmentacion','NivelSocioEcon','estimacionDemanda','proyeccionVentas',
                 'tasaCreVen','regionObjetivo','prodAvance']);
+
             return;
         }
 
@@ -159,5 +162,69 @@
                     return $vista;
                 break;
             }
+            $costoUnitario = json_decode($costoUnitario, true);
+            return $costoUnitario["costoUnitario"];
+        }
+        
+        /**
+         * Checks for ingredients existence
+         *
+         * @param [array] $jExcel
+         * @return Response
+         */
+        function checkIngredients($jExcel)
+        {
+            if (count($jExcel) <= 0)
+            {
+                return response()->json([
+                    'errors' => [
+                        'jExcel'=> Lang::get('messages.jExcelSinDatos'),
+                    ],
+                ],401);
+            }
+            return "true";
+        }
+
+        /**
+         * Checks for not zero ingredient cost
+         *
+         * @param [array] $jExcel
+         * @return Response
+         */
+        function notZeroIngredient($jExcel)
+        {
+            foreach ($jExcel as $key=>$ingredient)
+            {
+                $totIng = substr($ingredient[5],2);
+                $totIng = (str_replace(',', '', $totIng))*1;
+                if ($totIng <= 0)
+                {
+                    return response()->json([
+                        'errors' => [
+                            'jExcel' => str_replace('%num%',$key+1, Lang::Get('validacion.jExcelConCeros')),
+                        ]
+                    ],401);
+                }
+            }
+            return "true";
+        }
+
+        /**
+         * Gets CI
+         *
+         * @param [array] $jExcel
+         * @return Response
+         */
+        public function getCI($jExcel)
+        {
+            $sumCI = 0;
+            $largo  = count($jExcel);
+            for ($i=0;$i<$largo;$i++){
+                $costoIng  = substr($jExcel[$i][5],2);
+                $costoIng  = str_replace(',', '', $costoIng );
+                $sumCI    += $costoIng;
+            }
+            return $sumCI;
+
         }
     }

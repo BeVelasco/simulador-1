@@ -25,6 +25,14 @@
         /* Obten Avance */
         'oaProdRequired' => 'El id del producto es obligatorio.',
         'oaProdExits'    => 'El producto no existe.',
+
+        'iniSimProdMal'    => 'Este producto no le pertenece, la página se actualizará',
+        /* Obten Avance */
+        'oaProdRequired' => 'El id del producto es obligatorio.',
+        'oaProdExits'    => 'El producto no existe.',
+        /* Obten Avance */
+        'oaProdRequired' => 'El id del producto es obligatorio.',
+        'oaProdExits'    => 'El producto no existe.',
         'iniSimProdMal'    => 'Este producto no le pertenece, la página se actualizará.',
         /* Precio Venta */
         'pvJExcelRequired' => 'Los datos de la tabla de ingredientes son necesarios.',

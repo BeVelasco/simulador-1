@@ -8,6 +8,7 @@ use App\Http\Requests\ObtenAvanceRequest;
 use App\Producto;
 use Auth;
 use Simulador;
+
 use Session;
 
 class AvanceEtapasController extends Controller
@@ -28,6 +29,7 @@ class AvanceEtapasController extends Controller
             $avance = Simulador::getAvance($idUser, $idProd);
             $avance == null ? $avance = 0: null;
             $etapas = Simulador::getEtapasTerminadas($avance);
+
         }
         Session::put('prodAvance', $idProd);
         return response()->json($etapas,200);

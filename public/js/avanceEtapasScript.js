@@ -1,6 +1,6 @@
 function obtenEtapasTerminadas(idProducto){
     $.ajax({
-        url     : '/obtenAvanace',
+        url     : routes.obtenAvance,
         type    : 'POST',
         data    : { idProducto: idProducto },
         dataType: 'JSON',

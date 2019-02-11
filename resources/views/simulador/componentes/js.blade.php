@@ -13,6 +13,7 @@
                 guardarMercadotecnia: "{{ route('guardarMercadotecnia') }}",
                 inicioSimulador     : "{{ route('inicioSimulador') }}",
                 mostrarEtapa        : "{{ route('mostrarEtapa') }}",
+                obtenAvance         : "{{ route('obtenAvance') }}"
         };
         var MENSAJES = {
             tieneSelVal :"{{ __('messages.tieneSelVal') }}"

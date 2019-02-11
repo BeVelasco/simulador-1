@@ -64,6 +64,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="javascript:linkmenu('{{ 0 }}','{{ route('iniciarSimulador') }}','{{ route('editarInicioNomina') }}');">{{ __('messages.nomina_boton') }}</a></li>
                                 <li><a href="javascript:linkmenu('{{ 0 }}','{{ route('iniciarSimulador') }}','{{ route('editarInicioInversion') }}');">{{ __('messages.inversion_inicialboton') }}</a></li>
+                                <li><a href="javascript:linkmenu('{{ 0 }}','{{ route('iniciarSimulador') }}','{{ route('editarInicioSituacion') }}');">{{ __('messages.situacion_inicialboton') }}</a></li>
                                 <li><a href="javascript:linkmenu('{{ 0 }}','{{ route('iniciarSimulador') }}','{{ route('perdidasGanancias') }}');">{{ __('messages.perdidas_gananciasboton') }}</a></li>
                                 
                             </ul>

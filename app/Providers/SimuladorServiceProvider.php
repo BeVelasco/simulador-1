@@ -5,7 +5,7 @@
     use Illuminate\Support\ServiceProvider;
     use Illuminate\Support\Facades\App;
 
-    class ReloaderServiceProvider extends ServiceProvider
+    class SimuladorServiceProvider extends ServiceProvider
     {
         /**
         * Bootstrap the application services.
@@ -22,8 +22,8 @@
          * @return void
          */
         public function register(){
-            App::bind('reloader', function(){
-                return new \App\Helpers\ReloaderHelper;
+            App::bind('simulador', function(){
+                return new \App\Helpers\SimuladorHelper;
             });
         }
 }

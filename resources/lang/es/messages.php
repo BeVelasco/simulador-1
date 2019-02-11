@@ -205,6 +205,7 @@
 	 'ingrediente'      => 'Ingrediente',
 	 'costoIngrediente' => 'Costo x ingrediente',
 	 'bbd'              => 'Beneficio bruto deseado',
+	 'jExcelSinDatos'   => 'Debe introducir al menos un ingrediente',
 	
 	
   'guardar'          => 'Guardar',
@@ -214,5 +215,6 @@
   'nomina_boton'=>'Nómina',
   'producto_acumuladoboton'=>'Acumulado inicial',
   'inversion_inicialboton'=>'Inversión inicial',
+  'situacion_inicialboton'=>'Situación inicial',
   'perdidas_gananciasboton'=>'Estado de Resultados',
 ];

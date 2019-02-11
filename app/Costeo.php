@@ -19,4 +19,5 @@ class Costeo extends Model
 	protected $hidden = [
 		'id',
 	];
+
 }

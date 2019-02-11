@@ -8170,3 +8170,8 @@ ul.toolbar-form li
    display: inline;
    padding-right: 5px;
 }
+
+/** error validation **/
+.error-message{
+    color:red;
+}

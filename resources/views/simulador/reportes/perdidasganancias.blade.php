@@ -7,6 +7,7 @@
 	<link href="{{ asset('css/jExcel/jquery.jexcel.css') }}" rel="stylesheet">
 	<link href="{{ asset('css/jExcel/jquery.jexcel.green.css') }}" rel="stylesheet">
     
+    <link href="{{ asset('css/reportes/perdidasganancias.css') }}" rel="stylesheet">
     <style>
         .jexcel > thead > tr, .jexcel > tbody > tr {
             display: table-row
@@ -25,7 +26,7 @@
                 </div>                     
             </div>
 			<div class="row clearfix">
-				<div id="tab-content" class="tab-content">
+				<div id="tab-content" style="height: 34em;" class="tab-content">
                 </div>
             </div>
             

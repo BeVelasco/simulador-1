@@ -382,6 +382,56 @@ $.AdminBSB.input = {
                 $(this).parents('.form-line').addClass('focused');
             }
         });
+        
+        //No exponencial value en type number
+        $("input[type='number']").on("keydown",function(){
+            return event.keyCode == 69 ? false : true   
+        });
+        
+        // Replace the validation UI for all forms
+        var forms = document.querySelectorAll( "form.formpage" );
+        for ( var i = 0; i < forms.length; i++ ) {
+            replaceValidationUI( forms[ i ] );
+        }
+        
+                function replaceValidationUI( form ) {
+            // Suppress the default bubbles
+            form.addEventListener( "invalid", function( event ) {
+                event.preventDefault();
+            }, true );
+        
+            // Support Safari, iOS Safari, and the Android browser—each of which do not prevent
+            // form submissions by default
+            form.addEventListener( "submit", function( event ) {
+                if ( !this.checkValidity() ) {
+                    event.preventDefault();
+                }
+            });
+        
+            var submitButton = document.getElementById( "btnguardar" );
+            submitButton.addEventListener( "click", function( event ) {
+                var invalidFields = form.querySelectorAll( ":invalid" ),
+                    errorMessages = form.querySelectorAll( ".error-message" ),
+                    parent;
+        
+                // Remove any existing messages
+                for ( var i = 0; i < errorMessages.length; i++ ) {
+                    errorMessages[ i ].parentNode.removeChild( errorMessages[ i ] );
+                }
+        
+                for ( var i = 0; i < invalidFields.length; i++ ) {
+                    parent = invalidFields[ i ].parentNode.parentNode;
+                    parent.insertAdjacentHTML( "beforeend", "<div class='error-message'>" + 
+                        invalidFields[ i ].validationMessage +
+                        "</div>" );
+                }
+        
+                // If there are errors, give focus to the first invalid field
+                if ( invalidFields.length > 0 ) {
+                    invalidFields[ 0 ].focus();
+                }
+            });
+        }
     }
 }
 //==========================================================================================================================

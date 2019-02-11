@@ -1,3 +1,7 @@
+/* Función para mosntrar un mensaje al enviar peticiones al servidor 
+var ajaxBlock = function () { $.blockUI({ message: 'Recibiendo datos del servidor...' }) }
+$(document).ajaxStart(ajaxBlock).ajaxStop($.unblockUI);*/
+
 /* Funcion que muestra una alerta de error en el mensaje enviado */
 function muestraAlerta(tipo, mensaje) {
     swal({
@@ -31,7 +35,11 @@ function formatear(num, dec) {
 
 /* Función que no permite inster la letra "e" "+" "-" en inputs numéricos */
 function eliminaEInput(event) {
-    if (event.which != 8 && event.which != 0 && event.which < 48 || event.which > 57) {
+    /* + - */
+    if (event.which == 109 || event.which == 107) {
+        event.preventDefault();
+    }
+    if (event.which != 8 && event.which != 0 && event.which < 48 || event.which > 57 && event.wich < 96 || event.wich > 105) {
         event.preventDefault();
     }
 }

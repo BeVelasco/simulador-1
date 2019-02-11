@@ -12,6 +12,10 @@
                 home                : "{{ route('home') }}",
                 guardarMercadotecnia: "{{ route('guardarMercadotecnia') }}",
                 inicioSimulador     : "{{ route('inicioSimulador') }}",
+                mostrarEtapa        : "{{ route('mostrarEtapa') }}",
+        };
+        var MENSAJES = {
+            tieneSelVal :"{{ __('messages.tieneSelVal') }}"
         };
 	</script>
     {{-- Jquery Core Js --}}

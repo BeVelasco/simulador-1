@@ -1,3 +1,7 @@
+/* Función para mosntrar un mensaje al enviar peticiones al servidor 
+var ajaxBlock = function () { $.blockUI({ message: 'Recibiendo datos del servidor...' }) }
+$(document).ajaxStart(ajaxBlock).ajaxStop($.unblockUI);*/
+
 /* Funcion que muestra una alerta de error en el mensaje enviado */
 function muestraAlerta(tipo, mensaje) {
     swal({

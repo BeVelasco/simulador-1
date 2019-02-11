@@ -22,6 +22,10 @@
         /* Iniciar Simulador */
         'iniSimIpRequired' => 'El id del producto es necesario para iniciar el simulador.',
         'iniSimIpExists'   => 'El id del producto no existe, la página se actualizará.',
+        /* Obten Avance */
+        'oaProdRequired' => 'El id del producto es obligatorio.',
+        'oaProdExits'    => 'El producto no existe.',
+
         'iniSimProdMal'    => 'Este producto no le pertenece, la página se actualizará.',
         /* Precio Venta */
         'pvJExcelRequired' => 'Los datos de la tabla de ingredientes son necesarios.',

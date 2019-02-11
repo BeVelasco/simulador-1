@@ -34,21 +34,18 @@ class SimuladorController extends Controller
 	public function inicio(Request $request)
 	{
 		$idProducto = Session::get('prodSeleccionado');
-		if ($idProducto == null)
-		{
-			Session::flash('error', Lang::get('messages.debeSelProd'));
-			return redirect('home');
-		} 
-		else 
-		{
-			$avance = Simulador::getAvance(Auth::user()->id, $idProducto);
-			switch ($avance) 
-			{
-				/* Pronostico de ventas */
-				case 1:
-					return view('simulador.simulador.pronosticoVentas');
-				break;
-				/* Inventario */
+		if ($idProducto == null){ Session::flash('error', Lang::get('messages.debeSelProd'));return redirect('/home');
+		} else {
+			$avance = Reloader::getAvance(Auth::user()->id, $idProducto);
+			/* Obtengo el avance que lleva el usuario para saber que vista mostrar 
+				 * default - Inicio
+				 * 1 - Pronostico de ventas
+				 * 2 - Inventario
+				 * 3 - Mercadotecnia
+				 * 4 - 
+				*/
+			switch ($avance) {
+				case 1:return view('simulador.simulador.pronosticoVentas');break;
 				case 2:
 					$pronostico = Simulador::getPronostico(Auth::user()->id, $idProducto);
 					if ($pronostico == null)

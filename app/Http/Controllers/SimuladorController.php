@@ -36,7 +36,7 @@ class SimuladorController extends Controller
 		$idProducto = Session::get('prodSeleccionado');
 		if ($idProducto == null){ Session::flash('error', Lang::get('messages.debeSelProd'));return redirect('/home');
 		} else {
-			$avance = Reloader::getAvance(Auth::user()->id, $idProducto);
+			$avance = Simulador::getAvance(Auth::user()->id, $idProducto);
 			/* Obtengo el avance que lleva el usuario para saber que vista mostrar 
 				 * default - Inicio
 				 * 1 - Pronostico de ventas

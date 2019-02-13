@@ -42,7 +42,7 @@ class SimuladorController extends Controller
 				 * 1 - Pronostico de ventas
 				 * 2 - Inventario
 				 * 3 - Mercadotecnia
-				 * 4 - 
+				 * 4 - Insumoss
 				*/
 			switch ($avance) {
 				case 1:return view('simulador.simulador.pronosticoVentas');break;
@@ -65,7 +65,7 @@ class SimuladorController extends Controller
 				break;
 				/* Sigueitne vista */
 				case 4:
-					return ('Siguiente vista muchacho');
+					return view('simulador.producto.producto');
 				/* Inicio */
 				default:
 					return view('simulador.simulador.inicio');

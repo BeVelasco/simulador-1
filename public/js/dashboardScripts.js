@@ -14,7 +14,7 @@ $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('cont
 function addUnidadMedida() {
 	if($("#formUnidadMedida")[0].checkValidity()) {
 		$.ajax({
-			url     : 'addUnidadMedida',
+			url     : routes.addUnidadMedida,
 			type    : 'POST',
 			data    : { descripcion :$("#descripcionUM").val() },
 			dataType: 'JSON',
@@ -52,7 +52,7 @@ function addUnidadMedida() {
 function addProducto() {
 	if($("#form-producto")[0].checkValidity()) {
 		$.ajax({
-			url : 'addProducto',
+			url : routes.addProducto,
 			type: 'POST',
 			data: {
 				descripcion : $("#descProd").val(),
@@ -71,7 +71,7 @@ function addProducto() {
 						$("#porcion").val('');
 						$("#noProd").html(data.totProd);
 						/* Llamo a la función que agrega el producto nuevo a la tabla*/
-						agregarProductoTable(data.totProd, data.desc, data.porcion, data.boton);
+						agregarProductoTable(data.totProd, data.desc, data.porcion, data.boton, data.botonAvance);
 					}
 				});
 			},
@@ -102,43 +102,43 @@ function addProducto() {
 
 /*Funcion para agregar un producto nuevo*/
 function addProyecto() {
-		/* Espero a que el docuemnto esté completamente cargado */
-		$(document).ready(function(){
-			if($("#form-proyecto")[0].checkValidity()) {
-				/* Mando los datos introducidos por el usuario */
-				$.ajax({
-					url: 'addProyecto',
-					type: 'POST',
-					data: {
-						descripcion :$("#descProyecto").val(),
-					},
-					dataType: 'JSON',
-					/* Si no hay errores regresa SUCCESS, inclusi si existen errores de validación y/o de BD */
-					success: function (data) {
-						/* Informa al usuario que el nuevo producto ha sido creado */
-						if (data.status == 'success'){
-							swal({
-								type : 'success',
-								title: 'Mensaje',
-                                text : data.message,
-								/* Cuando se cierra el modal limpia los campos y seleccion la primer opcion del select */
-								onClose: () => {
-									/* Llamo a la función que agrega el producto nuevo a la tabla*/
-									$("#tituloProyecto").text("Productos de: " + $("#descProyecto").val());
+	/* Espero a que el docuemnto esté completamente cargado */
+	$(document).ready(function(){
+		if($("#form-proyecto")[0].checkValidity()) {
+			/* Mando los datos introducidos por el usuario */
+			$.ajax({
+				url: 'addProyecto',
+				type: 'POST',
+				data: {
+					descripcion :$("#descProyecto").val(),
+				},
+				dataType: 'JSON',
+				/* Si no hay errores regresa SUCCESS, inclusi si existen errores de validación y/o de BD */
+				success: function (data) {
+					/* Informa al usuario que el nuevo producto ha sido creado */
+					if (data.status == 'success'){
+						swal({
+							type : 'success',
+							title: 'Mensaje',
+							text : data.message,
+							/* Cuando se cierra el modal limpia los campos y seleccion la primer opcion del select */
+							onClose: () => {
+								/* Llamo a la función que agrega el producto nuevo a la tabla*/
+								$("#tituloProyecto").text("Productos de: " + $("#descProyecto").val());
 
-								    $("#cerrarProyecto").click();
-									$("#descProyecto").val('');
-								}
-							});
-						/* Si hubo algún error se muestra al usuario para su correción */
-						} else { muestraAlerta('error', data.message); }
-					},
-					error: function (data) { muestraAlerta('error', data.message); }
-				});
-			}
-			else { $("#form-proyecto")[0].reportValidity(); }
+								$("#cerrarProyecto").click();
+								$("#descProyecto").val('');
+							}
+						});
+					/* Si hubo algún error se muestra al usuario para su correción */
+					} else { muestraAlerta('error', data.message); }
+				},
+				error: function (data) { muestraAlerta('error', data.message); }
+			});
 		}
-	)}
+		else { $("#form-proyecto")[0].reportValidity(); }
+	}
+)}
 
 /* =============================================================
  * Funcion para mostar alertas referentes a la guia (tutorial)
@@ -181,7 +181,7 @@ function mostrarAlertaPopUp($tipo, $titulo, $mensaje, $msj) {
 
 function mostrarPopoverGuia($elemento, $paso) {
 	$.ajax({
-		url : 'guia',
+		url : routes.guia,
 		type: 'POST',
 		data: {
 			paso: $paso,
@@ -191,7 +191,6 @@ function mostrarPopoverGuia($elemento, $paso) {
 		success: function (data) {
 			if (data.status == 'success'){
 				/* Agrego el popover al elemento recibido junto con la descripcion del paso */
-
 				$($elemento).popover({
 					placement: 'auto',
 					trigger  : 'manual',
@@ -226,11 +225,9 @@ function quitarPopover($paso){ $($paso).popover('hide'); }
  * $num     Integer [Numero total del productos del usuario]
  * $desc    String  [Descripción del producto creado]
  * $porcion String  [Para cuantos - UM Ej. 100 - Personas]
- * $idProd  Integer [id del producto creado]
- * $idUSer  Integer [id del usuario]
  *
  * ============================================================= */
-function agregarProductoTable($num, $desc, $porcion, $url){
+function agregarProductoTable($num, $desc, $porcion, $url, $botonAvance){
 	/* Obtengo la tabla */
 	var table = document.getElementById("tablaProd");
 	/* Inserto una nueva fila */
@@ -241,7 +238,8 @@ function agregarProductoTable($num, $desc, $porcion, $url){
 	row.insertCell(2).innerHTML = $porcion;
 	row.insertCell(3).innerHTML = '<span class="label bg-green">Activo</span>';
 	row.insertCell(4).innerHTML = "Justo ahora";
-	row.insertCell(5).innerHTML = $url;
+	row.insertCell(5).innerHTML = $botonAvance;
+	row.insertCell(6).innerHTML = $url;
 }
 /* =============================================================
  * Atiende al menu de botones

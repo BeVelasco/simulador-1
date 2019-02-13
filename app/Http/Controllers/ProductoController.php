@@ -3,7 +3,7 @@
 /**
  * Este archivo forma parte del Simulador de Negocios.
  *
- * (c) Emmanuel HernÃ¡ndez <emmanuelhd@gmail.com>
+ * (c) Emmanuel Hernández <emmanuelhd@gmail.com>
  *
  *  Prohibida su reproducciÃ³n parcial o total sin 
  *  consentimiento explÃ­cito de Integra Ideas Consultores.

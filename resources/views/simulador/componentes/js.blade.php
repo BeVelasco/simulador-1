@@ -3,9 +3,9 @@
 		var routes = {
                 guradarInventario   : "{{ route('guardarInventario') }}",
                 getData             : "{{ route('getDataSimulador') }}",
-                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}", {{-- -SimuladorController@calcularPrecioVenta --}}
+                calcularPrecioVenta : "{{ route('calcularPrecioVenta') }}",  {{-- -SimuladorController@calcularPrecioVenta --}}
                 regionObjetivo      : "{{ route('regionObjetivo') }}",
-                getSegmentacion     : "{{ route('getSegmentacion') }}", {{-- PronosticoVentasController@getSegmentacion --}}
+                getSegmentacion     : "{{ route('getSegmentacion') }}",      {{-- PronosticoVentasController@getSegmentacion --}}
                 getVista            : "{{ route('getVista') }}",
                 getProyeccion       : "{{ route('getProyeccion') }}",
                 getMeses            : "{{ route('getMeses') }}",
@@ -14,6 +14,9 @@
                 inicioSimulador     : "{{ route('inicioSimulador') }}",
                 mostrarEtapa        : "{{ route('mostrarEtapa') }}",
                 obtenAvance         : "{{ route('obtenAvance') }}",
+                addUnidadMedida     : "{{ route('addUnidadMedida') }}",
+                addProducto         : "{{ route('addProducto') }}",          {{-- DashboardController@addProducto --}}
+                guia                : "{{ route('guia') }}",                 {{-- GuiaController@mostrarMensaje --}}
         };
         var MENSAJES = {
             tieneSelVal :"{{ __('messages.tieneSelVal') }}"

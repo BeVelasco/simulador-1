@@ -21,7 +21,7 @@ function obtenEtapasTerminadas(idProducto){
                     showCancelButton : false,
                     inputValidator   : (value) => {
                         return new Promise((resolve) => {
-                            if (value === '') { resolve(MENSAJES.tieneSelVal); } else { resolve(); }
+                             resolve();
                         });
                     }
                 });

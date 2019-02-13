@@ -102,13 +102,15 @@ class DashboardController extends Controller
 		/* Creo el botón que se agregará al HTML */
 		$boton = obtenVista('simulador.componentes.boton');
 		/* Inserta el id del producto creado en el nuevo botón */
-		$boton = str_replace("%id%", Producto::all()->last()->id, $boton);
+		$boton       = str_replace("%id%", Producto::all()->last()->id, $boton);
+		$botonAvance = obtenVista('simulador.componentes.botonAvance');
 		return response()->json([
-			'message' =>  str_replace("%prod%", $desc, Lang::get('validacion.prodAgregado')),
-			'totProd' => Producto::getTotalProducts($idUser),
-			'desc'    => $desc,
-			'porcion' => $porcion.' - '.Catum::find($um)->idesc,
-			'boton'   => $boton
+			'message'     => str_replace("%prod%", $desc, Lang::get('validacion.prodAgregado')),
+			'totProd'     => Producto::getTotalProducts($idUser),
+			'desc'        => $desc,
+			'porcion'     => $porcion.' - '.Catum::find($um)->idesc,
+			'boton'       => $boton,
+			'botonAvance' => $botonAvance
 		], 200);
 	}
 
